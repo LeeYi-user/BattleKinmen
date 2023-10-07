@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class ColorTransition : MonoBehaviour
+public class ChangeScene : MonoBehaviour
 {
     float timeleft;
     Image background;
@@ -28,6 +29,13 @@ public class ColorTransition : MonoBehaviour
         else
         {
             background.color = targetColor;
+            StartCoroutine(GameStart());
         }
+    }
+
+    IEnumerator GameStart()
+    {
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene("SampleScene");
     }
 }
