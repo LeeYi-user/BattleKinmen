@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class ManageScene : MonoBehaviour
+public class StartScene : MonoBehaviour
 {
     [SerializeField] private GameObject storyPanel;
     [SerializeField] private GameObject teamPanel;
@@ -43,13 +43,11 @@ public class ManageScene : MonoBehaviour
         teamPanel.SetActive(true);
     }
 
-    // 加入國軍
     public void BlueTeam()
     {
         SceneManager.LoadScene("SampleScene");
     }
 
-    // 加入共軍
     public void RedTeam()
     {
         SceneManager.LoadScene("SampleScene");

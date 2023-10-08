@@ -206,8 +206,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 669039985}
-        m_TargetAssemblyTypeName: ManageScene, Assembly-CSharp
+      - m_Target: {fileID: 515857665}
+        m_TargetAssemblyTypeName: StartScene, Assembly-CSharp
         m_MethodName: RedTeam
         m_Mode: 1
         m_Arguments:
@@ -484,7 +484,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240691895}
   m_CullTransparentMesh: 1
---- !u!1 &669039984
+--- !u!1 &515857664
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -492,22 +492,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 669039986}
-  - component: {fileID: 669039985}
+  - component: {fileID: 515857666}
+  - component: {fileID: 515857665}
   m_Layer: 0
-  m_Name: For Script
+  m_Name: For Script (Local)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &669039985
+--- !u!114 &515857665
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669039984}
+  m_GameObject: {fileID: 515857664}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 85df7ebd678326e43825b915d1974ca4, type: 3}
@@ -515,16 +515,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storyPanel: {fileID: 1694747439}
   teamPanel: {fileID: 1234691879}
---- !u!4 &669039986
+--- !u!4 &515857666
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669039984}
+  m_GameObject: {fileID: 515857664}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 550.5, y: 262.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1163,8 +1163,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 669039985}
-        m_TargetAssemblyTypeName: ManageScene, Assembly-CSharp
+      - m_Target: {fileID: 515857665}
+        m_TargetAssemblyTypeName: StartScene, Assembly-CSharp
         m_MethodName: BlueTeam
         m_Mode: 1
         m_Arguments:
@@ -1355,4 +1355,4 @@ SceneRoots:
   - {fileID: 236701194}
   - {fileID: 1099378006}
   - {fileID: 1421487891}
-  - {fileID: 669039986}
+  - {fileID: 515857666}

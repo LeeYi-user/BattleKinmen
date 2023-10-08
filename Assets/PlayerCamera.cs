@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCam : MonoBehaviour
+public class PlayerCamera : MonoBehaviour
 {
-    [SerializeField] private Transform orientation;
+    public Transform orientation;
+
     [SerializeField] private float sensX;
     [SerializeField] private float sensY;
 
@@ -21,6 +22,11 @@ public class PlayerCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!orientation)
+        {
+            return;
+        }
+
         float mouseX = Input.GetAxisRaw("Mouse X") * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * sensY;
 
