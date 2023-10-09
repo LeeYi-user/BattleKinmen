@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class InitScene : MonoBehaviour
 {
     [SerializeField] private int fps;
+    public static bool host;
 
     void Awake()
     {

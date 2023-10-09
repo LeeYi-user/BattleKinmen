@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class StartScene : MonoBehaviour
 {
+    [SerializeField] private GameObject menuPanel;
+    [SerializeField] private TMP_InputField menuInput;
+    [SerializeField] private TMP_Text menuButtonText;
     [SerializeField] private GameObject storyPanel;
     [SerializeField] private GameObject teamPanel;
 
@@ -24,16 +28,46 @@ public class StartScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timeleft > Time.deltaTime)
+        if (menuPanel.activeSelf)
         {
-            background.color = Color.Lerp(background.color, targetColor, Time.deltaTime / timeleft);
-            timeleft -= Time.deltaTime;
+            if (menuInput.text == "")
+            {
+                menuButtonText.text = "HOST";
+            }
+            else
+            {
+                menuButtonText.text = "JOIN";
+            }
+
+            return;
         }
-        else
+
+        if (storyPanel.activeSelf)
         {
-            background.color = targetColor;
-            StartCoroutine(ChooseTeam());
+            if (timeleft > Time.deltaTime)
+            {
+                background.color = Color.Lerp(background.color, targetColor, Time.deltaTime / timeleft);
+                timeleft -= Time.deltaTime;
+            }
+            else
+            {
+                background.color = targetColor;
+                StartCoroutine(ChooseTeam());
+            }
+
+            return;
         }
+    }
+
+    public void GameStart()
+    {
+        if (menuButtonText.text == "HOST")
+        {
+            InitScene.host = true;
+        }
+
+        menuPanel.SetActive(false);
+        storyPanel.SetActive(true);
     }
 
     IEnumerator ChooseTeam()
