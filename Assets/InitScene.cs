@@ -7,6 +7,8 @@ public class InitScene : MonoBehaviour
 {
     [SerializeField] private int fps;
     public static bool host;
+    public static string team;
+    public static Dictionary<ulong, string> playerTeam = new Dictionary<ulong, string>();
 
     void Awake()
     {

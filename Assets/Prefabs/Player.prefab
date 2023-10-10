@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6433775933804812874}
   - component: {fileID: 2580351250228067113}
   - component: {fileID: 7292390613250618633}
+  - component: {fileID: 5126876067109047519}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -154,6 +155,21 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &5126876067109047519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530190304027039919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90adc83b27e442249ad6be1cc2e6a331, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 6188713871495134211}
+  blueTeamColor: {fileID: 2100000, guid: 3e7e1578aa9756449b00108885acd432, type: 2}
+  redTeamColor: {fileID: 2100000, guid: 1115b53c7ede7c14f9ff43e4503607ff, type: 2}
 --- !u!1 &5260795235556558064
 GameObject:
   m_ObjectHideFlags: 0

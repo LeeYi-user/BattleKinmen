@@ -79,11 +79,13 @@ public class StartScene : MonoBehaviour
 
     public void BlueTeam()
     {
+        InitScene.team = "Blue";
         SceneManager.LoadScene("SampleScene");
     }
 
     public void RedTeam()
     {
+        InitScene.team = "Red";
         SceneManager.LoadScene("SampleScene");
     }
 }
