@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2580351250228067113}
   - component: {fileID: 7292390613250618633}
   - component: {fileID: 5126876067109047519}
+  - component: {fileID: -4059610963202953394}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -170,6 +171,21 @@ MonoBehaviour:
   meshRenderer: {fileID: 6188713871495134211}
   blueTeamColor: {fileID: 2100000, guid: 3e7e1578aa9756449b00108885acd432, type: 2}
   redTeamColor: {fileID: 2100000, guid: 1115b53c7ede7c14f9ff43e4503607ff, type: 2}
+--- !u!114 &-4059610963202953394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530190304027039919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e11ae9831e3e33f4fa7b182582e46b09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthBar: {fileID: 0}
+  maxHealth: 100
+  currentHealth: 0
 --- !u!1 &5260795235556558064
 GameObject:
   m_ObjectHideFlags: 0
