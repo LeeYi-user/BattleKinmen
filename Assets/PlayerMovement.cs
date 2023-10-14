@@ -56,7 +56,6 @@ public class PlayerMovement : NetworkBehaviour
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
 
         MyInput();
-        MovePlayer();
         SpeedControl();
 
         if (grounded)
@@ -72,6 +71,11 @@ public class PlayerMovement : NetworkBehaviour
         {
             rb.drag = 0;
         }
+    }
+
+    void FixedUpdate()
+    {
+        MovePlayer();
     }
 
     void MyInput()
@@ -103,16 +107,16 @@ public class PlayerMovement : NetworkBehaviour
         }
         else if (grounded)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 2e3f * Time.deltaTime, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         }
         else
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 2e3f * airMultiplier * Time.deltaTime, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
         }
 
         if (!OnSlope())
         {
-            rb.velocity += new Vector3(0, gravity * Time.deltaTime, 0);
+            rb.velocity += new Vector3(0, gravity * Time.fixedDeltaTime, 0);
         }
     }
 
