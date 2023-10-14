@@ -22,12 +22,17 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask whatIsGround;
 
+    [Header("Slope Handling")]
+    [SerializeField] private float maxSlopeAngle;
+
     Rigidbody rb;
     float horizontalInput;
     float verticalInput;
     Vector3 moveDirection;
     bool readyToJump;
     bool grounded;
+    RaycastHit slopeHit;
+    bool exitingSlope;
 
     void Start()
     {
@@ -58,7 +63,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             rb.drag = groundDrag;
 
-            if (rb.velocity.y < 0)
+            if (rb.velocity.y < 0 && !OnSlope())
             {
                 rb.velocity = new Vector3(rb.velocity.x, -2, rb.velocity.z);
             }
@@ -87,7 +92,16 @@ public class PlayerMovement : NetworkBehaviour
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        if (grounded)
+        if (OnSlope() && !exitingSlope)
+        {
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+
+            if (rb.velocity.y > 0)
+            {
+                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+            }
+        }
+        else if (grounded)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * 2e3f * Time.deltaTime, ForceMode.Force);
         }
@@ -96,22 +110,36 @@ public class PlayerMovement : NetworkBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 2e3f * airMultiplier * Time.deltaTime, ForceMode.Force);
         }
 
-        rb.velocity += new Vector3(0, gravity * Time.deltaTime, 0);
+        if (!OnSlope())
+        {
+            rb.velocity += new Vector3(0, gravity * Time.deltaTime, 0);
+        }
     }
 
     void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        if (flatVel.magnitude > moveSpeed)
+        if (OnSlope() && !exitingSlope)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            if (rb.velocity.magnitude > moveSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * moveSpeed;
+            }
+        }
+        else
+        {
+            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            if (flatVel.magnitude > moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            }
         }
     }
 
     void Jump()
     {
+        exitingSlope = true;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         rb.AddForce(transform.up * Mathf.Sqrt(jumpForce * -2f * gravity), ForceMode.Impulse);
@@ -119,6 +147,23 @@ public class PlayerMovement : NetworkBehaviour
 
     void ResetJump()
     {
+        exitingSlope = false;
         readyToJump = true;
+    }
+
+    bool OnSlope()
+    {
+        if (grounded && Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+
+        return false;
+    }
+
+    Vector3 GetSlopeMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
 }
