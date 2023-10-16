@@ -14,6 +14,7 @@ public class StartScene : MonoBehaviour
     [SerializeField] private GameObject teamPanel;
 
     float timeleft;
+    bool skipped;
     Image background;
     Color targetColor;
 
@@ -44,6 +45,12 @@ public class StartScene : MonoBehaviour
 
         if (storyPanel.activeSelf)
         {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                timeleft = 0;
+                skipped = true;
+            }
+
             if (timeleft > Time.deltaTime)
             {
                 background.color = Color.Lerp(background.color, targetColor, Time.deltaTime / timeleft);
@@ -72,7 +79,15 @@ public class StartScene : MonoBehaviour
 
     IEnumerator ChooseTeam()
     {
-        yield return new WaitForSeconds(2);
+        if (skipped)
+        {
+            yield return new WaitForSeconds(0);
+        }
+        else
+        {
+            yield return new WaitForSeconds(2);
+        }
+        
         storyPanel.SetActive(false);
         teamPanel.SetActive(true);
     }
