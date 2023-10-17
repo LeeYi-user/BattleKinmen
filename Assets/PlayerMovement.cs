@@ -1,10 +1,18 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    // 該檔案是用來控制玩家移動的, 請把它放在玩家物件之下
+    // 這個檔案真的有點難解釋.. 我也是直接抄教學的, 建議你們也去看一看
+    // https://www.youtube.com/watch?v=f473C43s8nE (第一種方法)
+    // https://www.youtube.com/watch?v=_QajrabyTJc (第二種方法)
+    // https://youtu.be/xCxSjgYTw9c?t=226 (斜坡移動)
+    // 簡單來說, 我融合了兩種方法, 然後再加上 slope movement, 就搞定了
+    // 有空再打更詳細的註解 (如果你們需要的話)
+
     [SerializeField] private Transform orientation;
     [SerializeField] private float gravity;
 
