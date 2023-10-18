@@ -61,7 +61,7 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        grounded = Physics.CheckSphere(orientation.position, 0.3f, whatIsGround);
 
         MyInput();
         SpeedControl();

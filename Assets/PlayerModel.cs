@@ -6,7 +6,7 @@ using Unity.Netcode;
 public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所以要用 NetworkBehavior
 {
     // 該檔案是用來調整玩家模型的, 請把它放在玩家物件之下
-    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
     [SerializeField] private Material blueTeamColor;
     [SerializeField] private Material redTeamColor;
 
@@ -43,11 +43,11 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
 
         if (team == "Blue") // 如果是藍隊
         {
-            playerModel.meshRenderer.material = blueTeamColor; // 就將物件弄成藍色
+            playerModel.skinnedMeshRenderer.material = blueTeamColor; // 就將物件弄成藍色
         }
         else // 反之
         {
-            playerModel.meshRenderer.material = redTeamColor; // 就將物件弄成紅色
+            playerModel.skinnedMeshRenderer.material = redTeamColor; // 就將物件弄成紅色
         }
     }
 }
