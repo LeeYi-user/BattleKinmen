@@ -32,6 +32,9 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Slope Handling")]
     [SerializeField] private float maxSlopeAngle;
 
+    [Header("Animations")]
+    [SerializeField] private Animator animator;
+
     Rigidbody rb;
     float horizontalInput;
     float verticalInput;
@@ -94,6 +97,8 @@ public class PlayerMovement : NetworkBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+
+        animator.SetBool("isRunning", horizontalInput != 0 || verticalInput != 0);
 
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {

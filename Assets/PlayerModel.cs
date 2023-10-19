@@ -10,7 +10,8 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
 
     [SerializeField] private GameObject body;
     [SerializeField] private SkinnedMeshRenderer skin;
-    [SerializeField] private GameObject gun;
+    [SerializeField] private GameObject realGun;
+    [SerializeField] private SkinnedMeshRenderer fakeGun;
 
     [SerializeField] private Material blueTeamColor;
     [SerializeField] private Material redTeamColor;
@@ -21,10 +22,11 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
         // 如果當前的玩家物件不是自己, 就直接 return
         if (!IsOwner)
         {
-            gun.SetActive(false);
+            realGun.SetActive(false);
             return;
         }
         skin.enabled = false;
+        fakeGun.enabled = false;
         // 否則就呼叫 ServerRPC, 告知 Server/Host (房間主持人) 自己已經加入遊戲
         JoinTeam_ServerRpc(NetworkObjectId, InitScene.team); // NetworkObjectId 就是玩家"物件"的ID, 跟以後會用到的 ClientID 不同
     }
@@ -32,6 +34,11 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
         body.transform.rotation = orientation.rotation;
     }
 
