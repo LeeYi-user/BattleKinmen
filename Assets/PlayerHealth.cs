@@ -11,6 +11,12 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
     public float maxHealth = 100f;
     public float currentHealth;
 
+    [SerializeField] private SkinnedMeshRenderer skin;
+    [SerializeField] private Material blue;
+    [SerializeField] private Material red;
+
+    Color originalColor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,5 +50,14 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
         {
             healthBar.fillAmount = currentHealth / maxHealth; // 控制 UI slide
         }
+
+        StartCoroutine(DamageFlash());
+    }
+
+    IEnumerator DamageFlash()
+    {
+        skin.material = red;
+        yield return new WaitForSeconds(0.15f);
+        skin.material = blue;
     }
 }

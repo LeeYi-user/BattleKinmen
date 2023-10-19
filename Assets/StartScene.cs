@@ -98,16 +98,16 @@ public class StartScene : MonoBehaviour
     }
 
     // 給按鈕用的 function, 負責加入藍隊
-    public void BlueTeam()
+    public void Team1()
     {
-        InitScene.team = "Blue";
+        InitScene.team = 1;
         SceneManager.LoadScene("SampleScene");
     }
 
     // 給按鈕用的 function, 負責加入紅隊
-    public void RedTeam()
+    public void Team2()
     {
-        InitScene.team = "Red";
+        InitScene.team = 2;
         SceneManager.LoadScene("SampleScene");
     }
 }

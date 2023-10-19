@@ -13,9 +13,6 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     [SerializeField] private GameObject realGun;
     [SerializeField] private SkinnedMeshRenderer fakeGun;
 
-    [SerializeField] private Material blueTeamColor;
-    [SerializeField] private Material redTeamColor;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +22,8 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
             realGun.SetActive(false);
             return;
         }
+
+        body.layer = LayerMask.NameToLayer("Default");
         skin.enabled = false;
         fakeGun.enabled = false;
         // 否則就呼叫 ServerRPC, 告知 Server/Host (房間主持人) 自己已經加入遊戲
@@ -43,12 +42,12 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void JoinTeam_ServerRpc(ulong objectId, string team)
+    private void JoinTeam_ServerRpc(ulong objectId, int team)
     {
         // 當 Server/Host 接收到有玩家進來時, 房間主持人 (Host) 就要更新存在自己這邊的玩家陣營列表
         InitScene.playerTeam[objectId] = team;
         // 然後再根據列表, 將所有玩家最新的陣營資訊廣播出去
-        foreach (KeyValuePair<ulong, string> player in InitScene.playerTeam)
+        foreach (KeyValuePair<ulong, int> player in InitScene.playerTeam)
         {
             // 從 Server/Host 廣播給玩家時, 要用 ClientRPC
             JoinTeam_ClientRpc(player.Key, player.Value);
@@ -56,18 +55,18 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     }
 
     [ClientRpc]
-    private void JoinTeam_ClientRpc(ulong objectId, string team)
+    private void JoinTeam_ClientRpc(ulong objectId, int team)
     {
         // 當玩家 (Client) 接收到從 Server/Host 傳來的陣營資訊時, 就要再自己更新當前場景下的物件資訊
         PlayerModel playerModel = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerModel>();
 
-        if (team == "Blue") // 如果是藍隊
+        if (team == 1) // 如果是一隊
         {
-            playerModel.skin.material = blueTeamColor; // 就將物件弄成藍色
+
         }
         else // 反之
         {
-            playerModel.skin.material = redTeamColor; // 就將物件弄成紅色
+
         }
     }
 }

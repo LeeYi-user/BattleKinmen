@@ -10,8 +10,8 @@ public class InitScene : MonoBehaviour
     [SerializeField] private int fps;
     public static bool host; // 我把儲存是否為房間主持人的變數寫在這裡
                              // 再搭配 static 型別以及下面的 DontDestroyOnLoad, 讓他可以隨時被存取
-    public static string team; // 同上, 用來記錄自己陣營的變數
-    public static Dictionary<ulong, string> playerTeam = new Dictionary<ulong, string>(); // 這是房間主持人用來記錄所有人陣營的變數
+    public static int team; // 同上, 用來記錄自己陣營的變數
+    public static Dictionary<ulong, int> playerTeam = new Dictionary<ulong, int>(); // 這是房間主持人用來記錄所有人陣營的變數
 
     public static Transform cam;
 

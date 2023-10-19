@@ -287,8 +287,8 @@ MonoBehaviour:
   skin: {fileID: 5192099582341949748}
   realGun: {fileID: 2960749220723440694}
   fakeGun: {fileID: 739236118633725192}
-  blueTeamColor: {fileID: 2100000, guid: 3e7e1578aa9756449b00108885acd432, type: 2}
-  redTeamColor: {fileID: 2100000, guid: 1115b53c7ede7c14f9ff43e4503607ff, type: 2}
+  blue: {fileID: 2100000, guid: 4b800809bd7c9f142a087998f9fbb066, type: 2}
+  red: {fileID: 2100000, guid: 1115b53c7ede7c14f9ff43e4503607ff, type: 2}
 --- !u!114 &-4059610963202953394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,6 +304,9 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   maxHealth: 100
   currentHealth: 0
+  skin: {fileID: 5192099582341949748}
+  blue: {fileID: 2100000, guid: 4b800809bd7c9f142a087998f9fbb066, type: 2}
+  red: {fileID: 2100000, guid: 1115b53c7ede7c14f9ff43e4503607ff, type: 2}
 --- !u!114 &8768050332166738319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1430,6 +1433,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2106161764300793749, guid: 497cf88255a97c645bb6c2a722372b12, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4b800809bd7c9f142a087998f9fbb066, type: 2}
     - target: {fileID: 919132149155446097, guid: 497cf88255a97c645bb6c2a722372b12, type: 3}
       propertyPath: m_Name
       value: PolyMan
