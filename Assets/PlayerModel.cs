@@ -7,8 +7,11 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
 {
     // 該檔案是用來調整玩家模型的, 請把它放在玩家物件之下
     [SerializeField] private Transform orientation;
+
     [SerializeField] private GameObject body;
     [SerializeField] private SkinnedMeshRenderer skin;
+    [SerializeField] private GameObject gun;
+
     [SerializeField] private Material blueTeamColor;
     [SerializeField] private Material redTeamColor;
 
@@ -18,6 +21,7 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
         // 如果當前的玩家物件不是自己, 就直接 return
         if (!IsOwner)
         {
+            gun.SetActive(false);
             return;
         }
         skin.enabled = false;

@@ -7,7 +7,8 @@ public class PlayerCamera : NetworkBehaviour
 {
     // 該檔案是用來控制相機旋轉的, 請把它放在 SampleScene 的 CameraHolder 的 MainCamera 之下
     [SerializeField] private Transform orientation; // 這個變數會用來記錄旋轉角度, 在計算玩家移動時會用到
-    [SerializeField] private Transform cam;
+    [SerializeField] private Transform mainCam;
+    [SerializeField] private Transform weaponCam;
 
     [SerializeField] private float sensX; // X 軸靈敏度
     [SerializeField] private float sensY; // Y 軸靈敏度
@@ -20,12 +21,13 @@ public class PlayerCamera : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            cam.GetComponent<Camera>().enabled = false;
-            cam.GetComponent<AudioListener>().enabled = false;
+            mainCam.GetComponent<Camera>().enabled = false;
+            mainCam.GetComponent<AudioListener>().enabled = false;
+            weaponCam.gameObject.SetActive(false);
             return;
         }
 
-        InitScene.cam = cam;
+        InitScene.cam = mainCam;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -51,7 +53,7 @@ public class PlayerCamera : NetworkBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 這行是要避免轉過頭
         // 更新攝影機的實際旋轉角度
-        cam.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        mainCam.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0); // orientation 只要記錄玩家在 xz 平面的面向就好, 這樣就能計算移動
     }
 }
