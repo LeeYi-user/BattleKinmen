@@ -8,10 +8,12 @@ public class Billboard : MonoBehaviour
     // 以便讓浮空文字可以正常顯示
     // 請把他丟在有浮空文字的物件的 canvas 之下
     // 例如: Sample Scene 底下的 Instructor 底下的 Canvas
-    public Transform cam;
 
     void LateUpdate()
     {
-        transform.LookAt(transform.position + cam.forward);
+        if (InitScene.cam)
+        {
+            transform.LookAt(transform.position + InitScene.cam.forward);
+        }
     }
 }

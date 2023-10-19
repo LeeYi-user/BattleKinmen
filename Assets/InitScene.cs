@@ -13,6 +13,8 @@ public class InitScene : MonoBehaviour
     public static string team; // 同上, 用來記錄自己陣營的變數
     public static Dictionary<ulong, string> playerTeam = new Dictionary<ulong, string>(); // 這是房間主持人用來記錄所有人陣營的變數
 
+    public static Transform cam;
+
     void Awake()
     {
         // 因為這個場景是 InitScene, 會用來初始化/記錄很多東西, 所以要用下面這個 function
