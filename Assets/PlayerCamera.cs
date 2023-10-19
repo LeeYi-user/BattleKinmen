@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
     // 該檔案是用來控制相機旋轉的, 請把它放在 SampleScene 的 CameraHolder 的 MainCamera 之下
-    public Transform orientation; // 這個變數會用來記錄旋轉角度, 在計算玩家移動時會用到
+    [SerializeField] private Transform orientation; // 這個變數會用來記錄旋轉角度, 在計算玩家移動時會用到
+    [SerializeField] private Transform fpsCam;
 
     [SerializeField] private float sensX; // X 軸靈敏度
     [SerializeField] private float sensY; // Y 軸靈敏度
@@ -36,7 +37,7 @@ public class PlayerCamera : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 這行是要避免轉過頭
         // 更新攝影機的實際旋轉角度
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        fpsCam.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0); // orientation 只要記錄玩家在 xz 平面的面向就好, 這樣就能計算移動
     }
 }

@@ -6,7 +6,9 @@ using Unity.Netcode;
 public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所以要用 NetworkBehavior
 {
     // 該檔案是用來調整玩家模型的, 請把它放在玩家物件之下
-    [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
+    [SerializeField] private Transform orientation;
+    [SerializeField] private GameObject body;
+    [SerializeField] private SkinnedMeshRenderer skin;
     [SerializeField] private Material blueTeamColor;
     [SerializeField] private Material redTeamColor;
 
@@ -18,8 +20,15 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
         {
             return;
         }
+        skin.enabled = false;
         // 否則就呼叫 ServerRPC, 告知 Server/Host (房間主持人) 自己已經加入遊戲
         JoinTeam_ServerRpc(NetworkObjectId, InitScene.team); // NetworkObjectId 就是玩家"物件"的ID, 跟以後會用到的 ClientID 不同
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        body.transform.rotation = orientation.rotation;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -43,11 +52,11 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
 
         if (team == "Blue") // 如果是藍隊
         {
-            playerModel.skinnedMeshRenderer.material = blueTeamColor; // 就將物件弄成藍色
+            playerModel.skin.material = blueTeamColor; // 就將物件弄成藍色
         }
         else // 反之
         {
-            playerModel.skinnedMeshRenderer.material = redTeamColor; // 就將物件弄成紅色
+            playerModel.skin.material = redTeamColor; // 就將物件弄成紅色
         }
     }
 }

@@ -27,7 +27,6 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
 
     [Header("Ground Check")]
-    [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask whatIsGround;
 
     [Header("Slope Handling")]
@@ -165,7 +164,7 @@ public class PlayerMovement : NetworkBehaviour
 
     bool OnSlope()
     {
-        if (grounded && Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (grounded && Physics.Raycast(orientation.position, Vector3.down, out slopeHit, 0.3f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
