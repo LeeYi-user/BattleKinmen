@@ -11,7 +11,8 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     public GameObject body;
     public SkinnedMeshRenderer skin;
     public GameObject realGun;
-    public SkinnedMeshRenderer fakeGun;
+    public SkinnedMeshRenderer realGunSkin;
+    public SkinnedMeshRenderer fakeGunSkin;
 
     bool live;
 
@@ -27,7 +28,7 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
 
         body.layer = LayerMask.NameToLayer("Default");
         skin.enabled = false;
-        fakeGun.enabled = false;
+        fakeGunSkin.enabled = false;
         live = true;
         // 否則就呼叫 ServerRPC, 告知 Server/Host (房間主持人) 自己已經加入遊戲
         JoinTeam_ServerRpc(NetworkObjectId, InitScene.team); // NetworkObjectId 就是玩家"物件"的ID, 跟以後會用到的 ClientID 不同
@@ -76,12 +77,13 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     public void Despawn()
     {
         live = false;
-        realGun.SetActive(false);
+        realGunSkin.enabled = false;
     }
 
     public void Respawn()
     {
         live = true;
-        realGun.SetActive(true);
+        realGunSkin.enabled = true;
+        body.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 }

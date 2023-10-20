@@ -29,21 +29,30 @@ public class PlayerCamera : NetworkBehaviour
         }
 
         InitScene.cam = mainCam;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         live = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner || !live)
+        if (!IsOwner)
         {
             return;
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        if (Cursor.lockState == CursorLockMode.None || !live)
+        {
+            return;
+        }
+
         // 取得滑鼠移動輸入
-        float mouseX = Input.GetAxisRaw("Mouse X") * sensX;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * sensY;
+        float mouseX = Input.GetAxis("Mouse X") * sensX;
+        float mouseY = Input.GetAxis("Mouse Y") * sensY;
         // 計算旋轉後的角度
         yRotation += mouseX;
         xRotation -= mouseY;
@@ -61,5 +70,7 @@ public class PlayerCamera : NetworkBehaviour
     public void Respawn()
     {
         live = true;
+        xRotation = 0;
+        yRotation = 0;
     }
 }

@@ -97,6 +97,11 @@ public class PlayerMovement : NetworkBehaviour
 
     void MyInput()
     {
+        if (Cursor.lockState == CursorLockMode.None)
+        {
+            return;
+        }
+
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
@@ -200,6 +205,5 @@ public class PlayerMovement : NetworkBehaviour
     {
         live = true;
         gameObject.transform.position = new Vector3(0f, 0f, 0f);
-        gameObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 }

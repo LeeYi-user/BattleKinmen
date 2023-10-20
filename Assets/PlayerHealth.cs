@@ -36,12 +36,17 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner || !live)
         {
             return;
         }
 
-        if (live && currentHealth <= 0)
+        if (transform.position.y < -10f)
+        {
+            TakeDamage(100f);
+        }
+
+        if (currentHealth <= 0)
         {
             live = false;
 
@@ -119,7 +124,7 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
         if (playerId != NetworkManager.Singleton.LocalClientId)
         {
             playerGO.GetComponent<PlayerModel>().skin.enabled = false;
-            playerGO.GetComponent<PlayerModel>().fakeGun.enabled = false;
+            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = false;
             playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Default");
         }
     }
@@ -138,7 +143,7 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
         if (playerId != NetworkManager.Singleton.LocalClientId)
         {
             playerGO.GetComponent<PlayerModel>().skin.enabled = true;
-            playerGO.GetComponent<PlayerModel>().fakeGun.enabled = true;
+            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = true;
             playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Hittable");
         }
     }

@@ -286,9 +286,8 @@ MonoBehaviour:
   body: {fileID: 2741016339252005902}
   skin: {fileID: 5192099582341949748}
   realGun: {fileID: 2960749220723440694}
-  fakeGun: {fileID: 739236118633725192}
-  blue: {fileID: 2100000, guid: 4b800809bd7c9f142a087998f9fbb066, type: 2}
-  red: {fileID: 2100000, guid: 1115b53c7ede7c14f9ff43e4503607ff, type: 2}
+  realGunSkin: {fileID: 579791333592366}
+  fakeGunSkin: {fileID: 739236118633725192}
 --- !u!114 &-4059610963202953394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,6 +303,7 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   maxHealth: 100
   currentHealth: 0
+  respawnTime: 2
   skin: {fileID: 5192099582341949748}
   blue: {fileID: 2100000, guid: 4b800809bd7c9f142a087998f9fbb066, type: 2}
   red: {fileID: 2100000, guid: 1115b53c7ede7c14f9ff43e4503607ff, type: 2}
@@ -1258,6 +1258,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7978276512378415828}
   m_SourcePrefab: {fileID: 100100000, guid: cd9b73053367c7c4a8778c426a4710cf, type: 3}
+--- !u!137 &579791333592366 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2726321793924762697, guid: cd9b73053367c7c4a8778c426a4710cf, type: 3}
+  m_PrefabInstance: {fileID: 2726886054109970791}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2476242118726411916 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cd9b73053367c7c4a8778c426a4710cf, type: 3}
