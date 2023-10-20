@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class PlayerCamera : NetworkBehaviour
 {
-    // 該檔案是用來控制相機旋轉的, 請把它放在 SampleScene 的 CameraHolder 的 MainCamera 之下
+    // 該檔案是用來控制相機旋轉的
     [SerializeField] private Transform orientation; // 這個變數會用來記錄旋轉角度, 在計算玩家移動時會用到
     [SerializeField] private Transform mainCam;
     [SerializeField] private Transform weaponCam;
@@ -15,6 +15,7 @@ public class PlayerCamera : NetworkBehaviour
 
     float xRotation; // X 軸旋轉角
     float yRotation; // Y 軸旋轉角
+    bool live;
 
     // Start is called before the first frame update
     void Start()
@@ -30,18 +31,13 @@ public class PlayerCamera : NetworkBehaviour
         InitScene.cam = mainCam;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        live = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        // 要先等 MouseLook 腳本抓到 orientation 後才能開始執行
-        if (!orientation)
+        if (!IsOwner || !live)
         {
             return;
         }
@@ -55,5 +51,15 @@ public class PlayerCamera : NetworkBehaviour
         // 更新攝影機的實際旋轉角度
         mainCam.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0); // orientation 只要記錄玩家在 xz 平面的面向就好, 這樣就能計算移動
+    }
+
+    public void Despawn()
+    {
+        live = false;
+    }
+
+    public void Respawn()
+    {
+        live = true;
     }
 }

@@ -43,6 +43,7 @@ public class PlayerMovement : NetworkBehaviour
     bool grounded;
     RaycastHit slopeHit;
     bool exitingSlope;
+    bool live;
 
     void Start()
     {
@@ -54,11 +55,12 @@ public class PlayerMovement : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
+        live = true;
     }
 
     void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner || !live)
         {
             return;
         }
@@ -85,7 +87,7 @@ public class PlayerMovement : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (!IsOwner)
+        if (!IsOwner || !live)
         {
             return;
         }
@@ -186,5 +188,18 @@ public class PlayerMovement : NetworkBehaviour
     Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    public void Despawn()
+    {
+        live = false;
+        rb.velocity = Vector3.zero;
+    }
+
+    public void Respawn()
+    {
+        live = true;
+        gameObject.transform.position = new Vector3(0f, 0f, 0f);
+        gameObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 }

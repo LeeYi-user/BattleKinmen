@@ -8,10 +8,12 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     // 該檔案是用來調整玩家模型的, 請把它放在玩家物件之下
     [SerializeField] private Transform orientation;
 
-    [SerializeField] private GameObject body;
-    [SerializeField] private SkinnedMeshRenderer skin;
-    [SerializeField] private GameObject realGun;
-    [SerializeField] private SkinnedMeshRenderer fakeGun;
+    public GameObject body;
+    public SkinnedMeshRenderer skin;
+    public GameObject realGun;
+    public SkinnedMeshRenderer fakeGun;
+
+    bool live;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +28,7 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
         body.layer = LayerMask.NameToLayer("Default");
         skin.enabled = false;
         fakeGun.enabled = false;
+        live = true;
         // 否則就呼叫 ServerRPC, 告知 Server/Host (房間主持人) 自己已經加入遊戲
         JoinTeam_ServerRpc(NetworkObjectId, InitScene.team); // NetworkObjectId 就是玩家"物件"的ID, 跟以後會用到的 ClientID 不同
     }
@@ -33,7 +36,7 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner || !live)
         {
             return;
         }
@@ -68,5 +71,17 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
         {
 
         }
+    }
+
+    public void Despawn()
+    {
+        live = false;
+        realGun.SetActive(false);
+    }
+
+    public void Respawn()
+    {
+        live = true;
+        realGun.SetActive(true);
     }
 }
