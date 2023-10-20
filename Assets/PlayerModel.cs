@@ -61,14 +61,21 @@ public class PlayerModel : NetworkBehaviour  // 這個腳本跟網路有關, 所
     [ClientRpc]
     private void JoinTeam_ClientRpc(ulong objectId, int team)
     {
-        // 當玩家 (Client) 接收到從 Server/Host 傳來的陣營資訊時, 就要再自己更新當前場景下的物件資訊
-        PlayerModel playerModel = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerModel>();
-
-        if (team == 1) // 如果是一隊
+        try
         {
+            // 當玩家 (Client) 接收到從 Server/Host 傳來的陣營資訊時, 就要再自己更新當前場景下的物件資訊
+            PlayerModel playerModel = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerModel>();
 
+            if (team == 1) // 如果是一隊
+            {
+
+            }
+            else // 反之
+            {
+
+            }
         }
-        else // 反之
+        catch
         {
 
         }

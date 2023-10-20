@@ -72,5 +72,7 @@ public class PlayerCamera : NetworkBehaviour
         live = true;
         xRotation = 0;
         yRotation = 0;
+        mainCam.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 }

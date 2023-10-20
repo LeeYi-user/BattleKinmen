@@ -76,6 +76,11 @@ public class StartScene : MonoBehaviour
         {
             InitScene.host = true; // 就把該變數設為 true (因為有 static 和 DontDestroyOnLoad, 所以在這邊也能引用)
         }
+        else
+        {
+            InitScene.host = false;
+        }
+
         // 把畫面切換到故事畫面
         menuPanel.SetActive(false);
         storyPanel.SetActive(true);
