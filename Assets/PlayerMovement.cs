@@ -5,13 +5,8 @@ using Unity.Netcode;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    // 該檔案是用來控制玩家移動的, 請把它放在玩家物件之下
-    // 這個檔案真的有點難解釋.. 我也是直接抄教學的, 建議你們也去看一看
-    // https://www.youtube.com/watch?v=f473C43s8nE (第一種方法)
-    // https://www.youtube.com/watch?v=_QajrabyTJc (第二種方法)
-    // https://youtu.be/xCxSjgYTw9c?t=226 (斜坡移動)
-    // 簡單來說, 我融合了兩種方法, 然後再加上 slope movement, 就搞定了
-    // 有空再打更詳細的註解 (如果你們需要的話)
+    // 元件用途: 操控玩家移動
+    // 元件位置: 玩家物件(player prefab)之下
 
     [SerializeField] private Transform orientation;
     [SerializeField] private float gravity;
@@ -24,7 +19,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float airMultiplier;
 
     [Header("Keybinds")]
-    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+    [SerializeField] private KeyCode jumpKey; // space
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask whatIsGround;
@@ -35,16 +30,17 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Animations")]
     [SerializeField] private Animator animator;
 
-    Rigidbody rb;
-    float horizontalInput;
-    float verticalInput;
-    Vector3 moveDirection;
-    bool readyToJump;
-    bool grounded;
-    RaycastHit slopeHit;
-    bool exitingSlope;
-    bool live;
+    private Rigidbody rb;
+    private float horizontalInput;
+    private float verticalInput;
+    private Vector3 moveDirection;
+    private bool readyToJump;
+    private bool grounded;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
+    private bool live;
 
+    // Start is called before the first frame update
     void Start()
     {
         if (!IsOwner)
@@ -58,6 +54,7 @@ public class PlayerMovement : NetworkBehaviour
         live = true;
     }
 
+    // Update is called once per frame
     void Update()
     {
         if (!IsOwner || !live)
@@ -203,7 +200,7 @@ public class PlayerMovement : NetworkBehaviour
 
     public void Respawn()
     {
-        live = true;
         gameObject.transform.position = new Vector3(0f, 0f, 0f);
+        live = true;
     }
 }

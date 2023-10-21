@@ -1,23 +1,23 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 public class Gun : NetworkBehaviour
 {
-    public float damage = 15f;
-    public float range = 100f;
-    public float fireRate = 2f;
+    // 元件用途: 操控玩家射擊
+    // 元件位置: 玩家物件(player prefab)之下
 
-    public Camera fpsCam;
-    public ParticleSystem muzzleFlash;
-    public GameObject[] impactEffect;
+    [SerializeField] private float damage;  // 15
+    [SerializeField] private float range; // 100
+    [SerializeField] private float fireRate; // 2
 
-    public int maxAmmo = 7;
-    private int currentAmmo;
-    public float reloadTime = 1.35f;
-    private bool isReloading = false;
-    private float nextTimeToFire = 0f;
+    [SerializeField] private Camera fpsCam;
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private GameObject[] impactEffect;
+
+    [SerializeField] private int maxAmmo; // 7
+    [SerializeField] private float reloadTime; // 1.35
 
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
@@ -25,24 +25,31 @@ public class Gun : NetworkBehaviour
 
     [SerializeField] private Transform BulletSpawnPoint;
     [SerializeField] private TrailRenderer BulletTrail;
-    [SerializeField] private float BulletSpeed = 100;
+    [SerializeField] private float BulletSpeed; // 100
 
-    public Animator fakeAnimator;
-    public AudioSource fakeAudioSource;
-    public ParticleSystem fakeMuzzleFlash;
-    public Transform fakeBulletSpawnPoint;
+    [SerializeField] private Animator fakeAnimator;
+    [SerializeField] private AudioSource fakeAudioSource;
+    [SerializeField] private ParticleSystem fakeMuzzleFlash;
+    [SerializeField] private Transform fakeBulletSpawnPoint;
 
-    private bool live = true;
+    private int currentAmmo;
+    private bool isReloading;
+    private float nextTimeToFire;
+    private bool live;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (IsOwner)
+        if (!IsOwner)
         {
-            fakeMuzzleFlash.gameObject.SetActive(false);
+            return;
         }
 
+        fakeMuzzleFlash.gameObject.SetActive(false);
         currentAmmo = maxAmmo;
+        isReloading = false;
+        nextTimeToFire = 0f;
+        live = true;
     }
 
     // Update is called once per frame
@@ -95,14 +102,14 @@ public class Gun : NetworkBehaviour
 
     void Shoot()
     {
+        currentAmmo--;
+
         muzzleFlash.Play();
         PlayFakeMuzzleFlash_ServerRpc(NetworkObjectId);
         animator.SetTrigger("isFiring");
         fakeAnimator.SetTrigger("isFiring");
         audioSource.PlayOneShot(audioClip);
         PlayFakeAudioSource_ServerRpc(NetworkObjectId);
-
-        currentAmmo--;
 
         RaycastHit hit;
 
@@ -151,6 +158,18 @@ public class Gun : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
+    private void ShootPlayer_ServerRpc(ulong objectId, float damage)
+    {
+        ShootPlayer_ClientRpc(objectId, damage);
+    }
+
+    [ClientRpc]
+    private void ShootPlayer_ClientRpc(ulong objectId, float damage)
+    {
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     private void CreateBulletTrail_ServerRpc(ulong playerId, Vector3 position, bool real, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
     {
         TrailRenderer trail = Instantiate(BulletTrail, position, Quaternion.identity);
@@ -180,18 +199,6 @@ public class Gun : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void ShootPlayer_ServerRpc(ulong objectId, float damage)
-    {
-        ShootPlayer_ClientRpc(objectId, damage);
-    }
-
-    [ClientRpc]
-    private void ShootPlayer_ClientRpc(ulong objectId, float damage)
-    {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
-    }
-
     private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, bool real)
     {
         Vector3 startPosition = Trail.transform.position;
@@ -201,9 +208,7 @@ public class Gun : NetworkBehaviour
         while (remainingDistance > 0)
         {
             Trail.transform.position = Vector3.Lerp(startPosition, HitPoint, 1 - (remainingDistance / distance));
-
             remainingDistance -= BulletSpeed * Time.deltaTime;
-
             yield return null;
         }
 
@@ -226,9 +231,9 @@ public class Gun : NetworkBehaviour
 
     public void Respawn()
     {
-        live = true;
         currentAmmo = maxAmmo;
         isReloading = false;
         nextTimeToFire = 0f;
+        live = true;
     }
 }

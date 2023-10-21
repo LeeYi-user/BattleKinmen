@@ -5,29 +5,30 @@ using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
 
-public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所以要用 NetworkBehavior
+public class PlayerHealth : NetworkBehaviour
 {
-    // 該檔案是用來控制玩家生命值的, 請把它放在玩家物件之下
-    public Image healthBar;
-    public float maxHealth = 100f;
-    public float currentHealth;
-    public float respawnTime = 2f;
+    // 元件用途: 操控玩家血量
+    // 元件位置: 玩家物件(player prefab)之下
+
+    [SerializeField] private float maxHealth; // 100
+    [SerializeField] private float respawnTime; // 2
 
     [SerializeField] private SkinnedMeshRenderer skin;
-    [SerializeField] private Material blue;
     [SerializeField] private Material red;
+    [SerializeField] private Material blue;
 
-    bool live;
+    private Image healthBar;
+    private float currentHealth;
+    private bool live;
 
     // Start is called before the first frame update
     void Start()
     {
-        // 如果當前的玩家物件不是自己, 就直接 return
         if (!IsOwner)
         {
             return;
         }
-        // 否則就抓取 HealthBar 物件, 以便正確顯示生命值
+
         healthBar = GameObject.Find("Health").GetComponent<Image>();
         currentHealth = maxHealth;
         live = true;
@@ -53,6 +54,7 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
             GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
             GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
             GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
+
             gameObject.GetComponent<PlayerMovement>().Despawn();
             gameObject.GetComponent<PlayerCamera>().Despawn();
             gameObject.GetComponent<PlayerModel>().Despawn();
@@ -64,18 +66,16 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
         }
     }
 
-    // 這個 function 會在之後寫攻擊腳本時用到, 所以要先弄成 public
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage; // 當前生命值 - 受到的傷害
-
-        if (healthBar) // 因為前面有弄一個 if (!IsOwner) return, 所以非你控制的玩家物件都不會抓取 HealthBar 物件
-                       // 所以要加這行才能避免出 Bug (這樣寫好像有點怪, 之後有空再修)
+        if (!IsOwner)
         {
-            healthBar.fillAmount = currentHealth / maxHealth; // 控制 UI slide
+            StartCoroutine(DamageFlash());
+            return;
         }
 
-        StartCoroutine(DamageFlash());
+        currentHealth -= damage;
+        healthBar.fillAmount = currentHealth / maxHealth;
     }
 
     IEnumerator DamageFlash()
@@ -94,6 +94,7 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
         GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
         GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
         GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
+
         gameObject.GetComponent<PlayerMovement>().Respawn();
         gameObject.GetComponent<PlayerCamera>().Respawn();
         gameObject.GetComponent<PlayerModel>().Respawn();
@@ -101,11 +102,7 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
         gameObject.GetComponent<Gun>().Respawn();
 
         currentHealth = maxHealth;
-
-        if (healthBar)
-        {
-            healthBar.fillAmount = currentHealth / maxHealth;
-        }
+        healthBar.fillAmount = currentHealth / maxHealth;
 
         PlayerRespawn_ServerRpc(NetworkObjectId, NetworkManager.Singleton.LocalClientId);
     }
@@ -123,9 +120,9 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
 
         if (playerId != NetworkManager.Singleton.LocalClientId)
         {
-            playerGO.GetComponent<PlayerModel>().skin.enabled = false;
-            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = false;
             playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Default");
+            playerGO.GetComponent<PlayerModel>().bodySkin.enabled = false;
+            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = false;
         }
     }
 
@@ -142,9 +139,9 @@ public class PlayerHealth : NetworkBehaviour // 這個腳本跟網路有關, 所
 
         if (playerId != NetworkManager.Singleton.LocalClientId)
         {
-            playerGO.GetComponent<PlayerModel>().skin.enabled = true;
-            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = true;
             playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Hittable");
+            playerGO.GetComponent<PlayerModel>().bodySkin.enabled = true;
+            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = true;
         }
     }
 }

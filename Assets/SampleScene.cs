@@ -6,26 +6,27 @@ using UnityEngine.SceneManagement;
 
 public class SampleScene : NetworkBehaviour
 {
-    // 該檔案是用來做場景控制的腳本
-    // 請把它放在同名場景(SampleScene)底下的 For Script 物件
+    // 元件用途: 開始連線/結束連線
+    // 元件位置: SampleScene 的 For Script 之下
+
+    private bool disconnect;
+
     // Start is called before the first frame update
-
-    bool disconnect;
-
     void Start()
     {
         disconnect = false;
 
-        if (InitScene.host) // 如果自已是房間主持人 (host)
+        if (InitScene.host)
         {
-            NetworkManager.Singleton.StartHost(); // 就主持遊戲
+            NetworkManager.Singleton.StartHost();
         }
-        else // 否則
+        else
         {
-            NetworkManager.Singleton.StartClient(); // 就加入遊戲
+            NetworkManager.Singleton.StartClient();
         }
     }
 
+    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P) && Cursor.lockState == CursorLockMode.Locked)
