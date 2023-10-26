@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
+using Unity.Netcode; // 這個腳本有網路相關的 code, 所以要導入這個 package
 using UnityEngine;
 
-public class Gun : NetworkBehaviour
+public class Gun : NetworkBehaviour // 因為跟網路有關, 所以除了源物件要放 NetworkObject 之外, 這裡也要用 NetworkBehaviour
 {
     // 元件用途: 操控玩家射擊
     // 元件位置: 玩家物件(player prefab)之下
@@ -40,11 +40,12 @@ public class Gun : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!IsOwner)
+        if (!IsOwner) // 如果該玩家物件不是自己操控的
         {
-            return;
+            return; // 就直接 return
         }
 
+        fakeAudioSource.enabled = false;
         fakeMuzzleFlash.gameObject.SetActive(false);
         currentAmmo = maxAmmo;
         isReloading = false;
@@ -55,9 +56,9 @@ public class Gun : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner) // 如果該玩家物件不是自己操控的
         {
-            return;
+            return; // 就直接 return
         }
 
         if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None)
@@ -100,16 +101,16 @@ public class Gun : NetworkBehaviour
         isReloading = false;
     }
 
-    void Shoot()
+    void Shoot() // 射擊
     {
         currentAmmo--;
 
-        muzzleFlash.Play();
-        PlayFakeMuzzleFlash_ServerRpc(NetworkObjectId);
-        animator.SetTrigger("isFiring");
-        fakeAnimator.SetTrigger("isFiring");
-        audioSource.PlayOneShot(audioClip);
-        PlayFakeAudioSource_ServerRpc(NetworkObjectId);
+        muzzleFlash.Play(); // 這裡會在第一人稱視角的 client 端顯示火花
+        PlayFakeMuzzleFlash_ServerRpc(NetworkObjectId); // 這裡會告知 server 去生成火花, 以便其他玩家能夠看到 (註: 其他人看的是自己看不見的第三人稱火花)
+        animator.SetTrigger("isFiring"); // 這裡會在第一人稱視角的 client 端顯示開火
+        fakeAnimator.SetTrigger("isFiring"); // 因為已經有 OwnerNetworkAnimator 來同步動畫了, 所以不需要使用 RPC 便能讓其他玩家看到 (註: 其他人看的是自己看不見的第三人稱開火)
+        audioSource.PlayOneShot(audioClip); // 這裡會在 client 端播放槍聲
+        PlayFakeAudioSource_ServerRpc(NetworkObjectId); // 這裡會告知 server 去播放槍聲, 以便其他玩家能夠聽到 (註: 其他人聽的是自己聽不見的第三人稱槍聲)
 
         RaycastHit hit;
 
@@ -123,11 +124,13 @@ public class Gun : NetworkBehaviour
                 ShootPlayer_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
             }
 
+            // 這裡會創造兩道子彈軌跡, 一道是給自己看的第一人稱子彈軌跡, 一道是給其他人看的第三人稱子彈軌跡, 兩道都需要用 RPC 來告知 Server 去生成 (註: 因為 client 端無法用 Instantiate 函式)
             CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
             CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
         }
         else
         {
+            // 同上, 只是負責沒打中時的子彈軌跡
             CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, -1, fpsCam.transform.forward);
             CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, -1, fpsCam.transform.forward);
         }
@@ -154,7 +157,12 @@ public class Gun : NetworkBehaviour
     [ClientRpc]
     private void PlayFakeAudioSource_ClientRpc(ulong objectId)
     {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Gun>().fakeAudioSource.PlayOneShot(audioClip);
+        AudioSource fake = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Gun>().fakeAudioSource;
+
+        if (fake.enabled)
+        {
+            fake.PlayOneShot(audioClip);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -169,7 +177,7 @@ public class Gun : NetworkBehaviour
         NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)] // 這裡的 playerId 是紀錄 client 的 LocalClientId, 而不是紀錄物件的 NetworkObjectId. 之所以用這個, 是因為 NetworkObjectId 無法在 RPC 中代表當前實例
     private void CreateBulletTrail_ServerRpc(ulong playerId, Vector3 position, bool real, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
     {
         TrailRenderer trail = Instantiate(BulletTrail, position, Quaternion.identity);
@@ -193,6 +201,8 @@ public class Gun : NetworkBehaviour
     {
         GameObject trailGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
 
+        // 如果子彈軌跡是自己的 且 是給其他人看的第三人稱軌跡 那就對自己隱藏
+        // 如果子彈軌跡是別人的 且 是給那個人看的第一人稱軌跡 那也對自己隱藏
         if ((playerId == NetworkManager.Singleton.LocalClientId && !real) || (playerId != NetworkManager.Singleton.LocalClientId && real))
         {
             trailGO.SetActive(false);
