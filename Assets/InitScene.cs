@@ -11,8 +11,8 @@ public class InitScene : MonoBehaviour
     [SerializeField] private int fps;
 
     public static bool host;
-    public static int team;
-    public static Dictionary<ulong, int> playerTeam = new Dictionary<ulong, int>();
+    public static int team; // 晚點刪除
+    public static Dictionary<ulong, int> playerTeam = new Dictionary<ulong, int>(); // 晚點刪除
     public static Transform cam;
 
     void Awake()
@@ -26,7 +26,7 @@ public class InitScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SceneManager.LoadScene("StartScene");
+        SceneManager.LoadScene("MenuScene");
     }
 
     // Update is called once per frame

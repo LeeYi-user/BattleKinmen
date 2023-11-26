@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class MenuScene : MonoBehaviour
@@ -68,11 +69,18 @@ public class MenuScene : MonoBehaviour
         optionsMenu.SetActive(false);
     }
 
-    public void OptionsButtonClick()
+    public void InputButtonClick()
     {
-        mainMenu.SetActive(false);
-        modeMenu.SetActive(false);
-        optionsMenu.SetActive(true);
+        if (inputButtonText.text == "HOST")
+        {
+            InitScene.host = true;
+        }
+        else
+        {
+            InitScene.host = false;
+        }
+
+        SceneManager.LoadScene("MainScene");
     }
 
     public void BackButtonClick()
@@ -80,6 +88,13 @@ public class MenuScene : MonoBehaviour
         mainMenu.SetActive(true);
         modeMenu.SetActive(false);
         optionsMenu.SetActive(false);
+    }
+
+    public void OptionsButtonClick()
+    {
+        mainMenu.SetActive(false);
+        modeMenu.SetActive(false);
+        optionsMenu.SetActive(true);
     }
 
     public void QuitButtonClick()
