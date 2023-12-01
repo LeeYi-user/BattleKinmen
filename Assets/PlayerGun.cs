@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode; // 這個腳本有網路相關的 code, 所以要導入這個 package
 using UnityEngine;
 
-public class Gun : NetworkBehaviour // 因為跟網路有關, 所以除了源物件要放 NetworkObject 之外, 這裡也要用 NetworkBehaviour
+public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了源物件要放 NetworkObject 之外, 這裡也要用 NetworkBehaviour
 {
     // 元件用途: 操控玩家射擊
     // 元件位置: 玩家物件(player prefab)之下
@@ -145,7 +145,7 @@ public class Gun : NetworkBehaviour // 因為跟網路有關, 所以除了源物
     [ClientRpc]
     private void PlayFakeMuzzleFlash_ClientRpc(ulong objectId)
     {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Gun>().fakeMuzzleFlash.Play();
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerGun>().fakeMuzzleFlash.Play();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -157,7 +157,7 @@ public class Gun : NetworkBehaviour // 因為跟網路有關, 所以除了源物
     [ClientRpc]
     private void PlayFakeAudioSource_ClientRpc(ulong objectId)
     {
-        AudioSource fake = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Gun>().fakeAudioSource;
+        AudioSource fake = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerGun>().fakeAudioSource;
 
         if (fake.enabled)
         {

@@ -30,7 +30,7 @@ public class PlayerCamera : NetworkBehaviour
             return;
         }
 
-        InitScene.cam = mainCam;
+        Billboard.cam = mainCam;
         live = true;
     }
 

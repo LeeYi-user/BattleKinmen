@@ -10,9 +10,6 @@ public class InitScene : MonoBehaviour
 
     [SerializeField] private int fps;
 
-    public static bool host;
-    public static Transform cam;
-
     void Awake()
     {
         DontDestroyOnLoad(gameObject);

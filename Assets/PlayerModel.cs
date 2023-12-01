@@ -12,9 +12,8 @@ public class PlayerModel : NetworkBehaviour
 
     public GameObject body;
     public SkinnedMeshRenderer bodySkin;
-    public GameObject realGun;
-    public SkinnedMeshRenderer realGunSkin;
     public SkinnedMeshRenderer fakeGunSkin;
+    public GameObject realGun;
 
     private bool live;
 
@@ -46,14 +45,16 @@ public class PlayerModel : NetworkBehaviour
 
     public void Despawn()
     {
+        realGun.SetActive(false);
+
         live = false;
-        realGunSkin.enabled = false;
     }
 
     public void Respawn()
     {
+        realGun.SetActive(true);
+
         body.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        realGunSkin.enabled = true;
         live = true;
     }
 }

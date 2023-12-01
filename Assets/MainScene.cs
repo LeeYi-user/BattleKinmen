@@ -6,14 +6,16 @@ using UnityEngine.SceneManagement;
 
 public class MainScene : MonoBehaviour
 {
-    bool disconnecting;
+    public bool start;
+    private bool stop;
 
     // Start is called before the first frame update
     void Start()
     {
-        disconnecting = false;
+        start = false;
+        stop = false;
 
-        if (InitScene.host)
+        if (MenuScene.host)
         {
             NetworkManager.Singleton.StartHost();
         }
@@ -33,9 +35,9 @@ public class MainScene : MonoBehaviour
 
         NetworkManager.Singleton.OnClientStopped += (bool _) =>
         {
-            if (!disconnecting)
+            if (!stop)
             {
-                disconnecting = true;
+                stop = true;
                 Cursor.lockState = CursorLockMode.None;
 
                 SceneManager.LoadScene("MenuScene");

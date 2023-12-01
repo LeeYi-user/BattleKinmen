@@ -29,7 +29,7 @@ public class PlayerHealth : NetworkBehaviour
             return;
         }
 
-        healthBar = GameObject.Find("Health").GetComponent<Image>();
+        //healthBar = GameObject.Find("Health").GetComponent<Image>();
         currentHealth = maxHealth;
         live = true;
     }
@@ -51,15 +51,14 @@ public class PlayerHealth : NetworkBehaviour
         {
             live = false;
 
-            GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
-            GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
-            GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
+            //GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+            //GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
+            //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
 
             gameObject.GetComponent<PlayerMovement>().Despawn();
             gameObject.GetComponent<PlayerCamera>().Despawn();
             gameObject.GetComponent<PlayerModel>().Despawn();
-            gameObject.GetComponent<WeaponSway>().Despawn();
-            gameObject.GetComponent<Gun>().Despawn();
+            gameObject.GetComponent<PlayerGun>().Despawn();
 
             PlayerDespawn_ServerRpc(NetworkObjectId, NetworkManager.Singleton.LocalClientId);
             StartCoroutine(Respawn());
@@ -75,7 +74,7 @@ public class PlayerHealth : NetworkBehaviour
         }
 
         currentHealth -= damage;
-        healthBar.fillAmount = currentHealth / maxHealth;
+        //healthBar.fillAmount = currentHealth / maxHealth;
     }
 
     IEnumerator DamageFlash()
@@ -91,18 +90,17 @@ public class PlayerHealth : NetworkBehaviour
 
         live = true;
 
-        GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
-        GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
-        GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
+        //GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
+        //GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
+        //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
 
         gameObject.GetComponent<PlayerMovement>().Respawn();
         gameObject.GetComponent<PlayerCamera>().Respawn();
         gameObject.GetComponent<PlayerModel>().Respawn();
-        gameObject.GetComponent<WeaponSway>().Respawn();
-        gameObject.GetComponent<Gun>().Respawn();
+        gameObject.GetComponent<PlayerGun>().Respawn();
 
         currentHealth = maxHealth;
-        healthBar.fillAmount = currentHealth / maxHealth;
+        //healthBar.fillAmount = currentHealth / maxHealth;
 
         PlayerRespawn_ServerRpc(NetworkObjectId, NetworkManager.Singleton.LocalClientId);
     }

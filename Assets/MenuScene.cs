@@ -7,36 +7,30 @@ using TMPro;
 
 public class MenuScene : MonoBehaviour
 {
-    public GameObject mainMenu;
-    public GameObject modeMenu;
-    public GameObject optionsMenu;
+    public static bool host;
 
-    public Button playButton;
-    public Button optionsButton;
-    public Button quitButton;
+    [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject modeMenu;
+    [SerializeField] private GameObject optionsMenu;
 
-    public TextMeshProUGUI playButtonText;
-    public TextMeshProUGUI optionsButtonText;
-    public TextMeshProUGUI quitButtonText;
+    [SerializeField] private TextMeshProUGUI playButtonText;
+    [SerializeField] private TextMeshProUGUI optionsButtonText;
+    [SerializeField] private TextMeshProUGUI quitButtonText;
 
-    public TMP_InputField inputField;
-    public TextMeshProUGUI inputButtonText;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private TextMeshProUGUI inputButtonText;
 
     // Update is called once per frame
     void Update()
     {
         if (inputField.text == "")
         {
+            host = true;
             inputButtonText.text = "HOST";
         }
         else
         {
+            host = false;
             inputButtonText.text = "JOIN";
         }
     }
@@ -69,27 +63,6 @@ public class MenuScene : MonoBehaviour
         optionsMenu.SetActive(false);
     }
 
-    public void InputButtonClick()
-    {
-        if (inputButtonText.text == "HOST")
-        {
-            InitScene.host = true;
-        }
-        else
-        {
-            InitScene.host = false;
-        }
-
-        SceneManager.LoadScene("MainScene");
-    }
-
-    public void BackButtonClick()
-    {
-        mainMenu.SetActive(true);
-        modeMenu.SetActive(false);
-        optionsMenu.SetActive(false);
-    }
-
     public void OptionsButtonClick()
     {
         mainMenu.SetActive(false);
@@ -100,5 +73,17 @@ public class MenuScene : MonoBehaviour
     public void QuitButtonClick()
     {
         Application.Quit();
+    }
+
+    public void InputButtonClick()
+    {
+        SceneManager.LoadScene("MainScene");
+    }
+
+    public void BackButtonClick()
+    {
+        mainMenu.SetActive(true);
+        modeMenu.SetActive(false);
+        optionsMenu.SetActive(false);
     }
 }

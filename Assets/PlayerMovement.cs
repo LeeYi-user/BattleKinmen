@@ -80,8 +80,6 @@ public class PlayerMovement : NetworkBehaviour
         {
             rb.drag = 0;
         }
-
-        Debug.Log(OnSlope());
     }
 
     void FixedUpdate()
