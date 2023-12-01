@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -18,7 +17,7 @@ public class MenuScene : MonoBehaviour
     [SerializeField] private TextMeshProUGUI quitButtonText;
 
     [SerializeField] private TMP_InputField inputField;
-    [SerializeField] private TextMeshProUGUI inputButtonText;
+    [SerializeField] private TextMeshProUGUI hostButtonText;
 
     // Update is called once per frame
     void Update()
@@ -26,12 +25,12 @@ public class MenuScene : MonoBehaviour
         if (inputField.text == "")
         {
             host = true;
-            inputButtonText.text = "HOST";
+            hostButtonText.text = "HOST";
         }
         else
         {
             host = false;
-            inputButtonText.text = "JOIN";
+            hostButtonText.text = "JOIN";
         }
     }
 
@@ -75,7 +74,7 @@ public class MenuScene : MonoBehaviour
         Application.Quit();
     }
 
-    public void InputButtonClick()
+    public void HostButtonClick()
     {
         SceneManager.LoadScene("MainScene");
     }
