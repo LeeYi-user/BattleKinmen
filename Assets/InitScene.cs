@@ -11,8 +11,6 @@ public class InitScene : MonoBehaviour
     [SerializeField] private int fps;
 
     public static bool host;
-    public static int team; // 晚點刪除
-    public static Dictionary<ulong, int> playerTeam = new Dictionary<ulong, int>(); // 晚點刪除
     public static Transform cam;
 
     void Awake()

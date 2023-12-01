@@ -178,7 +178,11 @@ public class PlayerMovement : NetworkBehaviour
 
     bool OnSlope()
     {
-        if (grounded && Physics.Raycast(orientation.position, Vector3.down, out slopeHit, 0.3f))
+        if (grounded && (Physics.Raycast(orientation.position, Vector3.forward, out slopeHit, 0.3f) ||
+                         Physics.Raycast(orientation.position, Vector3.back, out slopeHit, 0.3f) ||
+                         Physics.Raycast(orientation.position, Vector3.left, out slopeHit, 0.3f) ||
+                         Physics.Raycast(orientation.position, Vector3.right, out slopeHit, 0.3f) ||
+                         Physics.Raycast(orientation.position, Vector3.down, out slopeHit, 0.3f)))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;

@@ -31,8 +31,6 @@ public class PlayerModel : NetworkBehaviour
         bodySkin.enabled = false;
         fakeGunSkin.enabled = false;
         live = true;
-
-        JoinTeam_ServerRpc(NetworkObjectId, InitScene.team);
     }
 
     // Update is called once per frame
@@ -44,39 +42,6 @@ public class PlayerModel : NetworkBehaviour
         }
 
         body.transform.rotation = orientation.rotation;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void JoinTeam_ServerRpc(ulong objectId, int team)
-    {
-        InitScene.playerTeam[objectId] = team;
-
-        foreach (KeyValuePair<ulong, int> player in InitScene.playerTeam)
-        {
-            JoinTeam_ClientRpc(player.Key, player.Value);
-        }
-    }
-
-    [ClientRpc]
-    private void JoinTeam_ClientRpc(ulong objectId, int team)
-    {
-        try
-        {
-            PlayerModel playerModel = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerModel>();
-
-            if (team == 1)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-        catch
-        {
-
-        }
     }
 
     public void Despawn()

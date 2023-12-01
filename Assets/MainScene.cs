@@ -1,20 +1,17 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
-public class SampleScene : NetworkBehaviour
+public class MainScene : MonoBehaviour
 {
-    // 元件用途: 開始連線/結束連線
-    // 元件位置: SampleScene 的 For Script 之下
-
-    private bool disconnect;
+    bool disconnecting;
 
     // Start is called before the first frame update
     void Start()
     {
-        disconnect = false;
+        disconnecting = false;
 
         if (InitScene.host)
         {
@@ -29,19 +26,19 @@ public class SampleScene : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P) && Cursor.lockState == CursorLockMode.Locked)
+        if (Input.GetKeyDown(KeyCode.Backspace) && Cursor.lockState == CursorLockMode.Locked)
         {
             NetworkManager.Singleton.Shutdown();
         }
 
-        NetworkManager.OnClientStopped += (bool _) =>
+        NetworkManager.Singleton.OnClientStopped += (bool _) =>
         {
-            if (!disconnect)
+            if (!disconnecting)
             {
-                disconnect = true;
+                disconnecting = true;
                 Cursor.lockState = CursorLockMode.None;
-                InitScene.playerTeam = new Dictionary<ulong, int>();
-                SceneManager.LoadScene("StartScene");
+
+                SceneManager.LoadScene("MenuScene");
             }
         };
     }
