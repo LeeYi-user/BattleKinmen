@@ -211,8 +211,9 @@ public class PlayerMovement : NetworkBehaviour
 
     public void Respawn()
     {
-        live = true;
-        gameObject.transform.position = new Vector3(10f, 0f, 10f);
+        rb.MovePosition(new Vector3(10f, 0f, 10f));
+
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        live = true;
     }
 }
