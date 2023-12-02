@@ -2,53 +2,105 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using TMPro;
 
 public class Player : NetworkBehaviour
 {
     private Button startButton;
-    private TextMeshProUGUI startButtonText;
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
+
+        if (!IsHost)
+        {
+            return;
+        }
+
+        NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
+        NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+    }
+
+    private void NetworkManager_OnClientStopped(bool obj)
+    {
+        SceneManager.LoadScene("MenuScene");
+
+        NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
+
+        if (!IsHost)
+        {
+            return;
+        }
+
+        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
+        NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+    }
+
+    private void NetworkManager_OnClientConnectedCallback(ulong obj)
+    {
+        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count);
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong obj)
+    {
+        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count - 1);
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        if (!IsOwner)
+        if (!IsOwner || !IsHost)
         {
-            GetComponent<Player>().enabled = false;
             return;
         }
 
         startButton = GameObject.Find("Button").GetComponent<Button>();
-        startButtonText = startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "START";
 
-        startButton.onClick.AddListener(StartButtonClick);
-
-        if (!IsHost)
-        {
-            startButtonText.text = "<s>START</s>";
-        }
+        startButton.onClick.AddListener(StartButtonClick_ClientRpc);
     }
 
     // Update is called once per frame
     void Update()
     {
-
-    }
-
-    void StartButtonClick()
-    {
-        if (!IsHost)
+        if (!IsOwner)
         {
             return;
         }
 
-        StartGame_ClientRpc();
+        if (Input.GetKeyDown(KeyCode.Backspace) && Cursor.lockState == CursorLockMode.Locked)
+        {
+            NetworkManager.Shutdown();
+
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     [ClientRpc]
-    void StartGame_ClientRpc()
+    void StartButtonClick_ClientRpc()
     {
         GameObject.Find("Panel").SetActive(false);
+    }
+
+    [ClientRpc]
+    void UpdateCounter_ClientRpc(int count)
+    {
+        try
+        {
+            GameObject.Find("Counter").GetComponent<TextMeshProUGUI>().text = count.ToString();
+        }
+        catch
+        {
+            // pass
+        }
     }
 }

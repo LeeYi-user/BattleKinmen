@@ -60,7 +60,7 @@ public class PlayerHealth : NetworkBehaviour
             gameObject.GetComponent<PlayerModel>().Despawn();
             gameObject.GetComponent<PlayerGun>().Despawn();
 
-            PlayerDespawn_ServerRpc(NetworkObjectId, NetworkManager.Singleton.LocalClientId);
+            PlayerDespawn_ServerRpc(NetworkObjectId, NetworkManager.LocalClientId);
             StartCoroutine(Respawn());
         }
     }
@@ -102,7 +102,7 @@ public class PlayerHealth : NetworkBehaviour
         currentHealth = maxHealth;
         //healthBar.fillAmount = currentHealth / maxHealth;
 
-        PlayerRespawn_ServerRpc(NetworkObjectId, NetworkManager.Singleton.LocalClientId);
+        PlayerRespawn_ServerRpc(NetworkObjectId, NetworkManager.LocalClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -116,7 +116,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         GameObject playerGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
 
-        if (playerId != NetworkManager.Singleton.LocalClientId)
+        if (playerId != NetworkManager.LocalClientId)
         {
             playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Default");
             playerGO.GetComponent<PlayerModel>().bodySkin.enabled = false;
@@ -135,7 +135,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         GameObject playerGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
 
-        if (playerId != NetworkManager.Singleton.LocalClientId)
+        if (playerId != NetworkManager.LocalClientId)
         {
             playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Hittable");
             playerGO.GetComponent<PlayerModel>().bodySkin.enabled = true;
