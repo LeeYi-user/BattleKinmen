@@ -5,6 +5,8 @@ using Unity.Netcode;
 
 public class MainScene : MonoBehaviour
 {
+    public static ulong LocalObjectId;
+
     // Start is called before the first frame update
     void Start()
     {

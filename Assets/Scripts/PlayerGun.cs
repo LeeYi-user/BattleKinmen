@@ -50,13 +50,14 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         currentAmmo = maxAmmo;
         isReloading = false;
         nextTimeToFire = 0f;
-        live = true;
+
+        Despawn();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) // 如果該玩家物件不是自己操控的
+        if (!IsOwner || !live) // 如果該玩家物件不是自己操控的
         {
             return; // 就直接 return
         }
@@ -67,7 +68,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
             return;
         }
 
-        if (isReloading || !live)
+        if (isReloading)
         {
             return;
         }

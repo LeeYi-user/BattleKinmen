@@ -51,7 +51,8 @@ public class PlayerMovement : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
-        live = true;
+
+        Despawn();
     }
 
     // Update is called once per frame
@@ -205,12 +206,13 @@ public class PlayerMovement : NetworkBehaviour
     public void Despawn()
     {
         live = false;
-        rb.velocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     public void Respawn()
     {
-        gameObject.transform.position = new Vector3(0f, 0f, 0f);
         live = true;
+        gameObject.transform.position = new Vector3(10f, 0f, 10f);
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 }

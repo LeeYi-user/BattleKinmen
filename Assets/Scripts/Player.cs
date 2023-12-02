@@ -19,6 +19,7 @@ public class Player : NetworkBehaviour
             return;
         }
 
+        MainScene.LocalObjectId = NetworkObjectId;
         NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
 
         if (!IsHost)
@@ -89,6 +90,7 @@ public class Player : NetworkBehaviour
     void StartButtonClick_ClientRpc()
     {
         GameObject.Find("Panel").SetActive(false);
+        StartCoroutine(NetworkManager.SpawnManager.SpawnedObjects[MainScene.LocalObjectId].gameObject.GetComponent<PlayerHealth>().Respawn(0f));
     }
 
     [ClientRpc]

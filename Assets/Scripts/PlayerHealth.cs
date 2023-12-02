@@ -61,7 +61,7 @@ public class PlayerHealth : NetworkBehaviour
             gameObject.GetComponent<PlayerGun>().Despawn();
 
             PlayerDespawn_ServerRpc(NetworkObjectId, NetworkManager.LocalClientId);
-            StartCoroutine(Respawn());
+            StartCoroutine(Respawn(respawnTime));
         }
     }
 
@@ -84,9 +84,9 @@ public class PlayerHealth : NetworkBehaviour
         skin.material = blue;
     }
 
-    IEnumerator Respawn()
+    public IEnumerator Respawn(float seconds)
     {
-        yield return new WaitForSeconds(respawnTime);
+        yield return new WaitForSeconds(seconds);
 
         live = true;
 
