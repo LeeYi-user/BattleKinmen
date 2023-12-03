@@ -63,8 +63,6 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
-        grounded = Physics.CheckSphere(orientation.position, 0.3f, whatIsGround);
-
         MyInput();
         SpeedControl();
 
@@ -201,6 +199,22 @@ public class PlayerMovement : NetworkBehaviour
     Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        {
+            grounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        {
+            grounded = false;
+        }
     }
 
     public void Despawn()

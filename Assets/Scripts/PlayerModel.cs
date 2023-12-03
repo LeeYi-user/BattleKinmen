@@ -9,8 +9,9 @@ public class PlayerModel : NetworkBehaviour
     // 元件位置: 玩家物件(player prefab)之下
 
     [SerializeField] private Transform orientation;
+    [SerializeField] private GameObject body;
 
-    public GameObject body;
+    public CapsuleCollider bodyCollider;
     public SkinnedMeshRenderer bodySkin;
     public SkinnedMeshRenderer fakeGunSkin;
     public GameObject realGun;

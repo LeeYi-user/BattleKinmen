@@ -118,7 +118,7 @@ public class PlayerHealth : NetworkBehaviour
 
         if (playerId != NetworkManager.LocalClientId)
         {
-            playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Default");
+            playerGO.GetComponent<PlayerModel>().bodyCollider.enabled = false;
             playerGO.GetComponent<PlayerModel>().bodySkin.enabled = false;
             playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = false;
         }
@@ -137,7 +137,7 @@ public class PlayerHealth : NetworkBehaviour
 
         if (playerId != NetworkManager.LocalClientId)
         {
-            playerGO.GetComponent<PlayerModel>().body.layer = LayerMask.NameToLayer("Hittable");
+            playerGO.GetComponent<PlayerModel>().bodyCollider.enabled = true;
             playerGO.GetComponent<PlayerModel>().bodySkin.enabled = true;
             playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = true;
         }
