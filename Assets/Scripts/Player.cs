@@ -19,7 +19,8 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        MainScene.LocalObjectId = NetworkObjectId;
+        JoinGame_ServerRpc(NetworkManager.LocalClientId);
+
         NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
 
         if (!IsHost)
@@ -48,11 +49,21 @@ public class Player : NetworkBehaviour
 
     private void NetworkManager_OnClientConnectedCallback(ulong obj)
     {
+        if (MainScene.start)
+        {
+            return;
+        }
+
         UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count);
     }
 
     private void NetworkManager_OnClientDisconnectCallback(ulong obj)
     {
+        if (MainScene.start)
+        {
+            return;
+        }
+
         UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count - 1);
     }
 
@@ -67,7 +78,7 @@ public class Player : NetworkBehaviour
         startButton = GameObject.Find("Button").GetComponent<Button>();
         startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "START";
 
-        startButton.onClick.AddListener(StartButtonClick_ClientRpc);
+        startButton.onClick.AddListener(StartGame_ClientRpc);
     }
 
     // Update is called once per frame
@@ -86,23 +97,36 @@ public class Player : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    void StartButtonClick_ClientRpc()
+    [ServerRpc(RequireOwnership = false)]
+    void JoinGame_ServerRpc(ulong playerId)
     {
+        if (MainScene.start)
+        {
+            KickPlayer_ClientRpc(playerId);
+        }
+    }
+
+    [ClientRpc]
+    void KickPlayer_ClientRpc(ulong playerId)
+    {
+        if (playerId == NetworkManager.LocalClientId)
+        {
+            NetworkManager.Shutdown();
+        }
+    }
+
+    [ClientRpc]
+    void StartGame_ClientRpc()
+    {
+        MainScene.start = true;
+
         GameObject.Find("Panel").SetActive(false);
-        StartCoroutine(NetworkManager.SpawnManager.SpawnedObjects[MainScene.LocalObjectId].gameObject.GetComponent<PlayerHealth>().Respawn(0f));
+        StartCoroutine(NetworkManager.LocalClient.PlayerObject.gameObject.GetComponent<PlayerHealth>().Respawn(0f));
     }
 
     [ClientRpc]
     void UpdateCounter_ClientRpc(int count)
     {
-        try
-        {
-            GameObject.Find("Counter").GetComponent<TextMeshProUGUI>().text = count.ToString();
-        }
-        catch
-        {
-            // pass
-        }
+        GameObject.Find("Counter").GetComponent<TextMeshProUGUI>().text = count.ToString();
     }
 }

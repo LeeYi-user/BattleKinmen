@@ -5,11 +5,13 @@ using Unity.Netcode;
 
 public class MainScene : MonoBehaviour
 {
-    public static ulong LocalObjectId;
+    public static bool start;
 
     // Start is called before the first frame update
     void Start()
     {
+        start = false;
+
         if (MenuScene.host)
         {
             NetworkManager.Singleton.StartHost();
