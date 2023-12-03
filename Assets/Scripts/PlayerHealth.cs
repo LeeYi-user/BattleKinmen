@@ -60,7 +60,7 @@ public class PlayerHealth : NetworkBehaviour
             gameObject.GetComponent<PlayerModel>().Despawn();
             gameObject.GetComponent<PlayerGun>().Despawn();
 
-            PlayerDespawn_ServerRpc(NetworkObjectId, NetworkManager.LocalClientId);
+            PlayerDespawn_ServerRpc(NetworkManager.LocalClientId);
             StartCoroutine(Respawn(respawnTime));
         }
     }
@@ -102,44 +102,40 @@ public class PlayerHealth : NetworkBehaviour
         currentHealth = maxHealth;
         //healthBar.fillAmount = currentHealth / maxHealth;
 
-        PlayerRespawn_ServerRpc(NetworkObjectId, NetworkManager.LocalClientId);
+        PlayerRespawn_ServerRpc(NetworkManager.LocalClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void PlayerDespawn_ServerRpc(ulong objectId, ulong playerId)
+    void PlayerDespawn_ServerRpc(ulong playerId)
     {
-        PlayerDespawn_ClientRpc(objectId, playerId);
+        PlayerDespawn_ClientRpc(playerId);
     }
 
     [ClientRpc]
-    void PlayerDespawn_ClientRpc(ulong objectId, ulong playerId)
+    void PlayerDespawn_ClientRpc(ulong playerId)
     {
-        GameObject playerGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
-
         if (playerId != NetworkManager.LocalClientId)
         {
-            playerGO.GetComponent<PlayerModel>().bodyCollider.enabled = false;
-            playerGO.GetComponent<PlayerModel>().bodySkin.enabled = false;
-            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = false;
+            GetComponent<PlayerModel>().bodyCollider.enabled = false;
+            GetComponent<PlayerModel>().bodySkin.enabled = false;
+            GetComponent<PlayerModel>().fakeGunSkin.enabled = false;
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void PlayerRespawn_ServerRpc(ulong objectId, ulong playerId)
+    void PlayerRespawn_ServerRpc(ulong playerId)
     {
-        PlayerRespawn_ClientRpc(objectId, playerId);
+        PlayerRespawn_ClientRpc(playerId);
     }
 
     [ClientRpc]
-    void PlayerRespawn_ClientRpc(ulong objectId, ulong playerId)
+    void PlayerRespawn_ClientRpc(ulong playerId)
     {
-        GameObject playerGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
-
         if (playerId != NetworkManager.LocalClientId)
         {
-            playerGO.GetComponent<PlayerModel>().bodyCollider.enabled = true;
-            playerGO.GetComponent<PlayerModel>().bodySkin.enabled = true;
-            playerGO.GetComponent<PlayerModel>().fakeGunSkin.enabled = true;
+            GetComponent<PlayerModel>().bodyCollider.enabled = true;
+            GetComponent<PlayerModel>().bodySkin.enabled = true;
+            GetComponent<PlayerModel>().fakeGunSkin.enabled = true;
         }
     }
 }

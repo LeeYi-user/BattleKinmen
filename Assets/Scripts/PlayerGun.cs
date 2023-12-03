@@ -107,11 +107,11 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         currentAmmo--;
 
         muzzleFlash.Play(); // 這裡會在第一人稱視角的 client 端顯示火花
-        PlayFakeMuzzleFlash_ServerRpc(NetworkObjectId); // 這裡會告知 server 去生成火花, 以便其他玩家能夠看到 (註: 其他人看的是自己看不見的第三人稱火花)
+        PlayFakeMuzzleFlash_ServerRpc(NetworkManager.LocalClientId); // 這裡會告知 server 去生成火花, 以便其他玩家能夠看到 (註: 其他人看的是自己看不見的第三人稱火花)
         animator.SetTrigger("isFiring"); // 這裡會在第一人稱視角的 client 端顯示開火
         fakeAnimator.SetTrigger("isFiring"); // 因為已經有 OwnerNetworkAnimator 來同步動畫了, 所以不需要使用 RPC 便能讓其他玩家看到 (註: 其他人看的是自己看不見的第三人稱開火)
         audioSource.PlayOneShot(audioClip); // 這裡會在 client 端播放槍聲
-        PlayFakeAudioSource_ServerRpc(NetworkObjectId); // 這裡會告知 server 去播放槍聲, 以便其他玩家能夠聽到 (註: 其他人聽的是自己聽不見的第三人稱槍聲)
+        PlayFakeAudioSource_ServerRpc(NetworkManager.LocalClientId); // 這裡會告知 server 去播放槍聲, 以便其他玩家能夠聽到 (註: 其他人聽的是自己聽不見的第三人稱槍聲)
 
         RaycastHit hit;
 
@@ -138,31 +138,32 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PlayFakeMuzzleFlash_ServerRpc(ulong objectId)
+    private void PlayFakeMuzzleFlash_ServerRpc(ulong playerId)
     {
-        PlayFakeMuzzleFlash_ClientRpc(objectId);
+        PlayFakeMuzzleFlash_ClientRpc(playerId);
     }
 
     [ClientRpc]
-    private void PlayFakeMuzzleFlash_ClientRpc(ulong objectId)
+    private void PlayFakeMuzzleFlash_ClientRpc(ulong playerId)
     {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerGun>().fakeMuzzleFlash.Play();
+        if (playerId != NetworkManager.LocalClientId)
+        {
+            GetComponent<PlayerGun>().fakeMuzzleFlash.Play();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PlayFakeAudioSource_ServerRpc(ulong objectId)
+    private void PlayFakeAudioSource_ServerRpc(ulong playerId)
     {
-        PlayFakeAudioSource_ClientRpc(objectId);
+        PlayFakeAudioSource_ClientRpc(playerId);
     }
 
     [ClientRpc]
-    private void PlayFakeAudioSource_ClientRpc(ulong objectId)
+    private void PlayFakeAudioSource_ClientRpc(ulong playerId)
     {
-        AudioSource fake = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerGun>().fakeAudioSource;
-
-        if (fake.enabled)
+        if (playerId != NetworkManager.LocalClientId)
         {
-            fake.PlayOneShot(audioClip);
+            GetComponent<PlayerGun>().fakeAudioSource.PlayOneShot(audioClip);
         }
     }
 
