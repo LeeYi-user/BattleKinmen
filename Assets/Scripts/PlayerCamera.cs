@@ -31,7 +31,8 @@ public class PlayerCamera : NetworkBehaviour
         }
 
         Billboard.cam = mainCam;
-        live = true;
+
+        Despawn();
     }
 
     // Update is called once per frame

@@ -678,14 +678,11 @@ MonoBehaviour:
   mainMenu: {fileID: 295807231}
   modeMenu: {fileID: 85771371}
   optionsMenu: {fileID: 64470885}
-  playButton: {fileID: 1287900104}
-  optionsButton: {fileID: 894979525}
-  quitButton: {fileID: 2034206938}
   playButtonText: {fileID: 1250473161}
   optionsButtonText: {fileID: 805469958}
   quitButtonText: {fileID: 1011303864}
   inputField: {fileID: 1259752944}
-  inputButtonText: {fileID: 1919535003}
+  hostButtonText: {fileID: 1919535003}
 --- !u!1 &295807231
 GameObject:
   m_ObjectHideFlags: 0
@@ -3214,7 +3211,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 177060743}
         m_TargetAssemblyTypeName: MenuScene, Assembly-CSharp
-        m_MethodName: InputButtonClick
+        m_MethodName: HostButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

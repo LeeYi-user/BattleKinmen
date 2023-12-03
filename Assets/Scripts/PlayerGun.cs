@@ -50,13 +50,14 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         currentAmmo = maxAmmo;
         isReloading = false;
         nextTimeToFire = 0f;
-        live = true;
+
+        Despawn();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) // 如果該玩家物件不是自己操控的
+        if (!IsOwner || !live) // 如果該玩家物件不是自己操控的
         {
             return; // 就直接 return
         }
@@ -67,7 +68,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
             return;
         }
 
-        if (isReloading || !live)
+        if (isReloading)
         {
             return;
         }
@@ -125,14 +126,14 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
             }
 
             // 這裡會創造兩道子彈軌跡, 一道是給自己看的第一人稱子彈軌跡, 一道是給其他人看的第三人稱子彈軌跡, 兩道都需要用 RPC 來告知 Server 去生成 (註: 因為 client 端無法用 Instantiate 函式)
-            CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
-            CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
         }
         else
         {
             // 同上, 只是負責沒打中時的子彈軌跡
-            CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, -1, fpsCam.transform.forward);
-            CreateBulletTrail_ServerRpc(NetworkManager.Singleton.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, -1, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, -1, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, -1, fpsCam.transform.forward);
         }
     }
 
@@ -203,7 +204,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
         // 如果子彈軌跡是自己的 且 是給其他人看的第三人稱軌跡 那就對自己隱藏
         // 如果子彈軌跡是別人的 且 是給那個人看的第一人稱軌跡 那也對自己隱藏
-        if ((playerId == NetworkManager.Singleton.LocalClientId && !real) || (playerId != NetworkManager.Singleton.LocalClientId && real))
+        if ((playerId == NetworkManager.LocalClientId && !real) || (playerId != NetworkManager.LocalClientId && real))
         {
             trailGO.SetActive(false);
         }

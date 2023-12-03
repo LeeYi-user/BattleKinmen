@@ -29,7 +29,8 @@ public class PlayerModel : NetworkBehaviour
         body.layer = LayerMask.NameToLayer("Default");
         bodySkin.enabled = false;
         fakeGunSkin.enabled = false;
-        live = true;
+
+        Despawn();
     }
 
     // Update is called once per frame
