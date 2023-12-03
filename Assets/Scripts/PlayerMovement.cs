@@ -49,7 +49,6 @@ public class PlayerMovement : NetworkBehaviour
         }
 
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
         readyToJump = true;
 
         Despawn();

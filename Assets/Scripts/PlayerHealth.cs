@@ -31,7 +31,6 @@ public class PlayerHealth : NetworkBehaviour
 
         //healthBar = GameObject.Find("Health").GetComponent<Image>();
         currentHealth = maxHealth;
-        live = true;
     }
 
     // Update is called once per frame
@@ -114,9 +113,10 @@ public class PlayerHealth : NetworkBehaviour
     [ClientRpc]
     void PlayerDespawn_ClientRpc(ulong playerId)
     {
+        GetComponent<PlayerModel>().bodyCollider.enabled = false;
+
         if (playerId != NetworkManager.LocalClientId)
         {
-            GetComponent<PlayerModel>().bodyCollider.enabled = false;
             GetComponent<PlayerModel>().bodySkin.enabled = false;
             GetComponent<PlayerModel>().fakeGunSkin.enabled = false;
         }
@@ -131,9 +131,10 @@ public class PlayerHealth : NetworkBehaviour
     [ClientRpc]
     void PlayerRespawn_ClientRpc(ulong playerId)
     {
+        GetComponent<PlayerModel>().bodyCollider.enabled = true;
+
         if (playerId != NetworkManager.LocalClientId)
         {
-            GetComponent<PlayerModel>().bodyCollider.enabled = true;
             GetComponent<PlayerModel>().bodySkin.enabled = true;
             GetComponent<PlayerModel>().fakeGunSkin.enabled = true;
         }
