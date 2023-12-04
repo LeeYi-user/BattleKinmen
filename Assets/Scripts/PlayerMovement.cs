@@ -50,7 +50,6 @@ public class PlayerMovement : NetworkBehaviour
 
         rb = GetComponent<Rigidbody>();
         readyToJump = true;
-
         Despawn();
     }
 
@@ -105,7 +104,6 @@ public class PlayerMovement : NetworkBehaviour
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
-
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         }
@@ -164,14 +162,13 @@ public class PlayerMovement : NetworkBehaviour
     {
         exitingSlope = true;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
         rb.AddForce(transform.up * Mathf.Sqrt(jumpForce * -2f * gravity), ForceMode.Impulse);
     }
 
     void ResetJump()
     {
-        exitingSlope = false;
         readyToJump = true;
+        exitingSlope = false;
     }
 
     bool OnSlope()
@@ -224,9 +221,8 @@ public class PlayerMovement : NetworkBehaviour
 
     public void Respawn()
     {
-        rb.MovePosition(new Vector3(10f, 0f, 10f));
-
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
         live = true;
+        rb.MovePosition(new Vector3(10f, 0f, 10f));
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 }

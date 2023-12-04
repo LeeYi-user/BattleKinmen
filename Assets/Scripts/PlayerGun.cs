@@ -18,20 +18,19 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
     [SerializeField] private int maxAmmo; // 7
     [SerializeField] private float reloadTime; // 1.35
-
-    [SerializeField] private Animator animator;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip audioClip;
-
-    [SerializeField] private Transform BulletSpawnPoint;
-    [SerializeField] private TrailRenderer BulletTrail;
     [SerializeField] private float BulletSpeed; // 100
 
+    [SerializeField] private AudioClip audioClip;
+    [SerializeField] private Transform BulletSpawnPoint;
+    [SerializeField] private TrailRenderer BulletTrail;
+
+    [SerializeField] private ParticleSystem fakeMuzzleFlash;
     [SerializeField] private Animator fakeAnimator;
     [SerializeField] private AudioSource fakeAudioSource;
-    [SerializeField] private ParticleSystem fakeMuzzleFlash;
     [SerializeField] private Transform fakeBulletSpawnPoint;
 
+    private Animator animator;
+    private AudioSource audioSource;
     private int currentAmmo;
     private bool isReloading;
     private float nextTimeToFire;
@@ -45,12 +44,13 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
             return; // 就直接 return
         }
 
-        fakeAudioSource.enabled = false;
         fakeMuzzleFlash.gameObject.SetActive(false);
+        fakeAudioSource.enabled = false;
+        animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         currentAmmo = maxAmmo;
         isReloading = false;
         nextTimeToFire = 0f;
-
         Despawn();
     }
 
@@ -89,17 +89,16 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     IEnumerator Reload()
     {
         isReloading = true;
-
         animator.SetBool("isReloading", true);
         fakeAnimator.SetBool("isReloading", true);
 
         yield return new WaitForSeconds(reloadTime);
 
+        isReloading = false;
         animator.SetBool("isReloading", false);
         fakeAnimator.SetBool("isReloading", false);
 
         currentAmmo = maxAmmo;
-        isReloading = false;
     }
 
     void Shoot() // 射擊
@@ -148,7 +147,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     {
         if (playerId != NetworkManager.LocalClientId)
         {
-            GetComponent<PlayerGun>().fakeMuzzleFlash.Play();
+            fakeMuzzleFlash.Play();
         }
     }
 
@@ -163,7 +162,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     {
         if (playerId != NetworkManager.LocalClientId)
         {
-            GetComponent<PlayerGun>().fakeAudioSource.PlayOneShot(audioClip);
+            fakeAudioSource.PlayOneShot(audioClip);
         }
     }
 
@@ -243,9 +242,9 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
     public void Respawn()
     {
+        live = true;
         currentAmmo = maxAmmo;
         isReloading = false;
         nextTimeToFire = 0f;
-        live = true;
     }
 }

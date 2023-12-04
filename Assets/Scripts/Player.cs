@@ -20,7 +20,6 @@ public class Player : NetworkBehaviour
         }
 
         JoinGame_ServerRpc(NetworkManager.LocalClientId);
-
         NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
 
         if (!IsHost)
@@ -35,7 +34,6 @@ public class Player : NetworkBehaviour
     private void NetworkManager_OnClientStopped(bool obj)
     {
         SceneManager.LoadScene("MenuScene");
-
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
 
         if (!IsHost)
@@ -77,7 +75,6 @@ public class Player : NetworkBehaviour
 
         startButton = GameObject.Find("Button").GetComponent<Button>();
         startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "START";
-
         startButton.onClick.AddListener(StartGame_ClientRpc);
     }
 
@@ -92,7 +89,6 @@ public class Player : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Backspace) && Cursor.lockState == CursorLockMode.Locked)
         {
             NetworkManager.Shutdown();
-
             Cursor.lockState = CursorLockMode.None;
         }
     }
@@ -116,17 +112,16 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    void StartGame_ClientRpc()
-    {
-        MainScene.start = true;
-
-        GameObject.Find("Panel").SetActive(false);
-        StartCoroutine(NetworkManager.LocalClient.PlayerObject.gameObject.GetComponent<PlayerHealth>().Respawn(0f));
-    }
-
-    [ClientRpc]
     void UpdateCounter_ClientRpc(int count)
     {
         GameObject.Find("Counter").GetComponent<TextMeshProUGUI>().text = count.ToString();
+    }
+
+    [ClientRpc]
+    void StartGame_ClientRpc()
+    {
+        MainScene.start = true;
+        GameObject.Find("Panel").SetActive(false);
+        StartCoroutine(NetworkManager.LocalClient.PlayerObject.gameObject.GetComponent<PlayerHealth>().Respawn(0f));
     }
 }

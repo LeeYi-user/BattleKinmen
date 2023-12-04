@@ -9,7 +9,6 @@ public class PlayerCamera : NetworkBehaviour
     // 元件位置: 玩家物件(player prefab)之下
 
     [SerializeField] private Transform orientation;
-    [SerializeField] private Transform mainCam;
     [SerializeField] private Transform weaponCam;
 
     [SerializeField] private float sensX; // 5
@@ -24,14 +23,13 @@ public class PlayerCamera : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            mainCam.GetComponent<Camera>().enabled = false;
-            mainCam.GetComponent<AudioListener>().enabled = false;
+            GetComponent<Camera>().enabled = false;
+            GetComponent<AudioListener>().enabled = false;
             weaponCam.gameObject.SetActive(false);
             return;
         }
 
-        Billboard.cam = mainCam;
-
+        Billboard.cam = transform;
         Despawn();
     }
 
@@ -59,8 +57,7 @@ public class PlayerCamera : NetworkBehaviour
         yRotation += mouseX;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        mainCam.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
@@ -71,10 +68,10 @@ public class PlayerCamera : NetworkBehaviour
 
     public void Respawn()
     {
+        live = true;
         xRotation = 0;
         yRotation = 0;
-        mainCam.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
-        live = true;
     }
 }

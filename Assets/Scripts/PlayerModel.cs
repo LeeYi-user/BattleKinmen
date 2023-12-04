@@ -9,12 +9,7 @@ public class PlayerModel : NetworkBehaviour
     // 元件位置: 玩家物件(player prefab)之下
 
     [SerializeField] private Transform orientation;
-    [SerializeField] private GameObject body;
-
-    public CapsuleCollider bodyCollider;
-    public SkinnedMeshRenderer bodySkin;
-    public SkinnedMeshRenderer fakeGunSkin;
-    public GameObject realGun;
+    [SerializeField] private SkinnedMeshRenderer realGunSkin;
 
     private bool live;
 
@@ -23,12 +18,11 @@ public class PlayerModel : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            realGun.SetActive(false);
+            realGunSkin.enabled = false;
             return;
         }
 
-        body.layer = LayerMask.NameToLayer("Default");
-
+        gameObject.layer = LayerMask.NameToLayer("Default");
         Despawn();
     }
 
@@ -40,21 +34,19 @@ public class PlayerModel : NetworkBehaviour
             return;
         }
 
-        body.transform.rotation = orientation.rotation;
+        transform.rotation = orientation.rotation;
     }
 
     public void Despawn()
     {
-        realGun.SetActive(false);
-
         live = false;
+        realGunSkin.enabled = false;
     }
 
     public void Respawn()
     {
-        realGun.SetActive(true);
-
-        body.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         live = true;
+        realGunSkin.enabled = true;
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 }

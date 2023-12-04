@@ -13,7 +13,6 @@ public class InitScene : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
-
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = fps;
     }
