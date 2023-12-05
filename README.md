@@ -52,6 +52,4 @@
 3. 在對程式檔案進行更改後，請記得加上註解，[並使用 Unicode 編碼方式進行儲存](https://www.youtube.com/watch?v=9HyTL9A08yE)。
 4. 在對程式檔案進行 push/pull 時，請使用 github desktop 工具，以免出錯。
 5. 在對程式檔案進行 push 後，請在 LINE 群通知其他同學，並等確認完畢再做 merge。
-
-對於超過 100MB 的檔案，請改往 Google 雲端下載並導入:  
-https://drive.google.com/drive/folders/1MuU8o-DxH1Hqurvx4zZhYv0z-rvxsmN0?usp=sharing
+6. 對於超過 100MB 的檔案，請改往 [Google 雲端](https://drive.google.com/drive/folders/1MuU8o-DxH1Hqurvx4zZhYv0z-rvxsmN0?usp=sharing) 下載並導入。
