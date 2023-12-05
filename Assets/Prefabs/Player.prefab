@@ -757,7 +757,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orientation: {fileID: 249312279693727857}
   weaponCam: {fileID: 3968922822543440153}
-  model: {fileID: 3261128922529011380}
   sensX: 5
   sensY: 5
 --- !u!114 &6327283934218518182
@@ -1459,6 +1458,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 497cf88255a97c645bb6c2a722372b12, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8957033507786367036}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 497cf88255a97c645bb6c2a722372b12, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1762643741177553979}
   m_SourcePrefab: {fileID: 100100000, guid: 497cf88255a97c645bb6c2a722372b12, type: 3}
 --- !u!4 &507288756891464392 stripped
 Transform:
@@ -1575,6 +1577,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orientation: {fileID: 249312279693727857}
   realGunSkin: {fileID: 579791333592366}
+--- !u!114 &1762643741177553979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2741016339252005902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0
 --- !u!4 &2752039105288875828 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 935155510047366763, guid: 497cf88255a97c645bb6c2a722372b12, type: 3}

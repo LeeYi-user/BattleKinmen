@@ -12,7 +12,6 @@ public class EnemySpawn : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        DebugLog_ServerRpc(NetworkObjectId.ToString());
     }
 
     // Update is called once per frame
@@ -24,17 +23,5 @@ public class EnemySpawn : NetworkBehaviour
             enemy.GetComponent<NetworkObject>().Spawn(true);
             counter++;
         }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    void DebugLog_ServerRpc(string msg)
-    {
-        DebugLog_ClientRpc(msg);
-    }
-
-    [ClientRpc]
-    void DebugLog_ClientRpc(string msg)
-    {
-        Debug.Log(msg);
     }
 }
