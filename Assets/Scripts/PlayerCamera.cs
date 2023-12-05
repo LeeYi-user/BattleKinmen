@@ -10,6 +10,7 @@ public class PlayerCamera : NetworkBehaviour
 
     [SerializeField] private Transform orientation;
     [SerializeField] private Transform weaponCam;
+    [SerializeField] private Transform model;
 
     [SerializeField] private float sensX; // 5
     [SerializeField] private float sensY; // 5
@@ -38,6 +39,7 @@ public class PlayerCamera : NetworkBehaviour
     {
         if (!IsOwner)
         {
+            model.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
             return;
         }
 
@@ -56,7 +58,7 @@ public class PlayerCamera : NetworkBehaviour
 
         yRotation += mouseX;
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        xRotation = Mathf.Clamp(xRotation, -89f, 89f);
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
