@@ -11,7 +11,6 @@ public class PlayerHealth : NetworkBehaviour
     // 元件位置: 玩家物件(player prefab)之下
 
     [SerializeField] private float maxHealth; // 100
-    [SerializeField] private float respawnTime; // 2
 
     [SerializeField] private Material[] color;
     [SerializeField] private CapsuleCollider bodyCollider;
@@ -23,26 +22,13 @@ public class PlayerHealth : NetworkBehaviour
     [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private PlayerMovement playerMovement;
 
-    private Image healthBar;
-    private float currentHealth;
-    private bool live;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        currentHealth = maxHealth;
-        //healthBar = GameObject.Find("Health").GetComponent<Image>();
-    }
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private bool spawning = true;
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner || !live)
+        if (!IsHost || spawning)
         {
             return;
         }
@@ -52,10 +38,55 @@ public class PlayerHealth : NetworkBehaviour
             TakeDamage(100f);
         }
 
-        if (currentHealth <= 0)
+        if (currentHealth.Value <= 0)
         {
-            live = false;
+            spawning = true;
+            StartCoroutine(Spawn(2f));
+        }
+    }
 
+    public void TakeDamage(float damage)
+    {
+        currentHealth.Value -= damage;
+        StartCoroutine(DamageFlash(0.15f));
+    }
+
+    IEnumerator DamageFlash(float seconds)
+    {
+        ChangeColor_ClientRpc(1);
+
+        yield return new WaitForSeconds(seconds);
+
+        ChangeColor_ClientRpc(0);
+    }
+
+    [ClientRpc]
+    void ChangeColor_ClientRpc(int index)
+    {
+        bodySkin.material = color[index];
+    }
+
+    public IEnumerator Spawn(float seconds)
+    {
+        if (MainScene.start)
+        {
+            PlayerDespawn_ClientRpc();
+        }
+
+        yield return new WaitForSeconds(seconds);
+
+        currentHealth.Value = maxHealth;
+
+        PlayerRespawn_ClientRpc();
+    }
+
+    [ClientRpc]
+    void PlayerDespawn_ClientRpc()
+    {
+        bodyCollider.enabled = false;
+
+        if (IsOwner)
+        {
             //GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
             //GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
             //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
@@ -64,85 +95,53 @@ public class PlayerHealth : NetworkBehaviour
             playerModel.Despawn();
             playerCamera.Despawn();
             playerMovement.Despawn();
-
-            PlayerDespawn_ServerRpc(NetworkManager.LocalClientId);
-            StartCoroutine(Respawn(respawnTime));
         }
-    }
-
-    public void TakeDamage(float damage)
-    {
-        if (!IsOwner)
-        {
-            StartCoroutine(DamageFlash());
-            return;
-        }
-
-        currentHealth -= damage;
-        //healthBar.fillAmount = currentHealth / maxHealth;
-    }
-
-    IEnumerator DamageFlash()
-    {
-        bodySkin.material = color[1];
-        yield return new WaitForSeconds(0.15f);
-        bodySkin.material = color[0];
-    }
-
-    public IEnumerator Respawn(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-
-        live = true;
-
-        //GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
-        //GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
-        //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
-
-        playerGun.Respawn();
-        playerModel.Respawn();
-        playerCamera.Respawn();
-        playerMovement.Respawn();
-
-        currentHealth = maxHealth;
-        //healthBar.fillAmount = currentHealth / maxHealth;
-
-        PlayerRespawn_ServerRpc(NetworkManager.LocalClientId);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    void PlayerDespawn_ServerRpc(ulong playerId)
-    {
-        PlayerDespawn_ClientRpc(playerId);
-    }
-
-    [ClientRpc]
-    void PlayerDespawn_ClientRpc(ulong playerId)
-    {
-        bodyCollider.enabled = false;
-
-        if (playerId != NetworkManager.LocalClientId)
+        else
         {
             bodySkin.enabled = false;
             fakeGunSkin.enabled = false;
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    void PlayerRespawn_ServerRpc(ulong playerId)
-    {
-        PlayerRespawn_ClientRpc(playerId);
-    }
-
     [ClientRpc]
-    void PlayerRespawn_ClientRpc(ulong playerId)
+    void PlayerRespawn_ClientRpc()
     {
         bodyCollider.enabled = true;
 
-        if (playerId != NetworkManager.LocalClientId)
+        if (IsOwner)
+        {
+            if (!MainScene.start)
+            {
+                MainScene.start = true;
+                GameObject.Find("Panel").SetActive(false);
+            }
+            
+            //GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
+            //GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
+            //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
+
+            playerGun.Respawn();
+            playerModel.Respawn();
+            playerCamera.Respawn();
+            playerMovement.Respawn();
+            FinishSpawning_ServerRpc();
+        }
+        else
         {
             bodySkin.enabled = true;
             fakeGunSkin.enabled = true;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void FinishSpawning_ServerRpc()
+    {
+        StartCoroutine(FinishSpawning());
+    }
+
+    IEnumerator FinishSpawning()
+    {
+        yield return new WaitUntil(() => transform.position.y >= -10f);
+        spawning = false;
     }
 }

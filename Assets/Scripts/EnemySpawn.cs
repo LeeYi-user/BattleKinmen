@@ -9,17 +9,12 @@ public class EnemySpawn : NetworkBehaviour
 
     private int counter;
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-    }
-
     // Update is called once per frame
     void Update()
     {
         if (MainScene.start && IsHost && counter < 10)
         {
-            GameObject enemy = Instantiate(enemyPrefab, new Vector3(5f, 0f, 5f), Quaternion.identity);
+            GameObject enemy = Instantiate(enemyPrefab, new Vector3(Random.Range(2.5f, 7.5f), 0f, Random.Range(2.5f, 7.5f)), Quaternion.Euler(0, 90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);
             counter++;
         }

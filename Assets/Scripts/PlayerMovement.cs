@@ -199,7 +199,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        if (collision.gameObject.CompareTag("Ground"))
         {
             grounded = true;
         }
@@ -207,7 +207,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        if (collision.gameObject.CompareTag("Ground"))
         {
             grounded = false;
         }

@@ -106,11 +106,11 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         currentAmmo--;
 
         muzzleFlash.Play(); // 這裡會在第一人稱視角的 client 端顯示火花
-        PlayFakeMuzzleFlash_ServerRpc(NetworkManager.LocalClientId); // 這裡會告知 server 去生成火花, 以便其他玩家能夠看到 (註: 其他人看的是自己看不見的第三人稱火花)
+        PlayFakeMuzzleFlash_ServerRpc(); // 這裡會告知 server 去生成火花, 以便其他玩家能夠看到 (註: 其他人看的是自己看不見的第三人稱火花)
         animator.SetTrigger("isFiring"); // 這裡會在第一人稱視角的 client 端顯示開火
         fakeAnimator.SetTrigger("isFiring"); // 因為已經有 OwnerNetworkAnimator 來同步動畫了, 所以不需要使用 RPC 便能讓其他玩家看到 (註: 其他人看的是自己看不見的第三人稱開火)
         audioSource.PlayOneShot(audioClip); // 這裡會在 client 端播放槍聲
-        PlayFakeAudioSource_ServerRpc(NetworkManager.LocalClientId); // 這裡會告知 server 去播放槍聲, 以便其他玩家能夠聽到 (註: 其他人聽的是自己聽不見的第三人稱槍聲)
+        PlayFakeAudioSource_ServerRpc(); // 這裡會告知 server 去播放槍聲, 以便其他玩家能夠聽到 (註: 其他人聽的是自己聽不見的第三人稱槍聲)
 
         RaycastHit hit;
 
@@ -123,44 +123,49 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
                 MadeImpact = 1;
                 ShootPlayer_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
             }
+            else if (hit.transform.gameObject.CompareTag("Enemy"))
+            {
+                MadeImpact = 1;
+                ShootEnemy_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
+            }
 
             // 這裡會創造兩道子彈軌跡, 一道是給自己看的第一人稱子彈軌跡, 一道是給其他人看的第三人稱子彈軌跡, 兩道都需要用 RPC 來告知 Server 去生成 (註: 因為 client 端無法用 Instantiate 函式)
-            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
-            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
         }
         else
         {
             // 同上, 只是負責沒打中時的子彈軌跡
-            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, BulletSpawnPoint.position, true, hit.point, hit.normal, -1, fpsCam.transform.forward);
-            CreateBulletTrail_ServerRpc(NetworkManager.LocalClientId, fakeBulletSpawnPoint.position, false, hit.point, hit.normal, -1, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(BulletSpawnPoint.position, true, hit.point, hit.normal, -1, fpsCam.transform.forward);
+            CreateBulletTrail_ServerRpc(fakeBulletSpawnPoint.position, false, hit.point, hit.normal, -1, fpsCam.transform.forward);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PlayFakeMuzzleFlash_ServerRpc(ulong playerId)
+    private void PlayFakeMuzzleFlash_ServerRpc()
     {
-        PlayFakeMuzzleFlash_ClientRpc(playerId);
+        PlayFakeMuzzleFlash_ClientRpc();
     }
 
     [ClientRpc]
-    private void PlayFakeMuzzleFlash_ClientRpc(ulong playerId)
+    private void PlayFakeMuzzleFlash_ClientRpc()
     {
-        if (playerId != NetworkManager.LocalClientId)
+        if (!IsOwner)
         {
             fakeMuzzleFlash.Play();
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PlayFakeAudioSource_ServerRpc(ulong playerId)
+    private void PlayFakeAudioSource_ServerRpc()
     {
-        PlayFakeAudioSource_ClientRpc(playerId);
+        PlayFakeAudioSource_ClientRpc();
     }
 
     [ClientRpc]
-    private void PlayFakeAudioSource_ClientRpc(ulong playerId)
+    private void PlayFakeAudioSource_ClientRpc()
     {
-        if (playerId != NetworkManager.LocalClientId)
+        if (!IsOwner)
         {
             fakeAudioSource.PlayOneShot(audioClip);
         }
@@ -169,17 +174,17 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     [ServerRpc(RequireOwnership = false)]
     private void ShootPlayer_ServerRpc(ulong objectId, float damage)
     {
-        ShootPlayer_ClientRpc(objectId, damage);
-    }
-
-    [ClientRpc]
-    private void ShootPlayer_ClientRpc(ulong objectId, float damage)
-    {
         NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void ShootEnemy_ServerRpc(ulong objectId, float damage)
+    {
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Enemy>().TakeDamage(damage);
+    }
+
     [ServerRpc(RequireOwnership = false)] // 這裡的 playerId 是紀錄 client 的 LocalClientId, 而不是紀錄物件的 NetworkObjectId. 之所以用這個, 是因為 NetworkObjectId 無法在 RPC 中代表當前實例
-    private void CreateBulletTrail_ServerRpc(ulong playerId, Vector3 position, bool real, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
+    private void CreateBulletTrail_ServerRpc(Vector3 position, bool real, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
     {
         TrailRenderer trail = Instantiate(BulletTrail, position, Quaternion.identity);
 
@@ -194,17 +199,17 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
             StartCoroutine(SpawnTrail(trail, position + forward * range, Vector3.zero, MadeImpact, real));
         }
 
-        CreateBulletTrail_ClientRpc(trail.GetComponent<NetworkObject>().NetworkObjectId, playerId, real);
+        CreateBulletTrail_ClientRpc(trail.GetComponent<NetworkObject>().NetworkObjectId, real);
     }
 
     [ClientRpc]
-    private void CreateBulletTrail_ClientRpc(ulong objectId, ulong playerId, bool real)
+    private void CreateBulletTrail_ClientRpc(ulong objectId, bool real)
     {
         GameObject trailGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
 
         // 如果子彈軌跡是自己的 且 是給其他人看的第三人稱軌跡 那就對自己隱藏
         // 如果子彈軌跡是別人的 且 是給那個人看的第一人稱軌跡 那也對自己隱藏
-        if ((playerId == NetworkManager.LocalClientId && !real) || (playerId != NetworkManager.LocalClientId && real))
+        if (IsOwner != real)
         {
             trailGO.SetActive(false);
         }

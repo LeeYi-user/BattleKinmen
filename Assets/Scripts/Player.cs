@@ -19,7 +19,7 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        JoinGame_ServerRpc(NetworkManager.LocalClientId);
+        JoinGame_ServerRpc();
         NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
 
         if (!IsHost)
@@ -75,7 +75,7 @@ public class Player : NetworkBehaviour
 
         startButton = GameObject.Find("Button").GetComponent<Button>();
         startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "START";
-        startButton.onClick.AddListener(StartGame_ClientRpc);
+        startButton.onClick.AddListener(StartButtonClick);
     }
 
     // Update is called once per frame
@@ -94,18 +94,18 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void JoinGame_ServerRpc(ulong playerId)
+    void JoinGame_ServerRpc()
     {
         if (MainScene.start)
         {
-            KickPlayer_ClientRpc(playerId);
+            KickPlayer_ClientRpc();
         }
     }
 
     [ClientRpc]
-    void KickPlayer_ClientRpc(ulong playerId)
+    void KickPlayer_ClientRpc()
     {
-        if (playerId == NetworkManager.LocalClientId)
+        if (IsOwner)
         {
             NetworkManager.Shutdown();
         }
@@ -117,11 +117,11 @@ public class Player : NetworkBehaviour
         GameObject.Find("Counter").GetComponent<TextMeshProUGUI>().text = count.ToString();
     }
 
-    [ClientRpc]
-    void StartGame_ClientRpc()
+    void StartButtonClick()
     {
-        MainScene.start = true;
-        GameObject.Find("Panel").SetActive(false);
-        StartCoroutine(NetworkManager.LocalClient.PlayerObject.gameObject.GetComponent<PlayerHealth>().Respawn(0f));
+        foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
+        {
+            StartCoroutine(player.PlayerObject.GetComponent<PlayerHealth>().Spawn(0f));
+        }
     }
 }
