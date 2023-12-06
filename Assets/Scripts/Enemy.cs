@@ -10,7 +10,6 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private float maxHealth;
 
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
     private Transform target;
     private bool walking;
 

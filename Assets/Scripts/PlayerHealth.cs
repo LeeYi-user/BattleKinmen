@@ -11,6 +11,7 @@ public class PlayerHealth : NetworkBehaviour
     // 元件位置: 玩家物件(player prefab)之下
 
     [SerializeField] private float maxHealth; // 100
+    [SerializeField] private float minAltitude; // -10
 
     [SerializeField] private Material[] color;
     [SerializeField] private CapsuleCollider bodyCollider;
@@ -33,7 +34,7 @@ public class PlayerHealth : NetworkBehaviour
             return;
         }
 
-        if (transform.position.y < -10f)
+        if (transform.position.y < minAltitude)
         {
             TakeDamage(100f);
         }
@@ -66,9 +67,9 @@ public class PlayerHealth : NetworkBehaviour
         bodySkin.material = color[index];
     }
 
-    public IEnumerator Spawn(float seconds)
+    public IEnumerator Spawn(float seconds = 0)
     {
-        if (MainScene.start)
+        if (seconds > 0)
         {
             PlayerDespawn_ClientRpc();
         }
@@ -110,12 +111,6 @@ public class PlayerHealth : NetworkBehaviour
 
         if (IsOwner)
         {
-            if (!MainScene.start)
-            {
-                MainScene.start = true;
-                GameObject.Find("Panel").SetActive(false);
-            }
-            
             //GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
             //GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
             //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
@@ -141,7 +136,7 @@ public class PlayerHealth : NetworkBehaviour
 
     IEnumerator FinishSpawning()
     {
-        yield return new WaitUntil(() => transform.position.y >= -10f);
+        yield return new WaitUntil(() => transform.position.y >= minAltitude);
         spawning = false;
     }
 }

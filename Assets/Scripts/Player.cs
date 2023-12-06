@@ -119,9 +119,21 @@ public class Player : NetworkBehaviour
 
     void StartButtonClick()
     {
+        MainScene.start = true;
+
+        startButton.onClick.RemoveListener(StartButtonClick);
+
         foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
         {
-            StartCoroutine(player.PlayerObject.GetComponent<PlayerHealth>().Spawn(0f));
+            StartCoroutine(player.PlayerObject.GetComponent<PlayerHealth>().Spawn());
         }
+
+        StartGame_ClientRpc();
+    }
+
+    [ClientRpc]
+    void StartGame_ClientRpc()
+    {
+        GameObject.Find("Panel").SetActive(false);
     }
 }
