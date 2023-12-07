@@ -125,7 +125,7 @@ public class Player : NetworkBehaviour
 
         foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
         {
-            StartCoroutine(player.PlayerObject.GetComponent<PlayerHealth>().Spawn());
+            StartCoroutine(player.PlayerObject.GetComponent<PlayerHealth>().Respawn());
         }
 
         StartGame_ClientRpc();

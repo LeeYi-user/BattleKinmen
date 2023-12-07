@@ -184,7 +184,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     }
 
     [ServerRpc(RequireOwnership = false)] // 這裡的 playerId 是紀錄 client 的 LocalClientId, 而不是紀錄物件的 NetworkObjectId. 之所以用這個, 是因為 NetworkObjectId 無法在 RPC 中代表當前實例
-    private void CreateBulletTrail_ServerRpc(Vector3 position, bool real, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
+    private void CreateBulletTrail_ServerRpc(Vector3 position, bool IsReal, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
     {
         TrailRenderer trail = Instantiate(BulletTrail, position, Quaternion.identity);
 
@@ -192,30 +192,30 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
         if (MadeImpact > -1)
         {
-            StartCoroutine(SpawnTrail(trail, HitPoint, HitNormal, MadeImpact, real));
+            StartCoroutine(SpawnTrail(trail, HitPoint, HitNormal, MadeImpact, IsReal));
         }
         else
         {
-            StartCoroutine(SpawnTrail(trail, position + forward * range, Vector3.zero, MadeImpact, real));
+            StartCoroutine(SpawnTrail(trail, position + forward * range, Vector3.zero, MadeImpact, IsReal));
         }
 
-        CreateBulletTrail_ClientRpc(trail.GetComponent<NetworkObject>().NetworkObjectId, real);
+        CreateBulletTrail_ClientRpc(trail.GetComponent<NetworkObject>().NetworkObjectId, IsReal);
     }
 
     [ClientRpc]
-    private void CreateBulletTrail_ClientRpc(ulong objectId, bool real)
+    private void CreateBulletTrail_ClientRpc(ulong objectId, bool IsReal)
     {
         GameObject trailGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
 
         // 如果子彈軌跡是自己的 且 是給其他人看的第三人稱軌跡 那就對自己隱藏
         // 如果子彈軌跡是別人的 且 是給那個人看的第一人稱軌跡 那也對自己隱藏
-        if (IsOwner != real)
+        if (IsOwner != IsReal)
         {
             trailGO.SetActive(false);
         }
     }
 
-    private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, bool real)
+    private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, bool IsReal)
     {
         Vector3 startPosition = Trail.transform.position;
         float distance = Vector3.Distance(Trail.transform.position, HitPoint);
@@ -230,7 +230,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
         Trail.transform.position = HitPoint;
 
-        if ((MadeImpact > -1) && real)
+        if ((MadeImpact > -1) && IsReal)
         {
             GameObject impactGO = Instantiate(impactEffect[MadeImpact], HitPoint, Quaternion.LookRotation(HitNormal));
             impactGO.GetComponent<NetworkObject>().Spawn(true);

@@ -42,7 +42,9 @@ public class PlayerHealth : NetworkBehaviour
         if (currentHealth.Value <= 0)
         {
             spawning = true;
-            StartCoroutine(Spawn(2f));
+
+            PlayerDespawn_ClientRpc();
+            StartCoroutine(Respawn(2f));
         }
     }
 
@@ -67,13 +69,8 @@ public class PlayerHealth : NetworkBehaviour
         bodySkin.material = color[index];
     }
 
-    public IEnumerator Spawn(float seconds = 0)
+    public IEnumerator Respawn(float seconds = 0)
     {
-        if (seconds > 0)
-        {
-            PlayerDespawn_ClientRpc();
-        }
-
         yield return new WaitForSeconds(seconds);
 
         currentHealth.Value = maxHealth;
