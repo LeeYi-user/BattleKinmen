@@ -9,7 +9,7 @@ public class PlayerModel : NetworkBehaviour
     // 元件位置: 玩家物件(player prefab)之下
 
     [SerializeField] private Transform orientation;
-    [SerializeField] private SkinnedMeshRenderer realGunSkin;
+    [SerializeField] private GameObject realGunSkin;
 
     private bool live;
 
@@ -18,7 +18,7 @@ public class PlayerModel : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            realGunSkin.enabled = false;
+            realGunSkin.SetActive(false);
             return;
         }
 
@@ -40,13 +40,13 @@ public class PlayerModel : NetworkBehaviour
     public void Despawn()
     {
         live = false;
-        realGunSkin.enabled = false;
+        realGunSkin.SetActive(false);
     }
 
     public void Respawn()
     {
         live = true;
-        realGunSkin.enabled = true;
+        realGunSkin.SetActive(true);
         transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 }

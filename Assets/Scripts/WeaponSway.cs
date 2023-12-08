@@ -12,12 +12,11 @@ public class WeaponSway : MonoBehaviour
     [SerializeField] private float smooth;
     [SerializeField] private float multiplier;
     [SerializeField] private float originalRotationX;
-    [SerializeField] private float originalRotationY;
 
     // Update is called once per frame
     private void Update()
     {
-        float mouseX = originalRotationY;
+        float mouseX = 0;
         float mouseY = originalRotationX;
 
         if (Cursor.lockState == CursorLockMode.Locked)

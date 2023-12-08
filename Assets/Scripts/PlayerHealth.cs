@@ -13,10 +13,9 @@ public class PlayerHealth : NetworkBehaviour
     [SerializeField] private float maxHealth; // 100
     [SerializeField] private float minAltitude; // -10
 
-    [SerializeField] private Material[] color;
     [SerializeField] private CapsuleCollider bodyCollider;
-    [SerializeField] private SkinnedMeshRenderer bodySkin;
-    [SerializeField] private SkinnedMeshRenderer fakeGunSkin;
+    [SerializeField] private SkinnedMeshRenderer[] bodySkin;
+    [SerializeField] private GameObject fakeGunSkin;
 
     [SerializeField] private PlayerGun playerGun;
     [SerializeField] private PlayerModel playerModel;
@@ -51,22 +50,6 @@ public class PlayerHealth : NetworkBehaviour
     public void TakeDamage(float damage)
     {
         currentHealth.Value -= damage;
-        StartCoroutine(DamageFlash(0.15f));
-    }
-
-    IEnumerator DamageFlash(float seconds)
-    {
-        ChangeColor_ClientRpc(1);
-
-        yield return new WaitForSeconds(seconds);
-
-        ChangeColor_ClientRpc(0);
-    }
-
-    [ClientRpc]
-    void ChangeColor_ClientRpc(int index)
-    {
-        bodySkin.material = color[index];
     }
 
     public IEnumerator Respawn(float seconds = 0)
@@ -96,8 +79,12 @@ public class PlayerHealth : NetworkBehaviour
         }
         else
         {
-            bodySkin.enabled = false;
-            fakeGunSkin.enabled = false;
+            foreach (SkinnedMeshRenderer skin in bodySkin)
+            {
+                skin.enabled = false;
+            }
+
+            fakeGunSkin.SetActive(false);
         }
     }
 
@@ -120,8 +107,12 @@ public class PlayerHealth : NetworkBehaviour
         }
         else
         {
-            bodySkin.enabled = true;
-            fakeGunSkin.enabled = true;
+            foreach (SkinnedMeshRenderer skin in bodySkin)
+            {
+                skin.enabled = true;
+            }
+
+            fakeGunSkin.SetActive(true);
         }
     }
 
