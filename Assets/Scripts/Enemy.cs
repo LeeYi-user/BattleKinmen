@@ -11,7 +11,9 @@ public class Enemy : NetworkBehaviour
 
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private Transform target;
-    private bool walking;
+
+    private Animator animator;
+    private bool running;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +24,7 @@ public class Enemy : NetworkBehaviour
         }
 
         target = GameObject.Find("Enemy Target").transform;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -32,15 +35,18 @@ public class Enemy : NetworkBehaviour
             return;
         }
 
-        if (MainScene.start && !walking)
+        if (MainScene.start && !running)
         {
-            walking = true;
+            running = true;
             agent.SetDestination(target.position);
+            animator.SetBool("isRunning", true);
         }
 
         if (currentHealth.Value <= 0)
         {
-            Destroy(gameObject);
+            agent.isStopped = true;
+            animator.SetTrigger("isDying");
+            Destroy(gameObject, 2f);
         }
     }
 
