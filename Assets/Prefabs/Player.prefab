@@ -1536,10 +1536,10 @@ PrefabInstance:
       addedObject: {fileID: 956435921924016439}
     - targetCorrespondingSourceObject: {fileID: 5567955154162486684, guid: 194a7d217f54599488cc74a55497d5b9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7422737154721185274}
+      addedObject: {fileID: 2573473560118726238}
     - targetCorrespondingSourceObject: {fileID: 5567955154162486684, guid: 194a7d217f54599488cc74a55497d5b9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5391925117848449743}
+      addedObject: {fileID: 8517484145188717211}
   m_SourcePrefab: {fileID: 100100000, guid: 194a7d217f54599488cc74a55497d5b9, type: 3}
 --- !u!4 &4393340763848706195 stripped
 Transform:
@@ -1647,7 +1647,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!95 &7422737154721185274
+--- !u!95 &2573473560118726238
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -1668,7 +1668,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5391925117848449743
+--- !u!114 &8517484145188717211
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1680,8 +1680,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3c762b0e12e4c49b4f78d60173169a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 7422737154721185274}
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 815002251
+    DestinationState: -1268167087
+    TransitionDuration: 0.25
+    TriggerNameHash: -1799522200
+    TransitionIndex: 1
+  m_Animator: {fileID: 2573473560118726238}
 --- !u!1 &6691362109619069414 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6353013514870891409, guid: 194a7d217f54599488cc74a55497d5b9, type: 3}
@@ -1942,9 +1949,6 @@ PrefabInstance:
       addedObject: {fileID: 7272691689095666507}
     - targetCorrespondingSourceObject: {fileID: 5567955154162486684, guid: 194a7d217f54599488cc74a55497d5b9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8261242002957513809}
-    - targetCorrespondingSourceObject: {fileID: 5567955154162486684, guid: 194a7d217f54599488cc74a55497d5b9, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 7449695774336539826}
     - targetCorrespondingSourceObject: {fileID: 5567955154162486684, guid: 194a7d217f54599488cc74a55497d5b9, type: 3}
       insertIndex: -1
@@ -2061,21 +2065,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &8261242002957513809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8126191746086292161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 724d1bf9bfd937b4bbaae411a690b1b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  smooth: 8
-  multiplier: 2
-  originalRotationX: 90
 --- !u!95 &7449695774336539826
 Animator:
   serializedVersion: 5
@@ -2118,13 +2107,12 @@ MonoBehaviour:
   - {fileID: 1000012142692022, guid: a475880e7da0e9548aa05cb7933752cd, type: 3}
   - {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285, type: 3}
   maxAmmo: 5
-  reloadTime: 2
+  reloadTime: 1
   BulletSpeed: 100
   audioClip: {fileID: 8300000, guid: a764377339b869e459f5e53fb9258f73, type: 3}
   BulletSpawnPoint: {fileID: 5082478284688209484}
   BulletTrail: {fileID: 6082088667196707117, guid: 84077dac0b5c6f64fb7baa8d8751f7a5, type: 3}
   fakeMuzzleFlash: {fileID: 1333000955606032931}
-  fakeAnimator: {fileID: 7422737154721185274}
   fakeAudioSource: {fileID: 956435921924016439}
   fakeBulletSpawnPoint: {fileID: 1211080469475439401}
 --- !u!1001 &5081928378277611510
