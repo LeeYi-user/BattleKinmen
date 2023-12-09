@@ -99,8 +99,6 @@ public class PlayerMovement : NetworkBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        animator.SetBool("isRunning", horizontalInput != 0 || verticalInput != 0);
-
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
@@ -139,6 +137,10 @@ public class PlayerMovement : NetworkBehaviour
 
     void SpeedControl()
     {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        animator.SetBool("isRunning", flatVel.magnitude > 1);
+
         if (OnSlope() && !exitingSlope)
         {
             if (rb.velocity.magnitude > moveSpeed)
@@ -148,8 +150,6 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
             if (flatVel.magnitude > moveSpeed)
             {
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;

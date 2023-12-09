@@ -207,12 +207,14 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     {
         GameObject trailGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
 
+        trailGO.SetActive(false);
+
         // 如果子彈軌跡是自己的 且 是給其他人看的第三人稱軌跡 那就對自己隱藏
         // 如果子彈軌跡是別人的 且 是給那個人看的第一人稱軌跡 那也對自己隱藏
-        if (IsOwner != IsReal)
-        {
-            trailGO.SetActive(false);
-        }
+        //if (IsOwner != IsReal)
+        //{
+        //    trailGO.SetActive(false);
+        //}
     }
 
     private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, bool IsReal)

@@ -86,7 +86,7 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Backspace) && Cursor.lockState == CursorLockMode.Locked)
+        if (Input.GetKeyDown(KeyCode.Backspace) && (!MainScene.start || Cursor.lockState == CursorLockMode.Locked))
         {
             NetworkManager.Shutdown();
             Cursor.lockState = CursorLockMode.None;
