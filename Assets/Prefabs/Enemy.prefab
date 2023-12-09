@@ -843,6 +843,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d901cfae23ca6924a9f5712a6e760418, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5371391998887807246}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d901cfae23ca6924a9f5712a6e760418, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7669249746604550130}
   m_SourcePrefab: {fileID: 100100000, guid: d901cfae23ca6924a9f5712a6e760418, type: 3}
 --- !u!4 &7396850497448724791 stripped
 Transform:
@@ -984,3 +987,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7669249746604550130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8345769678236060590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 419662107
+    DestinationState: -199589329
+    TransitionDuration: 0.25
+    TriggerNameHash: -635503931
+    TransitionIndex: 0
+  m_Animator: {fileID: 5371391998887807246}
