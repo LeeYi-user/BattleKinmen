@@ -12,8 +12,11 @@ public class Enemy : NetworkBehaviour
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private Transform target;
 
-    private Animator animator;
+    public Animator animator;
     private bool running;
+
+    public LayerMask whatIsPlayer;
+    public float attackRange;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +27,6 @@ public class Enemy : NetworkBehaviour
         }
 
         target = GameObject.Find("Enemy Target").transform;
-        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame

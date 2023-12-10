@@ -480,7 +480,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d901cfae23ca6924a9f5712a6e760418, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d901cfae23ca6924a9f5712a6e760418, type: 3}
       propertyPath: m_TagString
@@ -944,6 +944,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agent: {fileID: -5683818393634943384}
   maxHealth: 30
+  animator: {fileID: 5371391998887807246}
+  whatIsPlayer:
+    serializedVersion: 2
+    m_Bits: 128
+  attackRange: 12
 --- !u!195 &-5683818393634943384
 NavMeshAgent:
   m_ObjectHideFlags: 0

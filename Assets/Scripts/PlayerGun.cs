@@ -109,32 +109,26 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         PlayFakeAudioSource_ServerRpc(); // 這裡會告知 server 去播放槍聲, 以便其他玩家能夠聽到 (註: 其他人聽的是自己聽不見的第三人稱槍聲)
 
         RaycastHit hit;
+        int MadeImpact = 0;
 
-        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range, LayerMask.GetMask("Hittable")))
+        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
         {
-            int MadeImpact = 0;
+            MadeImpact = 1;
 
             if (hit.transform.gameObject.CompareTag("Player"))
             {
-                MadeImpact = 1;
+                MadeImpact = 2;
                 ShootPlayer_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
             }
             else if (hit.transform.gameObject.CompareTag("Enemy"))
             {
-                MadeImpact = 1;
+                MadeImpact = 2;
                 ShootEnemy_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
             }
+        }
 
-            // 這裡會創造兩道子彈軌跡, 一道是給自己看的第一人稱子彈軌跡, 一道是給其他人看的第三人稱子彈軌跡, 兩道都需要用 RPC 來告知 Server 去生成 (註: 因為 client 端無法用 Instantiate 函式)
-            CreateBulletTrail_ServerRpc(BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
-            CreateBulletTrail_ServerRpc(fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
-        }
-        else
-        {
-            // 同上, 只是負責沒打中時的子彈軌跡
-            CreateBulletTrail_ServerRpc(BulletSpawnPoint.position, true, hit.point, hit.normal, -1, fpsCam.transform.forward);
-            CreateBulletTrail_ServerRpc(fakeBulletSpawnPoint.position, false, hit.point, hit.normal, -1, fpsCam.transform.forward);
-        }
+        CreateBulletTrail_ServerRpc(BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
+        CreateBulletTrail_ServerRpc(fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -186,7 +180,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
         trail.GetComponent<NetworkObject>().Spawn(true);
 
-        if (MadeImpact > -1)
+        if (MadeImpact > 0)
         {
             StartCoroutine(SpawnTrail(trail, HitPoint, HitNormal, MadeImpact, IsReal));
         }
@@ -228,9 +222,9 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
         Trail.transform.position = HitPoint;
 
-        if ((MadeImpact > -1) && IsReal)
+        if ((MadeImpact > 0) && IsReal)
         {
-            GameObject impactGO = Instantiate(impactEffect[MadeImpact], HitPoint, Quaternion.LookRotation(HitNormal));
+            GameObject impactGO = Instantiate(impactEffect[MadeImpact - 1], HitPoint, Quaternion.LookRotation(HitNormal));
             impactGO.GetComponent<NetworkObject>().Spawn(true);
             Destroy(impactGO, 2f);
         }

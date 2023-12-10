@@ -17,7 +17,7 @@ public class EnemySpawn : NetworkBehaviour
             return;
         }
 
-        if (MainScene.start && counter < 100)
+        if (MainScene.start && counter < 10)
         {
             GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);

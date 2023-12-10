@@ -201,7 +201,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Untagged") && LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground")
         {
             grounded = true;
         }
@@ -209,7 +209,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Untagged") && LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground")
         {
             grounded = false;
         }
