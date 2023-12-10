@@ -38,6 +38,7 @@ public class PlayerMovement : NetworkBehaviour
     private bool grounded;
     private RaycastHit slopeHit;
     private bool exitingSlope;
+    private Transform spawnPoint;
     private bool live;
 
     // Start is called before the first frame update
@@ -50,6 +51,7 @@ public class PlayerMovement : NetworkBehaviour
 
         rb = GetComponent<Rigidbody>();
         readyToJump = true;
+        spawnPoint = GameObject.Find("Player Spawner").transform;
         Despawn();
     }
 
@@ -197,9 +199,9 @@ public class PlayerMovement : NetworkBehaviour
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
         {
             grounded = true;
         }
@@ -207,7 +209,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
         {
             grounded = false;
         }
@@ -222,7 +224,7 @@ public class PlayerMovement : NetworkBehaviour
     public void Respawn()
     {
         live = true;
-        rb.MovePosition(new Vector3(10f, 0f, 10f));
+        rb.MovePosition(spawnPoint.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-5f, 5f)));
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 }
