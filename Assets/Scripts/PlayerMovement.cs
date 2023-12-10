@@ -201,7 +201,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        if (collision.gameObject.CompareTag("Untagged") && LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
         {
             grounded = true;
         }
@@ -209,7 +209,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
+        if (collision.gameObject.CompareTag("Untagged") && LayerMask.LayerToName(collision.gameObject.layer) == "Hittable")
         {
             grounded = false;
         }
@@ -224,6 +224,7 @@ public class PlayerMovement : NetworkBehaviour
     public void Respawn()
     {
         live = true;
+        grounded = false;
         rb.MovePosition(spawnPoint.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-5f, 5f)));
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
