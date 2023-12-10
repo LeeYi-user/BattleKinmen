@@ -22,7 +22,7 @@ public class PlayerModel : NetworkBehaviour
             return;
         }
 
-        gameObject.layer = LayerMask.NameToLayer("Default");
+        //gameObject.layer = LayerMask.NameToLayer("Default");
         Despawn();
     }
 

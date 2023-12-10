@@ -12,11 +12,18 @@ public class Enemy : NetworkBehaviour
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private Transform target;
 
-    public Animator animator;
+    private  Animator animator;
     private bool running;
 
-    public LayerMask whatIsPlayer;
-    public float attackRange;
+    [SerializeField] private LayerMask whatIsPlayer;
+    [SerializeField] private float attackRange;
+    [SerializeField] private float attackRate;
+
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip audioClip;
+
+    private float nextTimeToAttack;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +34,7 @@ public class Enemy : NetworkBehaviour
         }
 
         target = GameObject.Find("Enemy Target").transform;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -44,12 +52,74 @@ public class Enemy : NetworkBehaviour
             animator.SetBool("isRunning", true);
         }
 
+        if (Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) && Time.time >= nextTimeToAttack)
+        {
+            nextTimeToAttack = Time.time + 1f / attackRate;
+            StartCoroutine(Shoot());
+        }
+
         if (currentHealth.Value <= 0)
         {
-            agent.isStopped = true;
-            animator.SetTrigger("isDying");
-            Destroy(gameObject, 2f);
+            Die();
         }
+    }
+
+    IEnumerator Shoot()
+    {
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        GameObject player = FindClosestPlayer();
+
+        transform.LookAt(player.transform);
+        animator.SetTrigger("isFiring");
+        PlayMuzzleFlash_ClientRpc();
+        PlayAudioSource_ClientRpc();
+        player.GetComponent<PlayerHealth>().TakeDamage(30f);
+
+        yield return new WaitForSeconds(0.8f);
+
+        agent.isStopped = false;
+    }
+
+    [ClientRpc]
+    private void PlayMuzzleFlash_ClientRpc()
+    {
+        muzzleFlash.Play();
+    }
+
+    [ClientRpc]
+    private void PlayAudioSource_ClientRpc()
+    {
+        audioSource.PlayOneShot(audioClip);
+    }
+
+    void Die()
+    {
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+
+        animator.SetTrigger("isDying");
+        Destroy(gameObject, 2f);
+    }
+
+    public GameObject FindClosestPlayer()
+    {
+        GameObject[] gos;
+        gos = GameObject.FindGameObjectsWithTag("Player");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
+        }
+        return closest;
     }
 
     public void TakeDamage(float damage)
