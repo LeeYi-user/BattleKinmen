@@ -14,6 +14,7 @@ public class Enemy : NetworkBehaviour
 
     private  Animator animator;
     private bool running;
+    private bool dying;
 
     [SerializeField] private LayerMask whatIsPlayer;
     [SerializeField] private float attackRange;
@@ -52,14 +53,15 @@ public class Enemy : NetworkBehaviour
             animator.SetBool("isRunning", true);
         }
 
-        if (Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) && Time.time >= nextTimeToAttack)
+        if (Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) && Time.time >= nextTimeToAttack && !dying)
         {
             nextTimeToAttack = Time.time + 1f / attackRate;
             StartCoroutine(Shoot());
         }
 
-        if (currentHealth.Value <= 0)
+        if (currentHealth.Value <= 0 && !dying)
         {
+            dying = true;
             Die();
         }
     }

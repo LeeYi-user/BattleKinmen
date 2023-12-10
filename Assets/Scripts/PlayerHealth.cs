@@ -68,9 +68,9 @@ public class PlayerHealth : NetworkBehaviour
 
         if (IsOwner)
         {
-            //GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
-            //GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
-            //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
+            GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+            GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
+            GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
 
             playerGun.Despawn();
             playerModel.Despawn();
@@ -95,9 +95,9 @@ public class PlayerHealth : NetworkBehaviour
 
         if (IsOwner)
         {
-            //GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
-            //GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
-            //GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
+            GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
+            GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
+            GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
 
             playerGun.Respawn();
             playerModel.Respawn();
