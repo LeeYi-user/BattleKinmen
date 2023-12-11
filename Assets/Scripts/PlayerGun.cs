@@ -18,18 +18,19 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
     [SerializeField] private int maxAmmo; // 7
     [SerializeField] private float reloadTime; // 1.35
-    [SerializeField] private float BulletSpeed; // 100
 
+    [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private Animator animator;
+
     [SerializeField] private Transform BulletSpawnPoint;
     [SerializeField] private TrailRenderer BulletTrail;
+    [SerializeField] private float BulletSpeed; // 100
 
     [SerializeField] private ParticleSystem fakeMuzzleFlash;
     [SerializeField] private AudioSource fakeAudioSource;
     [SerializeField] private Transform fakeBulletSpawnPoint;
 
-    private Animator animator;
-    private AudioSource audioSource;
     private int currentAmmo;
     private bool isReloading;
     private float nextTimeToFire;
@@ -45,8 +46,6 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
 
         fakeMuzzleFlash.gameObject.SetActive(false);
         fakeAudioSource.enabled = false;
-        animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
         currentAmmo = maxAmmo;
         isReloading = false;
         nextTimeToFire = 0f;

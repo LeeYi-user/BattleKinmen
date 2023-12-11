@@ -11,8 +11,6 @@ public class Enemy : NetworkBehaviour
 
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private Transform target;
-
-    private  Animator animator;
     private bool running;
     private bool dying;
 
@@ -23,6 +21,7 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private Animator animator;
 
     private float nextTimeToAttack;
 
@@ -35,7 +34,6 @@ public class Enemy : NetworkBehaviour
         }
 
         target = GameObject.Find("Enemy Target").transform;
-        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
