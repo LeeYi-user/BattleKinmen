@@ -102,6 +102,8 @@ public class Enemy : NetworkBehaviour
 
         animator.SetTrigger("isDying");
         Destroy(gameObject, 2f);
+
+        EnemySpawn.counter--;
     }
 
     public GameObject FindClosestPlayer()
