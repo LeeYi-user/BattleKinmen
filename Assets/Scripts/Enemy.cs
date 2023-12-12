@@ -62,6 +62,16 @@ public class Enemy : NetworkBehaviour
             dying = true;
             Die();
         }
+
+        if (Vector3.Distance(transform.position, target.position) < 1f)
+        {
+            Invade();
+        }
+
+        if (MainScene.gameover)
+        {
+            Destroy(gameObject);
+        }
     }
 
     IEnumerator Shoot()
@@ -102,6 +112,13 @@ public class Enemy : NetworkBehaviour
         Destroy(gameObject, 2f);
 
         EnemySpawn.counter--;
+    }
+
+    void Invade()
+    {
+        MainScene.lives--;
+        EnemySpawn.counter--;
+        Destroy(gameObject);
     }
 
     public GameObject FindClosestPlayer()

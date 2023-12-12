@@ -42,7 +42,7 @@ public class PlayerHealth : NetworkBehaviour
         {
             spawning = true;
 
-            PlayerDespawn_ClientRpc();
+            PlayerDespawn_ClientRpc("YOU DIED");
             StartCoroutine(Respawn(2f));
         }
     }
@@ -56,13 +56,16 @@ public class PlayerHealth : NetworkBehaviour
     {
         yield return new WaitForSeconds(seconds);
 
-        currentHealth.Value = maxHealth;
+        if (!MainScene.gameover)
+        {
+            currentHealth.Value = maxHealth;
 
-        PlayerRespawn_ClientRpc();
+            PlayerRespawn_ClientRpc();
+        }
     }
 
     [ClientRpc]
-    void PlayerDespawn_ClientRpc()
+    public void PlayerDespawn_ClientRpc(string msg)
     {
         bodyCollider.enabled = false;
 
@@ -70,6 +73,7 @@ public class PlayerHealth : NetworkBehaviour
         {
             GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
             GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
+            GameObject.Find("Death Message").GetComponent<TMP_Text>().text = msg;
             GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
 
             playerGun.Despawn();

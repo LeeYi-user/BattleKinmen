@@ -22,17 +22,17 @@ public class EnemySpawn : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsHost)
+        if (!IsHost || !MainScene.start || MainScene.gameover)
         {
             return;
         }
 
-        if (MainScene.start && startTime == 0)
+        if (startTime == 0)
         {
             startTime = Time.time;
         }
 
-        if (MainScene.start && counter < Sigmoid(Time.time - startTime))
+        if (counter < Sigmoid(Time.time - startTime))
         {
             GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);

@@ -86,10 +86,26 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Backspace) && (!MainScene.start || Cursor.lockState == CursorLockMode.Locked))
+        if (Input.GetKeyDown(KeyCode.Backspace) && (!MainScene.start || MainScene.gameover || Cursor.lockState == CursorLockMode.Locked))
         {
             NetworkManager.Shutdown();
             Cursor.lockState = CursorLockMode.None;
+            return;
+        }
+
+        if (!IsHost || MainScene.gameover)
+        {
+            return;
+        }
+
+        if (MainScene.lives <= 0)
+        {
+            MainScene.gameover = true;
+
+            foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
+            {
+                player.PlayerObject.GetComponent<PlayerHealth>().PlayerDespawn_ClientRpc("YOU LOSE");
+            }
         }
     }
 
