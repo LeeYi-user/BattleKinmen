@@ -40,8 +40,8 @@ public class EnemySpawn : NetworkBehaviour
         }
     }
 
-    private int Sigmoid(float t)
+    private float Sigmoid(float t)
     {
-        return (int)(enemyLimit * (1.0f / (1.0f + Mathf.Exp((-1.0f / (timeLimit / 10.0f)) * (t - (timeLimit / 2.0f))))));
+        return enemyLimit / (1f + Mathf.Exp((5f * timeLimit - 10f * t) / timeLimit));
     }
 }

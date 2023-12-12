@@ -26,7 +26,7 @@ public class WeaponSway : MonoBehaviour
 
         Quaternion rotationX = Quaternion.AngleAxis(-mouseY, Vector3.right);
         Quaternion rotationY = Quaternion.AngleAxis(mouseX, Vector3.up);
-        Quaternion rotationZ = Quaternion.Euler(transform.localRotation.x, transform.localRotation.y, originalRotationZ);
+        Quaternion rotationZ = Quaternion.AngleAxis(originalRotationZ, Vector3.forward);
         Quaternion targetRotation = rotationX * rotationY * rotationZ;
 
         transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, smooth * Time.deltaTime);

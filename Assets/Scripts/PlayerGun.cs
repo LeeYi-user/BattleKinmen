@@ -53,14 +53,14 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!IsOwner || !live) // 如果該玩家物件不是自己操控的
         {
             return; // 就直接 return
         }
 
-        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None)
+        if ((Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None)
         {
             Cursor.lockState = CursorLockMode.Locked;
             return;
@@ -77,7 +77,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
             return;
         }
 
-        if (Input.GetButtonDown("Fire1") && Cursor.lockState == CursorLockMode.Locked && Time.time >= nextTimeToFire)
+        if (Input.GetButton("Fire1") && Cursor.lockState == CursorLockMode.Locked && Time.time >= nextTimeToFire)
         {
             nextTimeToFire = Time.time + 1f / fireRate;
             Shoot();
