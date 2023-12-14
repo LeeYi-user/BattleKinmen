@@ -14,11 +14,6 @@ public class InitSceneManager : MonoBehaviour
         Application.targetFrameRate = fps;
     }
 
-    private void Start()
-    {
-        SceneManager.LoadScene("MenuScene");
-    }
-
     private void Update()
     {
         if (Application.targetFrameRate != fps)
