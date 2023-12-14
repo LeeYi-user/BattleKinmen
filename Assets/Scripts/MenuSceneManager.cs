@@ -75,15 +75,20 @@ public class MenuSceneManager : MonoBehaviour
 
     public void HostButtonClick()
     {
-        UnityRelay unityRelay = GameObject.Find("NetworkManager").GetComponent<UnityRelay>();
+        SceneManager.LoadScene("MainScene");
 
-        if (host)
+        if (InitSceneManager.relay)
         {
-            unityRelay.CreateRelay();
-        }
-        else
-        {
-            unityRelay.JoinRelay(inputField.text);
+            UnityRelay unityRelay = GameObject.Find("NetworkManager").GetComponent<UnityRelay>();
+
+            if (host)
+            {
+                unityRelay.CreateRelay();
+            }
+            else
+            {
+                unityRelay.JoinRelay(inputField.text);
+            }
         }
     }
 

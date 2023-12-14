@@ -15,17 +15,15 @@ public class UnityRelay : MonoBehaviour
 {
     private async void Start()
     {
+        InitSceneManager.relay = true;
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        SceneManager.LoadScene("MenuScene");
     }
 
     public async void CreateRelay()
     {
         try
         {
-            SceneManager.LoadScene("MainScene");
-
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
@@ -46,8 +44,6 @@ public class UnityRelay : MonoBehaviour
     {
         try
         {
-            SceneManager.LoadScene("MainScene");
-
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
