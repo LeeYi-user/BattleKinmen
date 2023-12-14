@@ -5,9 +5,6 @@ using Unity.Netcode;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    // 元件用途: 操控玩家移動
-    // 元件位置: 玩家物件(player prefab)之下
-
     [SerializeField] private Transform orientation;
     [SerializeField] private float gravity;
 
@@ -19,7 +16,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float airMultiplier;
 
     [Header("Keybinds")]
-    [SerializeField] private KeyCode jumpKey; // space
+    [SerializeField] private KeyCode jumpKey;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask whatIsGround;
@@ -30,33 +27,32 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Animations")]
     [SerializeField] private Animator animator;
 
-    private Rigidbody rb;
+    [Header("Body")]
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform model;
+
+    private Transform spawnPoint;
+    private bool grounded;
     private float horizontalInput;
     private float verticalInput;
-    private Vector3 moveDirection;
-    private bool readyToJump;
-    private bool grounded;
-    private RaycastHit slopeHit;
+    private bool readyToJump = true;
     private bool exitingSlope;
-    private Transform spawnPoint;
+    private Vector3 moveDirection;
+    private RaycastHit slopeHit;
     private bool live;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         if (!IsOwner)
         {
             return;
         }
 
-        rb = GetComponent<Rigidbody>();
-        readyToJump = true;
         spawnPoint = GameObject.Find("Player Spawner").transform;
         Despawn();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (!IsOwner || !live)
         {
@@ -79,9 +75,11 @@ public class PlayerMovement : NetworkBehaviour
         {
             rb.drag = 0;
         }
+
+        model.rotation = orientation.rotation;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!IsOwner || !live)
         {
@@ -91,7 +89,7 @@ public class PlayerMovement : NetworkBehaviour
         MovePlayer();
     }
 
-    void MyInput()
+    private void MyInput()
     {
         if (Cursor.lockState == CursorLockMode.None)
         {
@@ -109,7 +107,43 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    void MovePlayer()
+    private void Jump()
+    {
+        exitingSlope = true;
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(transform.up * Mathf.Sqrt(jumpForce * -2f * gravity), ForceMode.Impulse);
+    }
+
+    private void ResetJump()
+    {
+        readyToJump = true;
+        exitingSlope = false;
+    }
+
+    private void SpeedControl()
+    {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        animator.SetBool("isRunning", flatVel.magnitude > 1);
+
+        if (OnSlope() && !exitingSlope)
+        {
+            if (rb.velocity.magnitude > moveSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * moveSpeed;
+            }
+        }
+        else
+        {
+            if (flatVel.magnitude > moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            }
+        }
+    }
+
+    private void MovePlayer()
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
@@ -137,43 +171,7 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    void SpeedControl()
-    {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        animator.SetBool("isRunning", flatVel.magnitude > 1);
-
-        if (OnSlope() && !exitingSlope)
-        {
-            if (rb.velocity.magnitude > moveSpeed)
-            {
-                rb.velocity = rb.velocity.normalized * moveSpeed;
-            }
-        }
-        else
-        {
-            if (flatVel.magnitude > moveSpeed)
-            {
-                Vector3 limitedVel = flatVel.normalized * moveSpeed;
-                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
-            }
-        }
-    }
-
-    void Jump()
-    {
-        exitingSlope = true;
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        rb.AddForce(transform.up * Mathf.Sqrt(jumpForce * -2f * gravity), ForceMode.Impulse);
-    }
-
-    void ResetJump()
-    {
-        readyToJump = true;
-        exitingSlope = false;
-    }
-
-    bool OnSlope()
+    private bool OnSlope()
     {
         //Debug.DrawRay(orientation.position + Vector3.up * 0.3f, Vector3.forward * 0.6f, Color.green);
         //Debug.DrawRay(orientation.position + Vector3.up * 0.3f, Vector3.back * 0.6f, Color.green);
@@ -194,7 +192,7 @@ public class PlayerMovement : NetworkBehaviour
         return false;
     }
 
-    Vector3 GetSlopeMoveDirection()
+    private Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
@@ -225,7 +223,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         live = true;
         grounded = false;
-        rb.MovePosition(spawnPoint.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-5f, 5f)));
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.MovePosition(spawnPoint.position + new Vector3(Random.Range(-4f, 4f), 0f, Random.Range(-4f, 4f)));
     }
 }

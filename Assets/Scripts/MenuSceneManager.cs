@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class MenuScene : MonoBehaviour
+public class MenuSceneManager : MonoBehaviour
 {
     public static bool host;
 
@@ -19,8 +19,7 @@ public class MenuScene : MonoBehaviour
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TextMeshProUGUI hostButtonText;
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (inputField.text == "")
         {

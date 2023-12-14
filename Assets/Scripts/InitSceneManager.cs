@@ -3,28 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class InitScene : MonoBehaviour
+public class InitSceneManager : MonoBehaviour
 {
-    // 元件用途: 初始化
-    // 元件位置: InitScene 的 For Script 之下
-
     [SerializeField] private int fps;
 
-    void Awake()
+    private void Awake()
     {
         DontDestroyOnLoad(gameObject);
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = fps;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         SceneManager.LoadScene("MenuScene");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Application.targetFrameRate != fps)
         {

@@ -1,155 +1,126 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using TMPro;
 
 public class Player : NetworkBehaviour
 {
-    private Button startButton;
+    [SerializeField] private float maxHealth; // 100
+    [SerializeField] private float minAltitude; // -10
 
-    public override void OnNetworkSpawn()
+    [SerializeField] private CapsuleCollider bodyCollider;
+    [SerializeField] private SkinnedMeshRenderer[] bodySkins;
+    [SerializeField] private GameObject fakeGunSkin;
+
+    [SerializeField] private PlayerGun playerGun;
+    [SerializeField] private PlayerCamera playerCamera;
+    [SerializeField] private PlayerMovement playerMovement;
+
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private bool spawning = true;
+
+    private void Update()
     {
-        base.OnNetworkSpawn();
-
-        if (!IsOwner)
+        if (!IsHost || spawning)
         {
             return;
         }
 
-        JoinGame_ServerRpc();
-        NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
-
-        if (!IsHost)
+        if (transform.position.y < minAltitude)
         {
-            return;
+            TakeDamage(100f);
         }
 
-        NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
-        NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        if (currentHealth.Value <= 0)
+        {
+            spawning = true;
+            PlayerDespawn_ClientRpc("YOU DIED");
+            StartCoroutine(Respawn(2f));
+        }
     }
 
-    private void NetworkManager_OnClientStopped(bool obj)
+    public void TakeDamage(float damage)
     {
-        SceneManager.LoadScene("MenuScene");
-        NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
-
-        if (!IsHost)
-        {
-            return;
-        }
-
-        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
-        NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+        currentHealth.Value -= damage;
     }
 
-    private void NetworkManager_OnClientConnectedCallback(ulong obj)
+    [ClientRpc]
+    public void PlayerDespawn_ClientRpc(string msg)
     {
-        if (MainScene.start)
+        bodyCollider.enabled = false;
+
+        if (IsOwner)
         {
-            return;
+            GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+            GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
+            GameObject.Find("Death Message").GetComponent<TMP_Text>().text = msg;
+            GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
+
+            playerGun.Despawn();
+            playerCamera.Despawn();
+            playerMovement.Despawn();
         }
-
-        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count);
-    }
-
-    private void NetworkManager_OnClientDisconnectCallback(ulong obj)
-    {
-        if (MainScene.start)
+        else
         {
-            return;
-        }
-
-        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count - 1);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (!IsOwner || !IsHost)
-        {
-            return;
-        }
-
-        startButton = GameObject.Find("Button").GetComponent<Button>();
-        startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "START";
-        startButton.onClick.AddListener(StartButtonClick);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Backspace) && (!MainScene.start || MainScene.gameover || Cursor.lockState == CursorLockMode.Locked))
-        {
-            NetworkManager.Shutdown();
-            Cursor.lockState = CursorLockMode.None;
-            return;
-        }
-
-        if (!IsHost || MainScene.gameover)
-        {
-            return;
-        }
-
-        if (MainScene.lives <= 0)
-        {
-            MainScene.gameover = true;
-
-            foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
+            foreach (SkinnedMeshRenderer bodySkin in bodySkins)
             {
-                player.PlayerObject.GetComponent<PlayerHealth>().PlayerDespawn_ClientRpc("YOU LOSE");
+                bodySkin.enabled = false;
             }
+
+            fakeGunSkin.SetActive(false);
+        }
+    }
+
+    public IEnumerator Respawn(float seconds = 0)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        if (!MainSceneManager.gameover)
+        {
+            currentHealth.Value = maxHealth;
+
+            PlayerRespawn_ClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayerRespawn_ClientRpc()
+    {
+        bodyCollider.enabled = true;
+
+        if (IsOwner)
+        {
+            GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
+            GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
+            GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
+
+            playerGun.Respawn();
+            playerCamera.Respawn();
+            playerMovement.Respawn();
+            FinishSpawning_ServerRpc();
+        }
+        else
+        {
+            foreach (SkinnedMeshRenderer bodySkin in bodySkins)
+            {
+                bodySkin.enabled = true;
+            }
+
+            fakeGunSkin.SetActive(true);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void JoinGame_ServerRpc()
+    private void FinishSpawning_ServerRpc()
     {
-        if (MainScene.start)
-        {
-            KickPlayer_ClientRpc();
-        }
+        StartCoroutine(FinishSpawning());
     }
 
-    [ClientRpc]
-    void KickPlayer_ClientRpc()
+    private IEnumerator FinishSpawning()
     {
-        if (IsOwner)
-        {
-            NetworkManager.Shutdown();
-        }
-    }
-
-    [ClientRpc]
-    void UpdateCounter_ClientRpc(int count)
-    {
-        GameObject.Find("Counter").GetComponent<TextMeshProUGUI>().text = count.ToString();
-    }
-
-    void StartButtonClick()
-    {
-        MainScene.start = true;
-
-        startButton.onClick.RemoveListener(StartButtonClick);
-
-        foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
-        {
-            StartCoroutine(player.PlayerObject.GetComponent<PlayerHealth>().Respawn());
-        }
-
-        StartGame_ClientRpc();
-    }
-
-    [ClientRpc]
-    void StartGame_ClientRpc()
-    {
-        GameObject.Find("Panel").SetActive(false);
+        yield return new WaitUntil(() => transform.position.y >= minAltitude);
+        spawning = false;
     }
 }

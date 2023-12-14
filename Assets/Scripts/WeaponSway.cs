@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class WeaponSway : MonoBehaviour
 {
-    // 元件用途: 操控武器擺動
-    // 元件位置: 玩家物件(player prefab)之下
-
     [Header("Sway Settings")]
     [SerializeField] private float smooth;
     [SerializeField] private float multiplier;
     [SerializeField] private float originalRotationZ;
 
-    // Update is called once per frame
     private void Update()
     {
         float mouseX = 0;

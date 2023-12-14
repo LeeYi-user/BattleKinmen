@@ -1,24 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode; // 這個腳本有網路相關的 code, 所以要導入這個 package
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了源物件要放 NetworkObject 之外, 這裡也要用 NetworkBehaviour
+public class PlayerGun : NetworkBehaviour
 {
-    // 元件用途: 操控玩家射擊
-    // 元件位置: 玩家物件(player prefab)之下
-
-    [SerializeField] private float damage;  // 15
+    [SerializeField] private float damage; // 30
     [SerializeField] private float range; // 100
-    [SerializeField] private float fireRate; // 2
+    [SerializeField] private float fireRate; // 0.5
 
     [SerializeField] private Camera fpsCam;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private GameObject[] impactEffect;
 
-    [SerializeField] private int maxAmmo; // 7
-    [SerializeField] private float reloadTime; // 1.35
+    [SerializeField] private int maxAmmo; // 5
+    [SerializeField] private float reloadTime; // 1
 
+    [SerializeField] private GameObject realGunSkin;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Animator animator;
@@ -31,33 +29,27 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     [SerializeField] private AudioSource fakeAudioSource;
     [SerializeField] private Transform fakeBulletSpawnPoint;
 
-    private int currentAmmo;
     private bool isReloading;
+    private int currentAmmo;
     private float nextTimeToFire;
     private bool live;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        if (!IsOwner) // 如果該玩家物件不是自己操控的
+        if (!IsOwner)
         {
-            return; // 就直接 return
+            realGunSkin.SetActive(false);
+            return;
         }
 
-        fakeMuzzleFlash.gameObject.SetActive(false);
-        fakeAudioSource.enabled = false;
-        currentAmmo = maxAmmo;
-        isReloading = false;
-        nextTimeToFire = 0f;
         Despawn();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (!IsOwner || !live) // 如果該玩家物件不是自己操控的
+        if (!IsOwner || !live)
         {
-            return; // 就直接 return
+            return;
         }
 
         if ((Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None)
@@ -77,14 +69,14 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
             return;
         }
 
-        if (Input.GetButton("Fire1") && Cursor.lockState == CursorLockMode.Locked && Time.time >= nextTimeToFire)
+        if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire && Cursor.lockState == CursorLockMode.Locked)
         {
             nextTimeToFire = Time.time + 1f / fireRate;
             Shoot();
         }
     }
 
-    IEnumerator Reload()
+    private IEnumerator Reload()
     {
         isReloading = true;
         animator.SetBool("isReloading", true);
@@ -97,15 +89,15 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         currentAmmo = maxAmmo;
     }
 
-    void Shoot() // 射擊
+    private void Shoot()
     {
         currentAmmo--;
 
-        muzzleFlash.Play(); // 這裡會在第一人稱視角的 client 端顯示火花
-        PlayFakeMuzzleFlash_ServerRpc(); // 這裡會告知 server 去生成火花, 以便其他玩家能夠看到 (註: 其他人看的是自己看不見的第三人稱火花)
-        animator.SetTrigger("isFiring"); // 這裡會在第一人稱視角的 client 端顯示開火
-        audioSource.PlayOneShot(audioClip); // 這裡會在 client 端播放槍聲
-        PlayFakeAudioSource_ServerRpc(); // 這裡會告知 server 去播放槍聲, 以便其他玩家能夠聽到 (註: 其他人聽的是自己聽不見的第三人稱槍聲)
+        muzzleFlash.Play();
+        PlayFakeMuzzleFlash_ServerRpc();
+        animator.SetTrigger("isFiring");
+        audioSource.PlayOneShot(audioClip);
+        PlayFakeAudioSource_ServerRpc();
 
         RaycastHit hit;
         int MadeImpact = 0;
@@ -163,7 +155,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
     [ServerRpc(RequireOwnership = false)]
     private void ShootPlayer_ServerRpc(ulong objectId, float damage)
     {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>().TakeDamage(damage);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -172,7 +164,7 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Enemy>().TakeDamage(damage);
     }
 
-    [ServerRpc(RequireOwnership = false)] // 這裡的 playerId 是紀錄 client 的 LocalClientId, 而不是紀錄物件的 NetworkObjectId. 之所以用這個, 是因為 NetworkObjectId 無法在 RPC 中代表當前實例
+    [ServerRpc(RequireOwnership = false)]
     private void CreateBulletTrail_ServerRpc(Vector3 position, bool IsReal, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
     {
         TrailRenderer trail = Instantiate(BulletTrail, position, Quaternion.identity);
@@ -189,21 +181,6 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         }
 
         CreateBulletTrail_ClientRpc(trail.GetComponent<NetworkObject>().NetworkObjectId, IsReal);
-    }
-
-    [ClientRpc]
-    private void CreateBulletTrail_ClientRpc(ulong objectId, bool IsReal)
-    {
-        GameObject trailGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
-
-        trailGO.SetActive(false);
-
-        // 如果子彈軌跡是自己的 且 是給其他人看的第三人稱軌跡 那就對自己隱藏
-        // 如果子彈軌跡是別人的 且 是給那個人看的第一人稱軌跡 那也對自己隱藏
-        //if (IsOwner != IsReal)
-        //{
-        //    trailGO.SetActive(false);
-        //}
     }
 
     private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, bool IsReal)
@@ -231,16 +208,31 @@ public class PlayerGun : NetworkBehaviour // 因為跟網路有關, 所以除了
         Destroy(Trail.gameObject, Trail.time);
     }
 
+    [ClientRpc]
+    private void CreateBulletTrail_ClientRpc(ulong objectId, bool IsReal)
+    {
+        GameObject trailGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
+
+        trailGO.SetActive(false);
+
+        //if (IsOwner != IsReal)
+        //{
+        //    trailGO.SetActive(false);
+        //}
+    }
+
     public void Despawn()
     {
         live = false;
+        realGunSkin.SetActive(false);
     }
 
     public void Respawn()
     {
         live = true;
-        currentAmmo = maxAmmo;
         isReloading = false;
+        currentAmmo = maxAmmo;
         nextTimeToFire = 0f;
+        realGunSkin.SetActive(true);
     }
 }

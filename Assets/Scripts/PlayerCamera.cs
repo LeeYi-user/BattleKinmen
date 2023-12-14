@@ -5,11 +5,11 @@ using Unity.Netcode;
 
 public class PlayerCamera : NetworkBehaviour
 {
-    // 元件用途: 操控玩家攝影機
-    // 元件位置: 玩家物件(player prefab)之下
-
     [SerializeField] private Transform orientation;
-    [SerializeField] private Transform weaponCam;
+
+    [SerializeField] private Camera mainCam;
+    [SerializeField] private Camera weaponCam;
+    [SerializeField] private AudioListener audioListener;
 
     [SerializeField] private float sensX; // 5
     [SerializeField] private float sensY; // 5
@@ -18,14 +18,13 @@ public class PlayerCamera : NetworkBehaviour
     private float yRotation;
     private bool live;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         if (!IsOwner)
         {
-            GetComponent<Camera>().enabled = false;
-            GetComponent<AudioListener>().enabled = false;
-            weaponCam.gameObject.SetActive(false);
+            mainCam.enabled = false;
+            weaponCam.enabled = false;
+            audioListener.enabled = false;
             return;
         }
 
@@ -33,8 +32,7 @@ public class PlayerCamera : NetworkBehaviour
         Despawn();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (!IsOwner)
         {
@@ -46,7 +44,7 @@ public class PlayerCamera : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
 
-        if (Cursor.lockState == CursorLockMode.None || !live)
+        if (!live || Cursor.lockState == CursorLockMode.None)
         {
             return;
         }

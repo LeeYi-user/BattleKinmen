@@ -751,7 +751,6 @@ GameObject:
   - component: {fileID: 7339941612124322479}
   - component: {fileID: 5657039978843651331}
   - component: {fileID: 8305871200173768540}
-  - component: {fileID: 7241747382827332553}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -849,6 +848,8 @@ MonoBehaviour:
     m_Bits: 8
   maxSlopeAngle: 90
   animator: {fileID: 4298338301654596385}
+  rb: {fileID: 6682871563841448085}
+  model: {fileID: 1883688489105875532}
 --- !u!114 &7339941612124322479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -906,26 +907,13 @@ MonoBehaviour:
   maxHealth: 100
   minAltitude: -10
   bodyCollider: {fileID: 2018536490657055789}
-  bodySkin:
+  bodySkins:
   - {fileID: 7848536118204478335}
   - {fileID: 7776660888827340106}
   fakeGunSkin: {fileID: 6691362109619069414}
   playerGun: {fileID: 8532510759370543348}
-  playerModel: {fileID: 3514675141055191772}
   playerCamera: {fileID: 728660623054973475}
   playerMovement: {fileID: 1465506075325161303}
---- !u!114 &7241747382827332553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5730749550375963243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb6deeb18ceb0d34aaa5c5ea88c510de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5844393203142686998
 GameObject:
   m_ObjectHideFlags: 0
@@ -1184,7 +1172,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orientation: {fileID: 882260932156254348}
-  weaponCam: {fileID: 4483239749211091557}
+  mainCam: {fileID: 4548373580233231170}
+  weaponCam: {fileID: 4120538831724207059}
+  audioListener: {fileID: 2415903999905059485}
   sensX: 5
   sensY: 5
 --- !u!114 &5044086812735888860
@@ -2105,6 +2095,7 @@ MonoBehaviour:
   - {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285, type: 3}
   maxAmmo: 5
   reloadTime: 1
+  realGunSkin: {fileID: 7325423382179407052}
   audioSource: {fileID: 7272691689095666507}
   audioClip: {fileID: 8300000, guid: a764377339b869e459f5e53fb9258f73, type: 3}
   animator: {fileID: 1494972039382797256}
@@ -2434,9 +2425,6 @@ PrefabInstance:
       addedObject: {fileID: 2018536490657055789}
     - targetCorrespondingSourceObject: {fileID: 7333655913401327685, guid: 499f4a88201e4e944a9ae436f15cb9f5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3514675141055191772}
-    - targetCorrespondingSourceObject: {fileID: 7333655913401327685, guid: 499f4a88201e4e944a9ae436f15cb9f5, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6141056343680543443}
   m_SourcePrefab: {fileID: 100100000, guid: 499f4a88201e4e944a9ae436f15cb9f5, type: 3}
 --- !u!4 &80473905220052521 stripped
@@ -2681,20 +2669,6 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &3514675141055191772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256473646178089206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90adc83b27e442249ad6be1cc2e6a331, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orientation: {fileID: 882260932156254348}
-  realGunSkin: {fileID: 7325423382179407052}
 --- !u!114 &6141056343680543443
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private float maxHealth;
 
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private Transform target;
     private bool running;
     private bool dying;
@@ -25,8 +25,7 @@ public class Enemy : NetworkBehaviour
 
     private float nextTimeToAttack;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         if (!IsHost)
         {
@@ -36,17 +35,17 @@ public class Enemy : NetworkBehaviour
         target = GameObject.Find("Enemy Target").transform;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (!IsHost)
         {
             return;
         }
 
-        if (MainScene.start && !running)
+        if (MainSceneManager.start && !running)
         {
             running = true;
+            currentHealth.Value = maxHealth;
             agent.SetDestination(target.position);
             animator.SetBool("isRunning", true);
         }
@@ -68,13 +67,13 @@ public class Enemy : NetworkBehaviour
             Invade();
         }
 
-        if (MainScene.gameover)
+        if (MainSceneManager.gameover)
         {
             Destroy(gameObject);
         }
     }
 
-    IEnumerator Shoot()
+    private IEnumerator Shoot()
     {
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
@@ -84,11 +83,33 @@ public class Enemy : NetworkBehaviour
         animator.SetTrigger("isFiring");
         PlayMuzzleFlash_ClientRpc();
         PlayAudioSource_ClientRpc();
-        player.GetComponent<PlayerHealth>().TakeDamage(30f);
+        player.GetComponent<Player>().TakeDamage(30f);
 
         yield return new WaitForSeconds(0.8f);
 
         agent.isStopped = false;
+    }
+
+    public GameObject FindClosestPlayer()
+    {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
+        }
+
+        return closest;
     }
 
     [ClientRpc]
@@ -103,7 +124,7 @@ public class Enemy : NetworkBehaviour
         audioSource.PlayOneShot(audioClip);
     }
 
-    void Die()
+    private void Die()
     {
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
@@ -111,34 +132,14 @@ public class Enemy : NetworkBehaviour
         animator.SetTrigger("isDying");
         Destroy(gameObject, 2f);
 
-        EnemySpawn.counter--;
+        EnemySpawn.enemyCounter--;
     }
 
-    void Invade()
+    private void Invade()
     {
-        MainScene.lives--;
-        EnemySpawn.counter--;
+        MainSceneManager.playerLives--;
+        EnemySpawn.enemyCounter--;
         Destroy(gameObject);
-    }
-
-    public GameObject FindClosestPlayer()
-    {
-        GameObject[] gos;
-        gos = GameObject.FindGameObjectsWithTag("Player");
-        GameObject closest = null;
-        float distance = Mathf.Infinity;
-        Vector3 position = transform.position;
-        foreach (GameObject go in gos)
-        {
-            Vector3 diff = go.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
-            if (curDistance < distance)
-            {
-                closest = go;
-                distance = curDistance;
-            }
-        }
-        return closest;
     }
 
     public void TakeDamage(float damage)

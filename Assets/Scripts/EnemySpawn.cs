@@ -9,20 +9,18 @@ public class EnemySpawn : NetworkBehaviour
     [SerializeField] private float enemyLimit; // 100
     [SerializeField] private float timeLimit; // 300
 
-    public static int counter;
+    public static int enemyCounter;
     private float startTime;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        counter = 0;
+        enemyCounter = 0;
         startTime = 0;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (!IsHost || !MainScene.start || MainScene.gameover)
+        if (!IsHost || !MainSceneManager.start || MainSceneManager.gameover)
         {
             return;
         }
@@ -32,11 +30,11 @@ public class EnemySpawn : NetworkBehaviour
             startTime = Time.time;
         }
 
-        if (counter < Sigmoid(Time.time - startTime))
+        if (enemyCounter < Sigmoid(Time.time - startTime))
         {
             GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);
-            counter++;
+            enemyCounter++;
         }
     }
 
