@@ -7,16 +7,18 @@ public class InitSceneManager : MonoBehaviour
 {
     [SerializeField] private int fps;
 
+    public static bool relay;
+
+    private void Start()
+    {
+        SceneManager.LoadScene("MenuScene");
+    }
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = fps;
-    }
-
-    private void Start()
-    {
-        SceneManager.LoadScene("MenuScene");
     }
 
     private void Update()

@@ -82,12 +82,19 @@ public class MainSceneManager : NetworkBehaviour
 
         if (MenuSceneManager.host)
         {
-            NetworkManager.StartHost();
             startButtonText.text = "START";
         }
-        else
+
+        if (!InitSceneManager.relay)
         {
-            NetworkManager.StartClient();
+            if (MenuSceneManager.host)
+            {
+                NetworkManager.StartHost();
+            }
+            else
+            {
+                NetworkManager.StartClient();
+            }
         }
     }
 
