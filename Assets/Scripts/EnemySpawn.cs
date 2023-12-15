@@ -6,16 +6,18 @@ using Unity.Netcode;
 public class EnemySpawn : NetworkBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private float enemyLimit; // 100
-    [SerializeField] private float timeLimit; // 300
 
-    public static int enemyCounter;
+    [SerializeField] private float slope; // 1
+    [SerializeField] private float timeLimit; // 300
+    [SerializeField] private float enemyLimit; // 100
+
     private float startTime;
+    public static int enemyCounter;
 
     private void Start()
     {
-        enemyCounter = 0;
         startTime = 0;
+        enemyCounter = 0;
     }
 
     private void Update()
@@ -40,6 +42,6 @@ public class EnemySpawn : NetworkBehaviour
 
     private float Sigmoid(float t)
     {
-        return enemyLimit / (1f + Mathf.Exp((5f * timeLimit - 10f * t) / timeLimit));
+        return enemyLimit / (1f + Mathf.Exp(-slope / (timeLimit / 10f) * (t - (timeLimit / 2f))));
     }
 }

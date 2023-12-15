@@ -9,13 +9,24 @@ using TMPro;
 public class MainSceneManager : NetworkBehaviour
 {
     [SerializeField] private GameObject panel;
+
+    [SerializeField] private GameObject room;
     [SerializeField] private TextMeshProUGUI playerCounter;
     [SerializeField] private Button startButton;
     [SerializeField] private TextMeshProUGUI startButtonText;
 
+    [SerializeField] private GameObject story;
+    [SerializeField] private TextMeshProUGUI storyText;
+
     public static bool start;
     public static bool gameover;
     public static int playerLives;
+
+    private bool pause;
+    private bool showed;
+    private float alpha;
+    private float timeLeft;
+    private Color targetColor = new Color(1, 1, 1, 0);
 
     public override void OnNetworkSpawn()
     {
@@ -49,7 +60,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
     {
-        if (start)
+        if (story.activeSelf || start)
         {
             NetworkManager.DisconnectClient(clientId);
             return;
@@ -60,7 +71,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if (start)
+        if (story.activeSelf || start)
         {
             return;
         }
@@ -111,6 +122,8 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Update()
     {
+        TextFade();
+
         if (Input.GetKeyDown(KeyCode.Backspace) && (!start || gameover || Cursor.lockState == CursorLockMode.Locked))
         {
             NetworkManager.Shutdown();
@@ -134,18 +147,77 @@ public class MainSceneManager : NetworkBehaviour
         }
     }
 
+    private void TextFade()
+    {
+        if (!story.activeSelf || pause)
+        {
+            return;
+        }
+
+        if (timeLeft <= Time.deltaTime)
+        {
+            storyText.color = targetColor;
+
+            if (!showed && alpha == 0) // 第一次: 開始顯示
+            {
+                StartCoroutine(Pause(1f, showed)); // 先暫停一秒
+            }
+
+            if (showed) // 第三次: 消失完畢, 開始遊戲
+            {
+                StartCoroutine(Pause(1f, showed)); // 先暫停一秒
+                return;
+            }
+
+            alpha++;
+
+            if (alpha > 1f) // 第二次: 顯示完畢, 開始消失
+            {
+                StartCoroutine(Pause(5f, showed)); // 先暫停五秒
+                showed = true;
+                alpha = 0f;
+            }
+
+            targetColor = new Color(1, 1, 1, alpha);
+            timeLeft = 3f;
+        }
+        else
+        {
+            storyText.color = Color.Lerp(storyText.color, targetColor, Time.deltaTime / timeLeft);
+            timeLeft -= Time.deltaTime;
+        }
+    }
+
+    private IEnumerator Pause(float seconds, bool showed)
+    {
+        pause = true;
+        yield return new WaitForSeconds(seconds);
+
+        if (showed)
+        {
+            if (IsHost)
+            {
+                start = true;
+
+                foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
+                {
+                    StartCoroutine(player.PlayerObject.GetComponent<Player>().Respawn());
+                }
+            }
+
+            panel.SetActive(false);
+        }
+        else
+        {
+            pause = false;
+        }
+    }
+
     public void StartButtonClick()
     {
         if (!IsHost)
         {
             return;
-        }
-
-        start = true;
-
-        foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
-        {
-            StartCoroutine(player.PlayerObject.GetComponent<Player>().Respawn());
         }
 
         StartGame_ClientRpc();
@@ -154,6 +226,7 @@ public class MainSceneManager : NetworkBehaviour
     [ClientRpc]
     private void StartGame_ClientRpc()
     {
-        panel.SetActive(false);
+        room.SetActive(false);
+        story.SetActive(true);
     }
 }
