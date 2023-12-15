@@ -15,12 +15,11 @@ public class UnityRelay : MonoBehaviour
 {
     private async void Start()
     {
-        InitSceneManager.relay = true;
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public async void CreateRelay()
+    public static async void CreateRelay()
     {
         try
         {
@@ -31,7 +30,7 @@ public class UnityRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
 
-            StartCoroutine(ShowCode(joinCode));
+            ShowCode(joinCode);
         }
         catch (RelayServiceException e)
         {
@@ -40,7 +39,7 @@ public class UnityRelay : MonoBehaviour
         }
     }
 
-    public async void JoinRelay(string joinCode)
+    public static async void JoinRelay(string joinCode)
     {
         try
         {
@@ -50,7 +49,7 @@ public class UnityRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartClient();
 
-            StartCoroutine(ShowCode(joinCode));
+            ShowCode(joinCode);
         }
         catch (RelayServiceException e)
         {
@@ -59,13 +58,8 @@ public class UnityRelay : MonoBehaviour
         }
     }
 
-    private IEnumerator ShowCode(string joinCode)
+    private static void ShowCode(string joinCode)
     {
-        yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "MainScene");
-
-        if (!MainSceneManager.start)
-        {
-            GameObject.Find("Code").GetComponent<TMP_Text>().text = joinCode.ToUpper();
-        }
+        GameObject.Find("Code").GetComponent<TMP_Text>().text = joinCode.ToUpper();
     }
 }

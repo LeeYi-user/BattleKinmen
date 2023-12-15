@@ -80,12 +80,18 @@ public class MainSceneManager : NetworkBehaviour
         gameover = false;
         playerLives = 4;
 
-        if (MenuSceneManager.host)
+        if (GameObject.Find("NetworkManager").GetComponent<UnityRelay>().enabled)
         {
-            startButtonText.text = "START";
+            if (MenuSceneManager.host)
+            {
+                UnityRelay.CreateRelay();
+            }
+            else
+            {
+                UnityRelay.JoinRelay(MenuSceneManager.code);
+            }
         }
-
-        if (!InitSceneManager.relay)
+        else
         {
             if (MenuSceneManager.host)
             {
@@ -95,6 +101,11 @@ public class MainSceneManager : NetworkBehaviour
             {
                 NetworkManager.StartClient();
             }
+        }
+
+        if (MenuSceneManager.host)
+        {
+            startButtonText.text = "START";
         }
     }
 

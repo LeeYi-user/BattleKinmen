@@ -7,6 +7,7 @@ using TMPro;
 public class MenuSceneManager : MonoBehaviour
 {
     public static bool host;
+    public static string code;
 
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject modeMenu;
@@ -75,21 +76,8 @@ public class MenuSceneManager : MonoBehaviour
 
     public void HostButtonClick()
     {
+        code = inputField.text;
         SceneManager.LoadScene("MainScene");
-
-        if (InitSceneManager.relay)
-        {
-            UnityRelay unityRelay = GameObject.Find("NetworkManager").GetComponent<UnityRelay>();
-
-            if (host)
-            {
-                unityRelay.CreateRelay();
-            }
-            else
-            {
-                unityRelay.JoinRelay(inputField.text);
-            }
-        }
     }
 
     public void BackButtonClick()
