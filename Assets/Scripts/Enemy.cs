@@ -7,6 +7,7 @@ using Unity.Netcode;
 public class Enemy : NetworkBehaviour
 {
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private Transform head;
     [SerializeField] private float maxHealth;
 
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -15,6 +16,7 @@ public class Enemy : NetworkBehaviour
     private bool dying;
 
     [SerializeField] private LayerMask whatIsPlayer;
+    [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackRate;
 
@@ -75,19 +77,23 @@ public class Enemy : NetworkBehaviour
 
     private IEnumerator Shoot()
     {
-        agent.isStopped = true;
-        agent.velocity = Vector3.zero;
         GameObject player = FindClosestPlayer();
 
-        transform.LookAt(player.transform);
-        animator.SetTrigger("isFiring");
-        PlayMuzzleFlash_ClientRpc();
-        PlayAudioSource_ClientRpc();
-        player.GetComponent<Player>().TakeDamage(30f);
+        if (!Physics.Linecast(head.transform.position, player.transform.Find("Main Camera").transform.position, whatIsGround))
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
 
-        yield return new WaitForSeconds(0.8f);
+            transform.LookAt(player.transform);
+            animator.SetTrigger("isFiring");
+            PlayMuzzleFlash_ClientRpc();
+            PlayAudioSource_ClientRpc();
+            player.GetComponent<Player>().TakeDamage(30f);
 
-        agent.isStopped = false;
+            yield return new WaitForSeconds(0.8f);
+
+            agent.isStopped = false;
+        }
     }
 
     public GameObject FindClosestPlayer()

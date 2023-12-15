@@ -77,12 +77,14 @@ public class Player : NetworkBehaviour
     {
         yield return new WaitForSeconds(seconds);
 
-        if (!MainSceneManager.gameover)
+        if (MainSceneManager.gameover)
         {
-            currentHealth.Value = maxHealth;
-
-            PlayerRespawn_ClientRpc();
+            yield break;
         }
+
+        currentHealth.Value = maxHealth;
+
+        PlayerRespawn_ClientRpc();
     }
 
     [ClientRpc]
