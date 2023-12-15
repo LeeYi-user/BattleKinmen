@@ -10,6 +10,8 @@ public class Player : NetworkBehaviour
     [SerializeField] private float maxHealth; // 100
     [SerializeField] private float minAltitude; // -10
 
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     [SerializeField] private CapsuleCollider bodyCollider;
     [SerializeField] private SkinnedMeshRenderer[] bodySkins;
     [SerializeField] private GameObject fakeGunSkin;
@@ -18,7 +20,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private PlayerMovement playerMovement;
 
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private bool spawning = true;
 
     private void Update()

@@ -78,7 +78,7 @@ public class MainSceneManager : NetworkBehaviour
     {
         start = false;
         gameover = false;
-        playerLives = 4;
+        playerLives = 5;
 
         if (GameObject.Find("NetworkManager").GetComponent<UnityRelay>().enabled)
         {

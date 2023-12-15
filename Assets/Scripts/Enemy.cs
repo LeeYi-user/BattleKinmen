@@ -11,9 +11,6 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private float maxHealth;
 
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    private Transform target;
-    private bool running;
-    private bool dying;
 
     [SerializeField] private LayerMask whatIsPlayer;
     [SerializeField] private LayerMask whatIsGround;
@@ -25,6 +22,9 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Animator animator;
 
+    private Transform target;
+    private bool dying;
+    private bool running;
     private float nextTimeToAttack;
 
     private void Start()
@@ -39,12 +39,19 @@ public class Enemy : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsHost)
+        if (!IsHost || dying)
         {
             return;
         }
 
-        if (MainSceneManager.start && !running)
+        if (MainSceneManager.gameover)
+        {
+            dying = true;
+            Destroy(gameObject);
+            return;
+        }
+
+        if (!running)
         {
             running = true;
             currentHealth.Value = maxHealth;
@@ -52,27 +59,43 @@ public class Enemy : NetworkBehaviour
             animator.SetBool("isRunning", true);
         }
 
-        if (Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) && Time.time >= nextTimeToAttack && !dying)
-        {
-            nextTimeToAttack = Time.time + 1f / attackRate;
-            StartCoroutine(Shoot());
-        }
-
-        if (currentHealth.Value <= 0 && !dying)
+        if (currentHealth.Value <= 0)
         {
             dying = true;
             Die();
+            return;
         }
 
         if (Vector3.Distance(transform.position, target.position) < 1f)
         {
+            dying = true;
             Invade();
+            return;
         }
 
-        if (MainSceneManager.gameover)
+        if (Physics.CheckSphere(transform.position, attackRange, whatIsPlayer) && Time.time >= nextTimeToAttack)
         {
-            Destroy(gameObject);
+            nextTimeToAttack = Time.time + 1f / attackRate;
+            StartCoroutine(Shoot());
         }
+    }
+
+    private void Die()
+    {
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+
+        animator.SetTrigger("isDying");
+        Destroy(gameObject, 2f);
+
+        EnemySpawn.enemyCounter--;
+    }
+
+    private void Invade()
+    {
+        MainSceneManager.playerLives--;
+        EnemySpawn.enemyCounter--;
+        Destroy(gameObject);
     }
 
     private IEnumerator Shoot()
@@ -128,24 +151,6 @@ public class Enemy : NetworkBehaviour
     private void PlayAudioSource_ClientRpc()
     {
         audioSource.PlayOneShot(audioClip);
-    }
-
-    private void Die()
-    {
-        agent.isStopped = true;
-        agent.velocity = Vector3.zero;
-
-        animator.SetTrigger("isDying");
-        Destroy(gameObject, 2f);
-
-        EnemySpawn.enemyCounter--;
-    }
-
-    private void Invade()
-    {
-        MainSceneManager.playerLives--;
-        EnemySpawn.enemyCounter--;
-        Destroy(gameObject);
     }
 
     public void TakeDamage(float damage)
