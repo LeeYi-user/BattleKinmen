@@ -123,7 +123,7 @@ public class MainSceneManager : NetworkBehaviour
     {
         TextFade();
 
-        if (Input.GetKeyDown(KeyCode.Backspace) && (start < 2 || gameover || Cursor.lockState == CursorLockMode.Locked))
+        if (Input.GetKeyDown(KeyCode.Backspace) && playerCounter.text != "0" && (start < 2 || gameover || Cursor.lockState == CursorLockMode.Locked))
         {
             NetworkManager.Shutdown();
             Cursor.lockState = CursorLockMode.None;
