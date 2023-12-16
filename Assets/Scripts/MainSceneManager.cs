@@ -177,9 +177,12 @@ public class MainSceneManager : NetworkBehaviour
             {
                 start = 2;
 
-                foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
+                if (IsHost)
                 {
-                    StartCoroutine(player.PlayerObject.GetComponent<Player>().Respawn());
+                    foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
+                    {
+                        StartCoroutine(player.PlayerObject.GetComponent<Player>().Respawn());
+                    }
                 }
 
                 panel.SetActive(false);
