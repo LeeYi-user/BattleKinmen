@@ -22,7 +22,7 @@ public class EnemySpawn : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsHost || !MainSceneManager.start || MainSceneManager.gameover)
+        if (!IsHost || MainSceneManager.start < 2 || MainSceneManager.gameover)
         {
             return;
         }
