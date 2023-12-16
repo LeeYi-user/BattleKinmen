@@ -36,6 +36,9 @@ public class PlayerGun : NetworkBehaviour
 
     private void Start()
     {
+        audioSource.volume = MenuSceneManager.volume;
+        fakeAudioSource.volume = MenuSceneManager.volume;
+
         if (!IsOwner)
         {
             realGunSkin.SetActive(false);

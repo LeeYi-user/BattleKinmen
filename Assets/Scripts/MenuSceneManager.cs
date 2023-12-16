@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -8,6 +9,8 @@ public class MenuSceneManager : MonoBehaviour
 {
     public static bool host;
     public static string code;
+    public static float sens = 0.5f;
+    public static float volume = 0.25f;
 
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject modeMenu;
@@ -19,6 +22,15 @@ public class MenuSceneManager : MonoBehaviour
 
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TextMeshProUGUI hostButtonText;
+
+    [SerializeField] private Slider sensSlider;
+    [SerializeField] private Slider volumeSlider;
+
+    private void Start()
+    {
+        sensSlider.value = sens;
+        volumeSlider.value = volume;
+    }
 
     private void Update()
     {
@@ -32,6 +44,10 @@ public class MenuSceneManager : MonoBehaviour
             host = false;
             hostButtonText.text = "JOIN";
         }
+
+        code = inputField.text;
+        sens = sensSlider.value;
+        volume = volumeSlider.value;
     }
 
     public void PlayButtonHover()
@@ -76,7 +92,6 @@ public class MenuSceneManager : MonoBehaviour
 
     public void HostButtonClick()
     {
-        code = inputField.text;
         SceneManager.LoadScene("MainScene");
     }
 

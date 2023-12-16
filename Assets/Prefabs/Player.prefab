@@ -1175,8 +1175,6 @@ MonoBehaviour:
   mainCam: {fileID: 4548373580233231170}
   weaponCam: {fileID: 4120538831724207059}
   audioListener: {fileID: 2415903999905059485}
-  sensX: 5
-  sensY: 5
 --- !u!114 &5044086812735888860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1562,9 +1560,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1998,9 +1996,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

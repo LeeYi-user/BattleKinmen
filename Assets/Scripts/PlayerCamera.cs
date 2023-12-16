@@ -11,9 +11,6 @@ public class PlayerCamera : NetworkBehaviour
     [SerializeField] private Camera weaponCam;
     [SerializeField] private AudioListener audioListener;
 
-    [SerializeField] private float sensX; // 5
-    [SerializeField] private float sensY; // 5
-
     private float xRotation;
     private float yRotation;
     private bool live;
@@ -49,8 +46,8 @@ public class PlayerCamera : NetworkBehaviour
             return;
         }
 
-        float mouseX = Input.GetAxis("Mouse X") * sensX;
-        float mouseY = Input.GetAxis("Mouse Y") * sensY;
+        float mouseX = Input.GetAxis("Mouse X") * MenuSceneManager.sens * 10;
+        float mouseY = Input.GetAxis("Mouse Y") * MenuSceneManager.sens * 10;
 
         yRotation += mouseX;
         xRotation -= mouseY;

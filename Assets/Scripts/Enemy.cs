@@ -29,6 +29,8 @@ public class Enemy : NetworkBehaviour
 
     private void Start()
     {
+        audioSource.volume = MenuSceneManager.volume;
+
         if (!IsHost)
         {
             return;
