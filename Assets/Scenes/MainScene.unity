@@ -691,7 +691,7 @@ GameObject:
   - component: {fileID: 66333643}
   - component: {fileID: 66333642}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Start Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2194,7 +2194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 179372464}
   m_Layer: 5
-  m_Name: Room
+  m_Name: Room Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2848,7 +2848,7 @@ GameObject:
   - component: {fileID: 297610491}
   - component: {fileID: 297610490}
   m_Layer: 5
-  m_Name: Text (TMP) (3)
+  m_Name: Mode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5417,7 +5417,7 @@ GameObject:
   - component: {fileID: 597797515}
   - component: {fileID: 597797514}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Story Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15731,7 +15731,7 @@ GameObject:
   - component: {fileID: 1586371351}
   - component: {fileID: 1586371350}
   m_Layer: 5
-  m_Name: Text (TMP) (2)
+  m_Name: Mode Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17739,7 +17739,7 @@ GameObject:
   - component: {fileID: 1770599898}
   - component: {fileID: 1770599897}
   m_Layer: 5
-  m_Name: Text (TMP) (4)
+  m_Name: Counter Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18507,7 +18507,7 @@ GameObject:
   - component: {fileID: 1832147221}
   - component: {fileID: 1832147220}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Start Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20130,7 +20130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1992733971}
   m_Layer: 5
-  m_Name: Story
+  m_Name: Story Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21197,7 +21197,7 @@ GameObject:
   - component: {fileID: 2077622953}
   - component: {fileID: 2077622952}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Code Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22924,6 +22924,18 @@ PrefabInstance:
       objectReference: {fileID: 66333640}
     - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
       propertyPath: story
+      value: 
+      objectReference: {fileID: 1992733970}
+    - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
+      propertyPath: roomInfo
+      value: 
+      objectReference: {fileID: 179372463}
+    - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
+      propertyPath: startMenu
+      value: 
+      objectReference: {fileID: 66333640}
+    - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
+      propertyPath: storyInfo
       value: 
       objectReference: {fileID: 1992733970}
     - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}

@@ -8,14 +8,14 @@ using TMPro;
 
 public class MainSceneManager : NetworkBehaviour
 {
-    [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject startMenu;
 
-    [SerializeField] private GameObject room;
+    [SerializeField] private GameObject roomInfo;
     [SerializeField] private TextMeshProUGUI playerCounter;
     [SerializeField] private Button startButton;
     [SerializeField] private TextMeshProUGUI startButtonText;
 
-    [SerializeField] private GameObject story;
+    [SerializeField] private GameObject storyInfo;
     [SerializeField] private TextMeshProUGUI storyText;
 
     public static int start;
@@ -185,7 +185,7 @@ public class MainSceneManager : NetworkBehaviour
                     }
                 }
 
-                panel.SetActive(false);
+                startMenu.SetActive(false);
             }
 
             phase++;
@@ -217,8 +217,8 @@ public class MainSceneManager : NetworkBehaviour
     [ClientRpc]
     private void StartGame_ClientRpc()
     {
-        room.SetActive(false);
-        story.SetActive(true);
+        roomInfo.SetActive(false);
+        storyInfo.SetActive(true);
 
         start = 1;
     }
