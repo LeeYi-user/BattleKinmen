@@ -18,6 +18,9 @@ public class MainSceneManager : NetworkBehaviour
     [SerializeField] private GameObject storyInfo;
     [SerializeField] private TextMeshProUGUI storyText;
 
+    [SerializeField] private GameObject gameoverScreen;
+    [SerializeField] private TextMeshProUGUI gameoverMessage;
+
     public static int start;
     public static bool gameover;
     public static int playerLives;
@@ -121,7 +124,8 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Update()
     {
-        TextFade();
+        TextFade2();
+        TextFade1();
 
         if (Input.GetKeyDown(KeyCode.Backspace) && playerCounter.text != "0" && (start < 2 || gameover || Cursor.lockState == CursorLockMode.Locked))
         {
@@ -135,9 +139,14 @@ public class MainSceneManager : NetworkBehaviour
             return;
         }
 
+        //if (Input.GetKeyDown(KeyCode.P) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
+        //{
+        //    playerLives = 0;
+        //}
+
         if (playerLives <= 0)
         {
-            gameover = true;
+            GameOver_ClientRpc();
 
             foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
             {
@@ -146,7 +155,68 @@ public class MainSceneManager : NetworkBehaviour
         }
     }
 
-    private void TextFade()
+    private void TextFade2()
+    {
+        if (!gameover || pause)
+        {
+            return;
+        }
+
+        if (timeLeft <= Time.deltaTime)
+        {
+            if (phase == 0)
+            {
+                gameoverScreen.SetActive(true);
+                gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+                targetColor = new Color(0, 0, 0, 1);
+                StartCoroutine(Pause(2f));
+                timeLeft = 2f;
+            }
+            else if (phase == 1)
+            {
+                gameoverScreen.GetComponent<Image>().color = targetColor;
+                gameoverMessage.gameObject.SetActive(true);
+                gameoverMessage.color = new Color(1, 1, 1, 0);
+                targetColor = new Color(1, 1, 1, 1);
+                StartCoroutine(Pause(1f));
+                timeLeft = 3f;
+            }
+            else if (phase == 2)
+            {
+                gameoverMessage.color = targetColor;
+                targetColor = new Color(1, 1, 1, 0);
+                StartCoroutine(Pause(5f));
+                timeLeft = 3f;
+            }
+            else if (phase == 3)
+            {
+                StartCoroutine(Pause(1f));
+            }
+            else if (phase == 4)
+            {
+                NetworkManager.Shutdown();
+                Cursor.lockState = CursorLockMode.None;
+                pause = true;
+            }
+
+            phase++;
+        }
+        else
+        {
+            if (phase == 1)
+            {
+                gameoverScreen.GetComponent<Image>().color = Color.Lerp(gameoverScreen.GetComponent<Image>().color, targetColor, Time.deltaTime / timeLeft);
+            }
+            else if (phase > 1)
+            {
+                gameoverMessage.color = Color.Lerp(gameoverMessage.color, targetColor, Time.deltaTime / timeLeft);
+            }
+            
+            timeLeft -= Time.deltaTime;
+        }
+    }
+
+    private void TextFade1()
     {
         if (start != 1 || pause)
         {
@@ -221,5 +291,12 @@ public class MainSceneManager : NetworkBehaviour
         storyInfo.SetActive(true);
 
         start = 1;
+    }
+
+    [ClientRpc]
+    private void GameOver_ClientRpc()
+    {
+        gameover = true;
+        phase = 0;
     }
 }
