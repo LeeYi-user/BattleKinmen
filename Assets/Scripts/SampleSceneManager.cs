@@ -20,8 +20,9 @@ public class SampleSceneManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI mainMenuQuitButtonText;
     [SerializeField] private TextMeshProUGUI lobbyMenuClassOptionText;
 
-    private string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
-    private int playerClass = 0;
+    public static string playerName;
+    public static string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
+    public static int playerClass = 0;
 
     // Start is called before the first frame update
     void Start()
