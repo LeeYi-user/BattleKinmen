@@ -18,6 +18,10 @@ public class SampleSceneManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI mainMenuStartButtonText;
     [SerializeField] private TextMeshProUGUI mainMenuSettingsButtonText;
     [SerializeField] private TextMeshProUGUI mainMenuQuitButtonText;
+    [SerializeField] private TextMeshProUGUI lobbyMenuClassOptionText;
+
+    private string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
+    private int playerClass = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -102,6 +106,30 @@ public class SampleSceneManager : MonoBehaviour
     {
         mainMenu.SetActive(true);
         lobbyMenu.SetActive(false);
+    }
+
+    public void LobbyMenuRightArrowButtonClick()
+    {
+        playerClass++;
+
+        if (playerClass > 2)
+        {
+            playerClass = 0;
+        }
+
+        lobbyMenuClassOptionText.text = classes[playerClass];
+    }
+
+    public void LobbyMenuLeftArrowButtonClick()
+    {
+        playerClass--;
+
+        if (playerClass < 0)
+        {
+            playerClass = 2;
+        }
+
+        lobbyMenuClassOptionText.text = classes[playerClass];
     }
 
     public void CreateMenuCancelButtonClick()
