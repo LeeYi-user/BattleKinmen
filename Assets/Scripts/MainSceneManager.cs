@@ -97,11 +97,11 @@ public class MainSceneManager : NetworkBehaviour
         {
             if (MenuSceneManager.host)
             {
-                UnityRelay.CreateRelay();
+                UnityRelay.Instance.CreateRelay();
             }
             else
             {
-                UnityRelay.JoinRelay(MenuSceneManager.code);
+                UnityRelay.Instance.JoinRelay(MenuSceneManager.code);
             }
         }
         else

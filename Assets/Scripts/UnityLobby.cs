@@ -1,23 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
-using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class UnityLobby : MonoBehaviour
 {
-    public static Lobby hostLobby;
-    public static Lobby joinedLobby;
+    public static UnityLobby Instance;
+
+    private Lobby hostLobby;
+    private Lobby joinedLobby;
 
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
 
-    private async void Start()
+    private void Awake()
     {
-        await UnityServices.InitializeAsync();
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        Instance = this;
     }
 
     private void Update()
@@ -55,7 +55,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    public static async void CreateLobby(string lobbyName, int maxPlayers)
+    public async void CreateLobby(string lobbyName, int maxPlayers)
     {
         try
         {
@@ -84,7 +84,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    public static async void ListLobbies()
+    public async void ListLobbies()
     {
         try
         {
@@ -101,7 +101,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    public static async void JoinLobby(string lobbyCode)
+    public async void JoinLobby(string lobbyCode)
     {
         try
         {
@@ -120,7 +120,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    private static Unity.Services.Lobbies.Models.Player CreatePlayer(string status)
+    private Unity.Services.Lobbies.Models.Player CreatePlayer(string status)
     {
         return new Unity.Services.Lobbies.Models.Player
         {
@@ -139,7 +139,7 @@ public class UnityLobby : MonoBehaviour
         };
     }
 
-    public static void ListPlayers()
+    public void ListPlayers()
     {
         foreach (Unity.Services.Lobbies.Models.Player player in joinedLobby.Players)
         {
@@ -147,7 +147,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    public static async void QuitLobby()
+    public async void QuitLobby()
     {
         try
         {
@@ -159,7 +159,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    public static async void KickPlayer(string playerId)
+    public async void KickPlayer(string playerId)
     {
         try
         {
@@ -171,7 +171,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    public static async void DeleteLobby()
+    public async void DeleteLobby()
     {
         try
         {

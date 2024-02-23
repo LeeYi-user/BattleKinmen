@@ -13,13 +13,20 @@ using UnityEngine.SceneManagement;
 
 public class UnityRelay : MonoBehaviour
 {
+    public static UnityRelay Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private async void Start()
     {
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public static async void CreateRelay()
+    public async void CreateRelay()
     {
         try
         {
@@ -39,7 +46,7 @@ public class UnityRelay : MonoBehaviour
         }
     }
 
-    public static async void JoinRelay(string joinCode)
+    public async void JoinRelay(string joinCode)
     {
         try
         {
@@ -58,7 +65,7 @@ public class UnityRelay : MonoBehaviour
         }
     }
 
-    private static void ShowCode(string joinCode)
+    private void ShowCode(string joinCode)
     {
         GameObject.Find("Code").GetComponent<TMP_Text>().text = joinCode.ToUpper();
     }
