@@ -5,38 +5,38 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class LobbyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class PlayerUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public string id;
     public TextMeshProUGUI nameText;
-    public TextMeshProUGUI countText;
-    public TextMeshProUGUI modeText;
+    public TextMeshProUGUI statusText;
+    public TextMeshProUGUI classText;
 
     private void Update()
     {
-        if (SampleSceneManager.selectedLobbyId == id)
+        if (SampleSceneManager.selectedPlayerId == id)
         {
             nameText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
-            countText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
-            modeText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
+            statusText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
+            classText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
         }
         else
         {
             nameText.color = new Color(1f, 1f, 1f);
-            countText.color = new Color(1f, 1f, 1f);
-            modeText.color = new Color(1f, 1f, 1f);
+            statusText.color = new Color(1f, 1f, 1f);
+            classText.color = new Color(1f, 1f, 1f);
         }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (SampleSceneManager.selectedLobbyId != id)
+        if (SampleSceneManager.selectedPlayerId != id)
         {
-            SampleSceneManager.selectedLobbyId = id;
+            SampleSceneManager.selectedPlayerId = id;
         }
         else
         {
-            SampleSceneManager.selectedLobbyId = null;
+            SampleSceneManager.selectedPlayerId = null;
         }
     }
 

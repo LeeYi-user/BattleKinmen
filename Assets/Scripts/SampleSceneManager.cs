@@ -20,20 +20,48 @@ public class SampleSceneManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI mainMenuQuitButtonText;
     [SerializeField] private TextMeshProUGUI lobbyMenuClassOptionText;
 
+    [SerializeField] private TMP_InputField lobbyMenuPlayerNameInput;
+    [SerializeField] private TMP_InputField createMenuLobbyNameInput;
+    [SerializeField] private TMP_InputField createMenuLobbyMaxPlayersInput;
+
+    [SerializeField] private GameObject lobbyContainer;
+
     public static string playerName;
     public static string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
     public static int playerClass = 0;
+    public static string selectedLobbyId;
+    public static string selectedPlayerId;
 
-    // Start is called before the first frame update
-    void Start()
+    private float lobbyQueryTimer;
+
+    public static int clients = 1;
+
+    private void Start()
     {
-        
+        lobbyMenuPlayerNameInput.text = "玩家";
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        playerName = lobbyMenuPlayerNameInput.text;
+        HandleLobbyListPollForUpdates();
+    }
+
+    private void HandleLobbyListPollForUpdates()
+    {
+        if (!lobbyMenu.activeSelf)
+        {
+            lobbyQueryTimer = 0f;
+            return;
+        }
+
+        lobbyQueryTimer -= Time.deltaTime;
+
+        if (lobbyQueryTimer < 0f)
+        {
+            lobbyQueryTimer = 1.1f * clients;
+            UnityLobby.Instance.ListLobbies();
+        }
     }
 
     public void MainMenuStartButtonClick()
@@ -93,12 +121,15 @@ public class SampleSceneManager : MonoBehaviour
 
     public void LobbyMenuJoinButtonClick()
     {
+        UnityLobby.Instance.JoinLobby(selectedLobbyId);
         lobbyMenu.SetActive(false);
         roomerMenu.SetActive(true);
     }
 
     public void LobbyMenuCreateButtonClick()
     {
+        createMenuLobbyNameInput.text = "房間";
+        createMenuLobbyMaxPlayersInput.text = "6";
         lobbyMenu.SetActive(false);
         createMenu.SetActive(true);
     }
@@ -141,19 +172,21 @@ public class SampleSceneManager : MonoBehaviour
 
     public void CreateMenuConfirmButtonClick()
     {
+        UnityLobby.Instance.CreateLobby(createMenuLobbyNameInput.text, int.Parse(createMenuLobbyMaxPlayersInput.text));
         createMenu.SetActive(false);
         ownerMenu.SetActive(true);
     }
 
     public void OwnerMenuQuitButtonClick()
     {
+        UnityLobby.Instance.DeleteLobby();
         ownerMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }
 
     public void OwnerMenuKickButtonClick()
     {
-        Debug.Log("Kick");
+        UnityLobby.Instance.KickPlayer(selectedPlayerId);
     }
 
     public void OwnerMenuStartButtonClick()
@@ -163,19 +196,21 @@ public class SampleSceneManager : MonoBehaviour
 
     public void RoomerMenuQuitButtonClick()
     {
+        UnityLobby.Instance.QuitLobby();
         roomerMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }
 
     public void RoomerMenuInfoButtonClick()
     {
+        UnityLobby.Instance.LobbyInfo();
         roomerMenu.SetActive(false);
         infoMenu.SetActive(true);
     }
 
     public void RoomerMenuReadyButtonClick()
     {
-        Debug.Log("Ready");
+        UnityLobby.Instance.UpdatePlayerStatus();
     }
 
     public void InfoMenuBackButtonClick()
