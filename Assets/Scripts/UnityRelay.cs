@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode;
@@ -20,12 +18,6 @@ public class UnityRelay : MonoBehaviour
         Instance = this;
     }
 
-    private async void Start()
-    {
-        await UnityServices.InitializeAsync();
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-    }
-
     public async void CreateRelay()
     {
         try
@@ -37,11 +29,11 @@ public class UnityRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
 
-            ShowCode(joinCode);
+            UnityLobby.Instance.UpdateLobbyCode(joinCode);
         }
         catch (RelayServiceException e)
         {
-            SceneManager.LoadScene("MenuScene");
+            SceneManager.LoadScene("SampleScene");
             Debug.Log(e);
         }
     }
@@ -55,18 +47,11 @@ public class UnityRelay : MonoBehaviour
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartClient();
-
-            ShowCode(joinCode);
         }
         catch (RelayServiceException e)
         {
-            SceneManager.LoadScene("MenuScene");
+            SceneManager.LoadScene("SampleScene");
             Debug.Log(e);
         }
-    }
-
-    private void ShowCode(string joinCode)
-    {
-        GameObject.Find("Code").GetComponent<TMP_Text>().text = joinCode.ToUpper();
     }
 }

@@ -95,18 +95,18 @@ public class MainSceneManager : NetworkBehaviour
 
         if (GameObject.Find("NetworkManager").GetComponent<UnityRelay>().enabled)
         {
-            if (MenuSceneManager.host)
+            if (UnityLobby.Instance.hostLobby != null)
             {
                 UnityRelay.Instance.CreateRelay();
             }
             else
             {
-                UnityRelay.Instance.JoinRelay(MenuSceneManager.code);
+                UnityRelay.Instance.JoinRelay(UnityLobby.Instance.joinedLobby.Data["code"].Value);
             }
         }
         else
         {
-            if (MenuSceneManager.host)
+            if (UnityLobby.Instance.hostLobby != null)
             {
                 NetworkManager.StartHost();
             }
@@ -116,7 +116,7 @@ public class MainSceneManager : NetworkBehaviour
             }
         }
 
-        if (MenuSceneManager.host)
+        if (UnityLobby.Instance.hostLobby != null)
         {
             startButtonText.text = "START";
         }

@@ -1,18 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
-using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class UnityLobby : MonoBehaviour
 {
     public static UnityLobby Instance;
 
-    private Lobby hostLobby;
-    private Lobby joinedLobby;
+    public Lobby hostLobby;
+    public Lobby joinedLobby;
 
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
@@ -23,13 +23,6 @@ public class UnityLobby : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-
-    private async void Start()
-    {
-        await UnityServices.InitializeAsync();
-        AuthenticationService.Instance.SwitchProfile(Random.Range(int.MinValue, int.MaxValue).ToString());
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
     private void Update()
@@ -79,11 +72,23 @@ public class UnityLobby : MonoBehaviour
                 lobbyUpdateTimer = 1.1f;
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
-                ListPlayers();
 
-                if (hostLobby != null)
+                if (!SampleSceneManager.Instance.start)
                 {
-                    UpdateLobbyCount();
+                    if (lobby.Data["code"].Value == "")
+                    {
+                        ListPlayers();
+
+                        if (hostLobby != null)
+                        {
+                            UpdateLobbyCount();
+                        }
+                    }
+                    else
+                    {
+                        SceneManager.LoadScene("MainScene");
+                        SampleSceneManager.Instance.start = true;
+                    }
                 }
             }
         }
@@ -112,6 +117,9 @@ public class UnityLobby : MonoBehaviour
                     },
                     {
                         "friendly_fire", new DataObject(DataObject.VisibilityOptions.Public, "¶}")
+                    },
+                    {
+                        "code", new DataObject(DataObject.VisibilityOptions.Public, "", DataObject.IndexOptions.S1)
                     }
                 }
             };
@@ -131,7 +139,15 @@ public class UnityLobby : MonoBehaviour
     {
         try
         {
-            QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync();
+            QueryLobbiesOptions queryLobbiesOptions = new QueryLobbiesOptions
+            {
+                Filters = new List<QueryFilter>
+                {
+                    new QueryFilter(QueryFilter.FieldOptions.S1, "", QueryFilter.OpOptions.EQ)
+                }
+            };
+
+            QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync(queryLobbiesOptions);
 
             foreach (Lobby lobby in queryResponse.Results)
             {
@@ -301,6 +317,26 @@ public class UnityLobby : MonoBehaviour
                 {
                     {
                         "count", new DataObject(DataObject.VisibilityOptions.Public, hostLobby.Players.Count.ToString())
+                    }
+                }
+            });
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public async void UpdateLobbyCode(string joinCode)
+    {
+        try
+        {
+            await Lobbies.Instance.UpdateLobbyAsync(hostLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    {
+                        "code", new DataObject(DataObject.VisibilityOptions.Public, joinCode)
                     }
                 }
             });

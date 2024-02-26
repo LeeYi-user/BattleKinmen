@@ -33,6 +33,9 @@ public class SampleSceneManager : MonoBehaviour
     public GameObject ownerMenuContainer;
     public GameObject roomerMenuContainer;
 
+    public Slider sensSlider;
+    public Slider volumeSlider;
+
     public string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
     public string playerName;
     public int playerClass;
@@ -40,7 +43,12 @@ public class SampleSceneManager : MonoBehaviour
     public string selectedLobbyId;
     public string selectedPlayerId;
 
+    public float sens;
+    public float volume;
+
     private float lobbyQueryTimer;
+
+    public bool start;
 
     private void Awake()
     {
@@ -50,11 +58,16 @@ public class SampleSceneManager : MonoBehaviour
     private void Start()
     {
         lobbyMenuPlayerNameInput.text = "玩家";
+        sensSlider.value = sens;
+        volumeSlider.value = volume;
+        start = false;
     }
 
     private void Update()
     {
         playerName = lobbyMenuPlayerNameInput.text;
+        sens = sensSlider.value;
+        volume = volumeSlider.value;
         HandleLobbyListPollForUpdates();
     }
 
@@ -202,7 +215,8 @@ public class SampleSceneManager : MonoBehaviour
 
     public void OwnerMenuStartButtonClick()
     {
-        Debug.Log("Start");
+        start = true;
+        SceneManager.LoadScene("MainScene");
     }
 
     public void RoomerMenuQuitButtonClick()

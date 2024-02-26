@@ -11340,7 +11340,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1167302309}
   - component: {fileID: 1167302308}
-  - component: {fileID: 1167302310}
   m_Layer: 0
   m_Name: SampleSceneManager
   m_TagString: Untagged
@@ -11381,6 +11380,8 @@ MonoBehaviour:
   lobbyMenuContainer: {fileID: 611134627}
   ownerMenuContainer: {fileID: 799374497}
   roomerMenuContainer: {fileID: 716705097}
+  sensSlider: {fileID: 901460087}
+  volumeSlider: {fileID: 113955604}
   classes:
   - "\u69B4\u5F48\u5175"
   - "\u5730\u96F7\u5175"
@@ -11389,6 +11390,8 @@ MonoBehaviour:
   playerClass: 0
   selectedLobbyId: 
   selectedPlayerId: 
+  sens: 0.25
+  volume: 0.25
 --- !u!4 &1167302309
 Transform:
   m_ObjectHideFlags: 0
@@ -11404,20 +11407,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1167302310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1167302307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab92b0df7921fb44b9b5ef41381d3a42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lobbyUIPrefab: {fileID: 4509085099559105286, guid: b5d72350166a4c444a843cb63f299a5b, type: 3}
-  playerUIPrefab: {fileID: 7301581856230406354, guid: 46404bb2c33123e40b7b8543fdcfe791, type: 3}
 --- !u!1 &1190892515
 GameObject:
   m_ObjectHideFlags: 0
