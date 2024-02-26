@@ -11370,11 +11370,25 @@ MonoBehaviour:
   mainMenuStartButtonText: {fileID: 471644026}
   mainMenuSettingsButtonText: {fileID: 535272924}
   mainMenuQuitButtonText: {fileID: 1041504270}
-  lobbyMenuClassOptionText: {fileID: 601416586}
   lobbyMenuPlayerNameInput: {fileID: 32059273}
+  lobbyMenuClassOptionText: {fileID: 601416586}
   createMenuLobbyNameInput: {fileID: 1973386823}
-  createMenuLobbyMaxPlayersInput: {fileID: 1774335764}
-  lobbyContainer: {fileID: 611134627}
+  createMenuMaxPlayersInput: {fileID: 1774335764}
+  infoMenuLobbyNameText: {fileID: 687661316}
+  infoMenuMaxPlayersText: {fileID: 170188747}
+  infoMenuGameModeText: {fileID: 308958122}
+  infoMenuFriendlyFireText: {fileID: 790663147}
+  lobbyMenuContainer: {fileID: 611134627}
+  ownerMenuContainer: {fileID: 799374497}
+  roomerMenuContainer: {fileID: 716705097}
+  classes:
+  - "\u69B4\u5F48\u5175"
+  - "\u5730\u96F7\u5175"
+  - "\u91AB\u7642\u5175"
+  playerName: 
+  playerClass: 0
+  selectedLobbyId: 
+  selectedPlayerId: 
 --- !u!4 &1167302309
 Transform:
   m_ObjectHideFlags: 0
@@ -11402,17 +11416,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab92b0df7921fb44b9b5ef41381d3a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyContainer: {fileID: 611134627}
   lobbyUIPrefab: {fileID: 4509085099559105286, guid: b5d72350166a4c444a843cb63f299a5b, type: 3}
-  playerContainerForOwner: {fileID: 799374497}
-  playerContainerForRoomer: {fileID: 716705097}
   playerUIPrefab: {fileID: 7301581856230406354, guid: 46404bb2c33123e40b7b8543fdcfe791, type: 3}
-  InfoMenuNameText: {fileID: 687661316}
-  InfoMenuMaxPlayersText: {fileID: 170188747}
-  InfoMenuModeText: {fileID: 308958122}
-  InfoMenuFriendlyFireText: {fileID: 790663147}
-  lobbyMenu: {fileID: 1047296479}
-  roomerMenu: {fileID: 801878946}
 --- !u!1 &1190892515
 GameObject:
   m_ObjectHideFlags: 0

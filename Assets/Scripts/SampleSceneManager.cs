@@ -7,34 +7,45 @@ using TMPro;
 
 public class SampleSceneManager : MonoBehaviour
 {
-    [SerializeField] private GameObject mainMenu;
-    [SerializeField] private GameObject settingsMenu;
-    [SerializeField] private GameObject lobbyMenu;
-    [SerializeField] private GameObject createMenu;
-    [SerializeField] private GameObject ownerMenu;
-    [SerializeField] private GameObject roomerMenu;
-    [SerializeField] private GameObject infoMenu;
+    public static SampleSceneManager Instance;
 
-    [SerializeField] private TextMeshProUGUI mainMenuStartButtonText;
-    [SerializeField] private TextMeshProUGUI mainMenuSettingsButtonText;
-    [SerializeField] private TextMeshProUGUI mainMenuQuitButtonText;
-    [SerializeField] private TextMeshProUGUI lobbyMenuClassOptionText;
+    public GameObject mainMenu;
+    public GameObject settingsMenu;
+    public GameObject lobbyMenu;
+    public GameObject createMenu;
+    public GameObject ownerMenu;
+    public GameObject roomerMenu;
+    public GameObject infoMenu;
 
-    [SerializeField] private TMP_InputField lobbyMenuPlayerNameInput;
-    [SerializeField] private TMP_InputField createMenuLobbyNameInput;
-    [SerializeField] private TMP_InputField createMenuLobbyMaxPlayersInput;
+    public TextMeshProUGUI mainMenuStartButtonText;
+    public TextMeshProUGUI mainMenuSettingsButtonText;
+    public TextMeshProUGUI mainMenuQuitButtonText;
+    public TMP_InputField lobbyMenuPlayerNameInput;
+    public TextMeshProUGUI lobbyMenuClassOptionText;
+    public TMP_InputField createMenuLobbyNameInput;
+    public TMP_InputField createMenuMaxPlayersInput;
+    public TextMeshProUGUI infoMenuLobbyNameText;
+    public TextMeshProUGUI infoMenuMaxPlayersText;
+    public TextMeshProUGUI infoMenuGameModeText;
+    public TextMeshProUGUI infoMenuFriendlyFireText;
 
-    [SerializeField] private GameObject lobbyContainer;
+    public GameObject lobbyMenuContainer;
+    public GameObject ownerMenuContainer;
+    public GameObject roomerMenuContainer;
 
-    public static string playerName;
-    public static string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
-    public static int playerClass = 0;
-    public static string selectedLobbyId;
-    public static string selectedPlayerId;
+    public string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
+    public string playerName;
+    public int playerClass;
+
+    public string selectedLobbyId;
+    public string selectedPlayerId;
 
     private float lobbyQueryTimer;
 
-    public static int clients = 1;
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -59,7 +70,7 @@ public class SampleSceneManager : MonoBehaviour
 
         if (lobbyQueryTimer < 0f)
         {
-            lobbyQueryTimer = 1.1f * clients;
+            lobbyQueryTimer = 1.1f;
             UnityLobby.Instance.ListLobbies();
         }
     }
@@ -129,7 +140,7 @@ public class SampleSceneManager : MonoBehaviour
     public void LobbyMenuCreateButtonClick()
     {
         createMenuLobbyNameInput.text = "房間";
-        createMenuLobbyMaxPlayersInput.text = "6";
+        createMenuMaxPlayersInput.text = "6";
         lobbyMenu.SetActive(false);
         createMenu.SetActive(true);
     }
@@ -172,7 +183,7 @@ public class SampleSceneManager : MonoBehaviour
 
     public void CreateMenuConfirmButtonClick()
     {
-        UnityLobby.Instance.CreateLobby(createMenuLobbyNameInput.text, int.Parse(createMenuLobbyMaxPlayersInput.text));
+        UnityLobby.Instance.CreateLobby(createMenuLobbyNameInput.text, int.Parse(createMenuMaxPlayersInput.text));
         createMenu.SetActive(false);
         ownerMenu.SetActive(true);
     }

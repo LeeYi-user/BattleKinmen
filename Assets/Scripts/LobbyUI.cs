@@ -14,7 +14,7 @@ public class LobbyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 
     private void Update()
     {
-        if (SampleSceneManager.selectedLobbyId == id)
+        if (SampleSceneManager.Instance.selectedLobbyId == id)
         {
             nameText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
             countText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
@@ -30,13 +30,13 @@ public class LobbyUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (SampleSceneManager.selectedLobbyId != id)
+        if (SampleSceneManager.Instance.selectedLobbyId != id)
         {
-            SampleSceneManager.selectedLobbyId = id;
+            SampleSceneManager.Instance.selectedLobbyId = id;
         }
         else
         {
-            SampleSceneManager.selectedLobbyId = null;
+            SampleSceneManager.Instance.selectedLobbyId = null;
         }
     }
 

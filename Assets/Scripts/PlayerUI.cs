@@ -14,7 +14,7 @@ public class PlayerUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
     private void Update()
     {
-        if (SampleSceneManager.selectedPlayerId == id)
+        if (SampleSceneManager.Instance.selectedPlayerId == id)
         {
             nameText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
             statusText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
@@ -30,13 +30,13 @@ public class PlayerUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (SampleSceneManager.selectedPlayerId != id)
+        if (SampleSceneManager.Instance.selectedPlayerId != id)
         {
-            SampleSceneManager.selectedPlayerId = id;
+            SampleSceneManager.Instance.selectedPlayerId = id;
         }
         else
         {
-            SampleSceneManager.selectedPlayerId = null;
+            SampleSceneManager.Instance.selectedPlayerId = null;
         }
     }
 

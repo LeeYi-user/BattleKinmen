@@ -17,20 +17,8 @@ public class UnityLobby : MonoBehaviour
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
 
-    [SerializeField] private GameObject lobbyContainer;
     [SerializeField] private GameObject lobbyUIPrefab;
-
-    [SerializeField] private GameObject playerContainerForOwner;
-    [SerializeField] private GameObject playerContainerForRoomer;
     [SerializeField] private GameObject playerUIPrefab;
-
-    [SerializeField] private TextMeshProUGUI InfoMenuNameText;
-    [SerializeField] private TextMeshProUGUI InfoMenuMaxPlayersText;
-    [SerializeField] private TextMeshProUGUI InfoMenuModeText;
-    [SerializeField] private TextMeshProUGUI InfoMenuFriendlyFireText;
-
-    [SerializeField] private GameObject lobbyMenu;
-    [SerializeField] private GameObject roomerMenu;
 
     private void Awake()
     {
@@ -88,7 +76,7 @@ public class UnityLobby : MonoBehaviour
 
             if (lobbyUpdateTimer < 0f)
             {
-                lobbyUpdateTimer = 1.1f * SampleSceneManager.clients;
+                lobbyUpdateTimer = 1.1f;
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
                 ListPlayers();
@@ -101,8 +89,8 @@ public class UnityLobby : MonoBehaviour
         }
         catch
         {
-            roomerMenu.SetActive(false);
-            lobbyMenu.SetActive(true);
+            SampleSceneManager.Instance.roomerMenu.SetActive(false);
+            SampleSceneManager.Instance.lobbyMenu.SetActive(true);
             joinedLobby = null;
         }
     }
@@ -149,7 +137,7 @@ public class UnityLobby : MonoBehaviour
             {
                 bool flag = false;
 
-                foreach (Transform child in lobbyContainer.transform)
+                foreach (Transform child in SampleSceneManager.Instance.lobbyMenuContainer.transform)
                 {
                     if (lobby.Id == child.GetComponent<LobbyUI>().id)
                     {
@@ -163,8 +151,8 @@ public class UnityLobby : MonoBehaviour
 
                 if (!flag)
                 {
-                    GameObject lobbyUI = Instantiate(lobbyUIPrefab, lobbyContainer.transform.position, Quaternion.identity);
-                    lobbyUI.transform.SetParent(lobbyContainer.transform, false);
+                    GameObject lobbyUI = Instantiate(lobbyUIPrefab, SampleSceneManager.Instance.lobbyMenuContainer.transform.position, Quaternion.identity);
+                    lobbyUI.transform.SetParent(SampleSceneManager.Instance.lobbyMenuContainer.transform, false);
                     lobbyUI.GetComponent<LobbyUI>().id = lobby.Id;
                     lobbyUI.GetComponent<LobbyUI>().nameText.text = lobby.Name;
                     lobbyUI.GetComponent<LobbyUI>().countText.text = lobby.Data["count"].Value + "/" + lobby.MaxPlayers.ToString();
@@ -172,7 +160,7 @@ public class UnityLobby : MonoBehaviour
                 }
             }
 
-            foreach (Transform child in lobbyContainer.transform)
+            foreach (Transform child in SampleSceneManager.Instance.lobbyMenuContainer.transform)
             {
                 bool flag = false;
 
@@ -218,10 +206,10 @@ public class UnityLobby : MonoBehaviour
 
     public void LobbyInfo()
     {
-        InfoMenuNameText.text = joinedLobby.Name;
-        InfoMenuMaxPlayersText.text = joinedLobby.MaxPlayers.ToString();
-        InfoMenuModeText.text = joinedLobby.Data["mode"].Value;
-        InfoMenuFriendlyFireText.text = joinedLobby.Data["friendly_fire"].Value;
+        SampleSceneManager.Instance.infoMenuLobbyNameText.text = joinedLobby.Name;
+        SampleSceneManager.Instance.infoMenuMaxPlayersText.text = joinedLobby.MaxPlayers.ToString();
+        SampleSceneManager.Instance.infoMenuGameModeText.text = joinedLobby.Data["mode"].Value;
+        SampleSceneManager.Instance.infoMenuFriendlyFireText.text = joinedLobby.Data["friendly_fire"].Value;
     }
 
     private Unity.Services.Lobbies.Models.Player CreatePlayer(string status)
@@ -231,13 +219,13 @@ public class UnityLobby : MonoBehaviour
             Data = new Dictionary<string, PlayerDataObject>
             {
                 {
-                    "name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.playerName)
+                    "name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.Instance.playerName)
                 },
                 {
                     "status", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, status)
                 },
                 {
-                    "class", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.classes[SampleSceneManager.playerClass])
+                    "class", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.Instance.classes[SampleSceneManager.Instance.playerClass])
                 }
             }
         };
@@ -245,22 +233,22 @@ public class UnityLobby : MonoBehaviour
 
     public void ListPlayers()
     {
-        GameObject playerContainer;
+        GameObject container;
 
         if (hostLobby != null)
         {
-            playerContainer = playerContainerForOwner;
+            container = SampleSceneManager.Instance.ownerMenuContainer;
         }
         else
         {
-            playerContainer = playerContainerForRoomer;
+            container = SampleSceneManager.Instance.roomerMenuContainer;
         }
 
         foreach (Unity.Services.Lobbies.Models.Player player in joinedLobby.Players)
         {
             bool flag = false;
 
-            foreach (Transform child in playerContainer.transform)
+            foreach (Transform child in container.transform)
             {
                 if (player.Id == child.GetComponent<PlayerUI>().id)
                 {
@@ -274,8 +262,8 @@ public class UnityLobby : MonoBehaviour
 
             if (!flag)
             {
-                GameObject playerUI = Instantiate(playerUIPrefab, playerContainer.transform.position, Quaternion.identity);
-                playerUI.transform.SetParent(playerContainer.transform, false);
+                GameObject playerUI = Instantiate(playerUIPrefab, container.transform.position, Quaternion.identity);
+                playerUI.transform.SetParent(container.transform, false);
                 playerUI.GetComponent<PlayerUI>().id = player.Id;
                 playerUI.GetComponent<PlayerUI>().nameText.text = player.Data["name"].Value;
                 playerUI.GetComponent<PlayerUI>().statusText.text = player.Data["status"].Value;
@@ -283,7 +271,7 @@ public class UnityLobby : MonoBehaviour
             }
         }
 
-        foreach (Transform child in playerContainer.transform)
+        foreach (Transform child in container.transform)
         {
             bool flag = false;
 
