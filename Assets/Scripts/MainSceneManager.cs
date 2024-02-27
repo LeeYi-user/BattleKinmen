@@ -47,7 +47,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene("SampleScene");
 
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
 
