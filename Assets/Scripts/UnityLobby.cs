@@ -371,7 +371,15 @@ public class UnityLobby : MonoBehaviour
     {
         try
         {
-            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
+            if (hostLobby == null)
+            {
+                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
+            }
+            else
+            {
+                await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
+            }
+
             hostLobby = null;
             joinedLobby = null;
         }
@@ -386,20 +394,6 @@ public class UnityLobby : MonoBehaviour
         try
         {
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);
-        }
-        catch (LobbyServiceException e)
-        {
-            Debug.Log(e);
-        }
-    }
-
-    public async void DeleteLobby()
-    {
-        try
-        {
-            await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
-            hostLobby = null;
-            joinedLobby = null;
         }
         catch (LobbyServiceException e)
         {

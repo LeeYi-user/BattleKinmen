@@ -36,8 +36,8 @@ public class PlayerGun : NetworkBehaviour
 
     private void Start()
     {
-        audioSource.volume = MenuSceneManager.volume;
-        fakeAudioSource.volume = MenuSceneManager.volume;
+        audioSource.volume = SampleSceneManager.Instance.volume;
+        fakeAudioSource.volume = SampleSceneManager.Instance.volume;
 
         if (!IsOwner)
         {

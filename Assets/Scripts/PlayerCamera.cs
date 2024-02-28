@@ -47,8 +47,8 @@ public class PlayerCamera : NetworkBehaviour
             return;
         }
 
-        float mouseX = Input.GetAxis("Mouse X") * MenuSceneManager.sens * 10;
-        float mouseY = Input.GetAxis("Mouse Y") * MenuSceneManager.sens * 10;
+        float mouseX = Input.GetAxis("Mouse X") * SampleSceneManager.Instance.sens * 10;
+        float mouseY = Input.GetAxis("Mouse Y") * SampleSceneManager.Instance.sens * 10;
 
         yRotation += mouseX;
         xRotation -= mouseY;

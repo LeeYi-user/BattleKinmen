@@ -203,7 +203,7 @@ public class SampleSceneManager : MonoBehaviour
 
     public void OwnerMenuQuitButtonClick()
     {
-        UnityLobby.Instance.DeleteLobby();
+        UnityLobby.Instance.QuitLobby();
         ownerMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }

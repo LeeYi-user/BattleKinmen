@@ -93,27 +93,13 @@ public class MainSceneManager : NetworkBehaviour
         gameover = false;
         playerLives = 5;
 
-        if (GameObject.Find("NetworkManager").GetComponent<UnityRelay>().enabled)
+        if (UnityLobby.Instance.hostLobby != null)
         {
-            if (UnityLobby.Instance.hostLobby != null)
-            {
-                UnityRelay.Instance.CreateRelay();
-            }
-            else
-            {
-                UnityRelay.Instance.JoinRelay(UnityLobby.Instance.joinedLobby.Data["code"].Value);
-            }
+            UnityRelay.Instance.CreateRelay();
         }
         else
         {
-            if (UnityLobby.Instance.hostLobby != null)
-            {
-                NetworkManager.StartHost();
-            }
-            else
-            {
-                NetworkManager.StartClient();
-            }
+            UnityRelay.Instance.JoinRelay(UnityLobby.Instance.joinedLobby.Data["code"].Value);
         }
 
         if (UnityLobby.Instance.hostLobby != null)
@@ -129,6 +115,7 @@ public class MainSceneManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Backspace) && playerCounter.text != "0" && (start < 2 || gameover || Cursor.lockState == CursorLockMode.Locked))
         {
+            UnityLobby.Instance.QuitLobby();
             NetworkManager.Shutdown();
             Cursor.lockState = CursorLockMode.None;
             return;
