@@ -30,6 +30,7 @@ public class UnityRelay : MonoBehaviour
             NetworkManager.Singleton.StartHost();
 
             UnityLobby.Instance.UpdateLobbyCode(joinCode);
+            UnityLobby.Instance.UpdateLobbyState("started");
         }
         catch (RelayServiceException e)
         {

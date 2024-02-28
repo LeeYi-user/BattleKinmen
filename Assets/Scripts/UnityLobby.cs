@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
@@ -29,6 +30,12 @@ public class UnityLobby : MonoBehaviour
     {
         HandleHeartbeatTimer();
         HandleLobbyPollForUpdates();
+
+        if (SampleSceneManager.start == 2 && joinedLobby.Data["state"].Value == "started")
+        {
+            SampleSceneManager.start = 3;
+            UnityRelay.Instance.JoinRelay(joinedLobby.Data["code"].Value);
+        }
     }
 
     private async void HandleHeartbeatTimer()
@@ -39,19 +46,12 @@ public class UnityLobby : MonoBehaviour
             return;
         }
 
-        try
-        {
-            heartbeatTimer -= Time.deltaTime;
+        heartbeatTimer -= Time.deltaTime;
 
-            if (heartbeatTimer < 0f)
-            {
-                heartbeatTimer = 15f;
-                await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
-            }
-        }
-        catch
+        if (heartbeatTimer < 0f)
         {
-            hostLobby = null;
+            heartbeatTimer = 15f;
+            await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
         }
     }
 
@@ -73,31 +73,46 @@ public class UnityLobby : MonoBehaviour
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
 
-                if (!SampleSceneManager.Instance.start)
+                if (lobby.Data["state"].Value == "waiting")
                 {
-                    if (lobby.Data["code"].Value == "")
-                    {
-                        ListPlayers();
+                    ListPlayers();
 
-                        if (hostLobby != null)
-                        {
-                            UpdateLobbyCount();
-                        }
-                    }
-                    else
+                    if (hostLobby != null && SampleSceneManager.start == 0)
                     {
-                        SceneManager.LoadScene("MainScene");
-                        SampleSceneManager.Instance.start = true;
+                        UpdateLobbyCount();
                     }
+                }
+                else if (SampleSceneManager.start == 0)
+                {
+                    SampleSceneManager.start = 1;
+                    StartCoroutine(LoadSceneAsync("MainScene"));
                 }
             }
         }
-        catch
+        catch (LobbyServiceException e)
+        {
+            joinedLobby = null;
+            Debug.Log(e);
+        }
+        catch (Exception e)
         {
             SampleSceneManager.Instance.roomerMenu.SetActive(false);
+            SampleSceneManager.Instance.infoMenu.SetActive(false);
             SampleSceneManager.Instance.lobbyMenu.SetActive(true);
-            joinedLobby = null;
+            Debug.Log(e);
         }
+    }
+
+    IEnumerator LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!operation.isDone)
+        {
+            yield return null;
+        }
+
+        SampleSceneManager.start = 2;
     }
 
     public async void CreateLobby(string lobbyName, int maxPlayers)
@@ -117,6 +132,9 @@ public class UnityLobby : MonoBehaviour
                     },
                     {
                         "friendly_fire", new DataObject(DataObject.VisibilityOptions.Public, "¶}")
+                    },
+                    {
+                        "state", new DataObject(DataObject.VisibilityOptions.Public, "waiting")
                     },
                     {
                         "code", new DataObject(DataObject.VisibilityOptions.Public, "", DataObject.IndexOptions.S1)
@@ -235,13 +253,13 @@ public class UnityLobby : MonoBehaviour
             Data = new Dictionary<string, PlayerDataObject>
             {
                 {
-                    "name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.Instance.playerName)
+                    "name", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.playerName)
                 },
                 {
                     "status", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, status)
                 },
                 {
-                    "class", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.Instance.classes[SampleSceneManager.Instance.playerClass])
+                    "class", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.Instance.classes[SampleSceneManager.playerClass])
                 }
             }
         };
@@ -317,6 +335,26 @@ public class UnityLobby : MonoBehaviour
                 {
                     {
                         "count", new DataObject(DataObject.VisibilityOptions.Public, hostLobby.Players.Count.ToString())
+                    }
+                }
+            });
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public async void UpdateLobbyState(string state)
+    {
+        try
+        {
+            await Lobbies.Instance.UpdateLobbyAsync(hostLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    {
+                        "state", new DataObject(DataObject.VisibilityOptions.Public, state)
                     }
                 }
             });

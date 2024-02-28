@@ -47,6 +47,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
+        UnityLobby.Instance.QuitLobby();
         SceneManager.LoadScene("SampleScene");
 
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
@@ -96,14 +97,6 @@ public class MainSceneManager : NetworkBehaviour
         if (UnityLobby.Instance.hostLobby != null)
         {
             UnityRelay.Instance.CreateRelay();
-        }
-        else
-        {
-            UnityRelay.Instance.JoinRelay(UnityLobby.Instance.joinedLobby.Data["code"].Value);
-        }
-
-        if (UnityLobby.Instance.hostLobby != null)
-        {
             startButtonText.text = "START";
         }
     }
@@ -115,7 +108,6 @@ public class MainSceneManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Backspace) && playerCounter.text != "0" && (start < 2 || gameover || Cursor.lockState == CursorLockMode.Locked))
         {
-            UnityLobby.Instance.QuitLobby();
             NetworkManager.Shutdown();
             Cursor.lockState = CursorLockMode.None;
             return;

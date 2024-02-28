@@ -37,8 +37,8 @@ public class SampleSceneManager : MonoBehaviour
     public Slider volumeSlider;
 
     public string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
-    public string playerName;
-    public int playerClass;
+    public static string playerName = "玩家";
+    public static int playerClass = 0;
 
     public string selectedLobbyId;
     public string selectedPlayerId;
@@ -48,7 +48,7 @@ public class SampleSceneManager : MonoBehaviour
 
     private float lobbyQueryTimer;
 
-    public bool start;
+    public static int start;
 
     private void Awake()
     {
@@ -57,10 +57,10 @@ public class SampleSceneManager : MonoBehaviour
 
     private void Start()
     {
-        lobbyMenuPlayerNameInput.text = "玩家";
+        lobbyMenuPlayerNameInput.text = playerName;
         sensSlider.value = sens;
         volumeSlider.value = volume;
-        start = false;
+        start = 0;
     }
 
     private void Update()
@@ -215,8 +215,9 @@ public class SampleSceneManager : MonoBehaviour
 
     public void OwnerMenuStartButtonClick()
     {
-        start = true;
+        start = 3;
         SceneManager.LoadScene("MainScene");
+        UnityLobby.Instance.UpdateLobbyState("starting");
     }
 
     public void RoomerMenuQuitButtonClick()
