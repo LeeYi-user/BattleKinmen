@@ -48,7 +48,6 @@ public class MainSceneManager : NetworkBehaviour
     private void NetworkManager_OnClientStopped(bool obj)
     {
         UnityLobby.Instance.QuitLobby();
-        SceneManager.LoadScene("SampleScene");
 
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
 
@@ -96,7 +95,7 @@ public class MainSceneManager : NetworkBehaviour
 
         if (UnityLobby.Instance.hostLobby != null)
         {
-            UnityRelay.Instance.CreateRelay();
+            UnityRelay.Instance.CreateRelay(UnityLobby.Instance.hostLobby.MaxPlayers);
             startButtonText.text = "START";
         }
     }

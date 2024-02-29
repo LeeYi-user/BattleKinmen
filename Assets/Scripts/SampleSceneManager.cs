@@ -16,6 +16,7 @@ public class SampleSceneManager : MonoBehaviour
     public GameObject ownerMenu;
     public GameObject roomerMenu;
     public GameObject infoMenu;
+    public GameObject loadMenu;
 
     public TextMeshProUGUI mainMenuStartButtonText;
     public TextMeshProUGUI mainMenuSettingsButtonText;
@@ -35,6 +36,7 @@ public class SampleSceneManager : MonoBehaviour
 
     public Slider sensSlider;
     public Slider volumeSlider;
+    public Slider progressSlider;
 
     public string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
     public static string playerName = "玩家";
@@ -58,6 +60,7 @@ public class SampleSceneManager : MonoBehaviour
     private void Start()
     {
         lobbyMenuPlayerNameInput.text = playerName;
+        lobbyMenuClassOptionText.text = classes[playerClass];
         sensSlider.value = sens;
         volumeSlider.value = volume;
         start = 0;
@@ -203,7 +206,7 @@ public class SampleSceneManager : MonoBehaviour
 
     public void OwnerMenuQuitButtonClick()
     {
-        UnityLobby.Instance.QuitLobby();
+        UnityLobby.Instance.DeleteLobby();
         ownerMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }

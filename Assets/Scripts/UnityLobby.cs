@@ -95,16 +95,22 @@ public class UnityLobby : MonoBehaviour
                 }
             }
         }
-        catch (LobbyServiceException e)
-        {
-            joinedLobby = null;
-            Debug.Log(e);
-        }
         catch (Exception e)
         {
-            SampleSceneManager.Instance.roomerMenu.SetActive(false);
-            SampleSceneManager.Instance.infoMenu.SetActive(false);
-            SampleSceneManager.Instance.lobbyMenu.SetActive(true);
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
+            if (!SampleSceneManager.Instance.mainMenu.activeSelf)
+            {
+                SampleSceneManager.Instance.roomerMenu.SetActive(false);
+                SampleSceneManager.Instance.infoMenu.SetActive(false);
+                SampleSceneManager.Instance.lobbyMenu.SetActive(true);
+            }
+
+            hostLobby = null;
+            joinedLobby = null;
             Debug.Log(e);
         }
     }
@@ -113,8 +119,14 @@ public class UnityLobby : MonoBehaviour
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
 
+        SampleSceneManager.Instance.loadMenu.SetActive(true);
+
         while (!operation.isDone)
         {
+            float progress = Mathf.Clamp01(operation.progress / 0.9f);
+
+            SampleSceneManager.Instance.progressSlider.value = progress;
+
             yield return null;
         }
 
@@ -155,6 +167,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -221,6 +238,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -240,6 +262,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -347,6 +374,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -367,6 +399,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -387,6 +424,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -407,6 +449,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -415,20 +462,43 @@ public class UnityLobby : MonoBehaviour
     {
         try
         {
-            if (hostLobby == null)
-            {
-                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
-            }
-            else
-            {
-                await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
-            }
+            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
 
             hostLobby = null;
             joinedLobby = null;
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
+            Debug.Log(e);
+        }
+
+        if (SceneManager.GetActiveScene().name == "MainScene")
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+    }
+
+    public async void DeleteLobby()
+    {
+        try
+        {
+            await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
+
+            hostLobby = null;
+            joinedLobby = null;
+        }
+        catch (LobbyServiceException e)
+        {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }
@@ -441,6 +511,11 @@ public class UnityLobby : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
+            if (e.ToString().Contains("Rate limit"))
+            {
+                return;
+            }
+
             Debug.Log(e);
         }
     }

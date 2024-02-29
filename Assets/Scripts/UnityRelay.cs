@@ -18,11 +18,11 @@ public class UnityRelay : MonoBehaviour
         Instance = this;
     }
 
-    public async void CreateRelay()
+    public async void CreateRelay(int maxPlayers)
     {
         try
         {
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4);
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
