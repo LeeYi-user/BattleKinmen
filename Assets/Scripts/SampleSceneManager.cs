@@ -75,7 +75,7 @@ public class SampleSceneManager : MonoBehaviour
     {
         if (!lobbyMenu.activeSelf)
         {
-            lobbyQueryTimer = 0f;
+            lobbyQueryTimer = 1.1f;
             return;
         }
 

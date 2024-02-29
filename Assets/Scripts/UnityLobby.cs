@@ -30,12 +30,6 @@ public class UnityLobby : MonoBehaviour
     {
         HandleHeartbeatTimer();
         HandleLobbyPollForUpdates();
-
-        if (SampleSceneManager.start == 2 && joinedLobby.Data["state"].Value == "started")
-        {
-            SampleSceneManager.start = 3;
-            UnityRelay.Instance.JoinRelay(joinedLobby.Data["code"].Value);
-        }
     }
 
     private async void HandleHeartbeatTimer()
@@ -73,19 +67,31 @@ public class UnityLobby : MonoBehaviour
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
 
-                if (lobby.Data["state"].Value == "waiting")
+                if (SampleSceneManager.start == 0)
                 {
-                    ListPlayers();
-
-                    if (hostLobby != null && SampleSceneManager.start == 0)
+                    if (lobby.Data["state"].Value == "waiting")
                     {
-                        UpdateLobbyCount();
+                        ListPlayers();
+
+                        if (hostLobby != null)
+                        {
+                            UpdateLobbyCount();
+                        }
+                    }
+                    else
+                    {
+                        SampleSceneManager.start = 1;
+                        StartCoroutine(LoadSceneAsync("MainScene"));
                     }
                 }
-                else if (SampleSceneManager.start == 0)
+            }
+
+            if (SampleSceneManager.start == 2)
+            {
+                if (joinedLobby.Data["state"].Value == "started")
                 {
-                    SampleSceneManager.start = 1;
-                    StartCoroutine(LoadSceneAsync("MainScene"));
+                    SampleSceneManager.start = 3;
+                    UnityRelay.Instance.JoinRelay(joinedLobby.Data["code"].Value);
                 }
             }
         }
