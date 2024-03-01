@@ -12,8 +12,6 @@ public class MainSceneManager : NetworkBehaviour
 
     [SerializeField] private GameObject roomInfo;
     [SerializeField] private TextMeshProUGUI playerCounter;
-    [SerializeField] private Button startButton;
-    [SerializeField] private TextMeshProUGUI startButtonText;
 
     [SerializeField] private GameObject storyInfo;
     [SerializeField] private TextMeshProUGUI storyText;
@@ -84,7 +82,12 @@ public class MainSceneManager : NetworkBehaviour
     [ClientRpc]
     private void UpdateCounter_ClientRpc(int count)
     {
-        playerCounter.text = count.ToString();
+        playerCounter.text = count.ToString() + " / " + UnityLobby.Instance.joinedLobby.Players.Count;
+
+        if (IsHost && start == 0 && count == UnityLobby.Instance.joinedLobby.Players.Count)
+        {
+            StartCoroutine(StartGame(1f));
+        }
     }
 
     private void Start()
@@ -92,11 +95,11 @@ public class MainSceneManager : NetworkBehaviour
         start = 0;
         gameover = false;
         playerLives = 5;
+        playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
 
         if (UnityLobby.Instance.hostLobby != null)
         {
             UnityRelay.Instance.CreateRelay(UnityLobby.Instance.hostLobby.MaxPlayers);
-            startButtonText.text = "START";
         }
     }
 
@@ -252,12 +255,9 @@ public class MainSceneManager : NetworkBehaviour
         pause = false;
     }
 
-    public void StartButtonClick()
+    private IEnumerator StartGame(float seconds)
     {
-        if (!IsHost)
-        {
-            return;
-        }
+        yield return new WaitForSeconds(seconds);
 
         StartGame_ClientRpc();
     }
