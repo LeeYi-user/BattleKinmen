@@ -177,10 +177,10 @@ public class MainSceneManager : NetworkBehaviour
         }
         else
         {
-            enemyCounter.text = EnemySpawn.enemies.Value.ToString();
+            enemyCounter.text = EnemySpawn.Instance.enemies.Value.ToString();
         }
 
-        waveCounter.text = "Wave " + EnemySpawn.waves.Value.ToString();
+        waveCounter.text = "Wave " + EnemySpawn.Instance.waves.Value.ToString();
     }
 
     private void Counter1()

@@ -90,13 +90,13 @@ public class Enemy : NetworkBehaviour
         animator.SetTrigger("isDying");
         Destroy(gameObject, 2f);
 
-        EnemySpawn.enemies.Value--;
+        EnemySpawn.Instance.enemies.Value--;
     }
 
     private void Invade()
     {
         MainSceneManager.Instance.playerLives--;
-        EnemySpawn.enemies.Value--;
+        EnemySpawn.Instance.enemies.Value--;
         Destroy(gameObject);
     }
 

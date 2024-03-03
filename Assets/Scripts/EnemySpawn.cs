@@ -5,13 +5,20 @@ using Unity.Netcode;
 
 public class EnemySpawn : NetworkBehaviour
 {
+    public static EnemySpawn Instance;
+
     [SerializeField] private GameObject enemyPrefab;
 
-    public static NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public static NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private int enemyLeft;
     private float timeLeft;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Update()
     {
