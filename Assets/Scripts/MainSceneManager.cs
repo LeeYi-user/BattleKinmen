@@ -8,6 +8,8 @@ using TMPro;
 
 public class MainSceneManager : NetworkBehaviour
 {
+    public static MainSceneManager Instance;
+
     [SerializeField] private GameObject startMenu;
 
     [SerializeField] private GameObject roomInfo;
@@ -23,15 +25,20 @@ public class MainSceneManager : NetworkBehaviour
     [SerializeField] private GameObject gameoverScreen;
     [SerializeField] private TextMeshProUGUI gameoverMessage;
 
-    public static int start;
-    public static float breakTime;
-    public static bool gameover;
-    public static int playerLives;
+    public int start;
+    public NetworkVariable<float> breakTime = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public bool gameover;
+    public int playerLives = 5;
 
     private int phase;
     private bool pause;
     private float timeLeft;
     private Color targetColor = new Color(1, 1, 1, 0);
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -97,10 +104,6 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Start()
     {
-        start = 0;
-        breakTime = 30f;
-        gameover = false;
-        playerLives = 5;
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
 
         if (UnityLobby.Instance.hostLobby != null)
@@ -111,7 +114,8 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Update()
     {
-        Counter();
+        Counter2();
+        Counter1();
         TextFade2();
         TextFade1();
 
@@ -143,19 +147,17 @@ public class MainSceneManager : NetworkBehaviour
         }
     }
 
-    private void Counter()
+    private void Counter2()
     {
         if (start < 2 || gameover)
         {
             return;
         }
 
-        breakTime = Mathf.Max(breakTime - Time.deltaTime, 0f);
-
-        if (breakTime > 0)
+        if (breakTime.Value > 0)
         {
-            int minutes = (int)breakTime / 60;
-            int seconds = (int)breakTime % 60;
+            int minutes = (int)breakTime.Value / 60;
+            int seconds = (int)breakTime.Value % 60;
 
             string minstr = minutes.ToString();
 
@@ -178,7 +180,17 @@ public class MainSceneManager : NetworkBehaviour
             enemyCounter.text = EnemySpawn.enemies.Value.ToString();
         }
 
-        waveCounter.text = "Wave " + EnemySpawn.waves.ToString();
+        waveCounter.text = "Wave " + EnemySpawn.waves.Value.ToString();
+    }
+
+    private void Counter1()
+    {
+        if (!IsHost || start < 2 || gameover)
+        {
+            return;
+        }
+
+        breakTime.Value = Mathf.Max(breakTime.Value - Time.deltaTime, 0f);
     }
 
     private void TextFade2()

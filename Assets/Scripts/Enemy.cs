@@ -46,7 +46,7 @@ public class Enemy : NetworkBehaviour
             return;
         }
 
-        if (MainSceneManager.gameover)
+        if (MainSceneManager.Instance.gameover)
         {
             dying = true;
             Destroy(gameObject);
@@ -95,7 +95,7 @@ public class Enemy : NetworkBehaviour
 
     private void Invade()
     {
-        MainSceneManager.playerLives--;
+        MainSceneManager.Instance.playerLives--;
         EnemySpawn.enemies.Value--;
         Destroy(gameObject);
     }

@@ -78,7 +78,7 @@ public class Player : NetworkBehaviour
     {
         yield return new WaitForSeconds(seconds);
 
-        if (MainSceneManager.gameover)
+        if (MainSceneManager.Instance.gameover)
         {
             yield break;
         }
