@@ -7,41 +7,42 @@ public class EnemySpawn : NetworkBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
 
-    [SerializeField] private float slope; // 1
-    [SerializeField] private float timeLimit; // 300
-    [SerializeField] private float enemyLimit; // 100
+    public static int waves;
 
-    private float startTime;
-    public static int enemyCounter;
+    public static NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    private int enemyLeft;
+    private float timeLeft;
 
     private void Start()
     {
-        startTime = 0;
-        enemyCounter = 0;
+        waves = 1;
     }
 
     private void Update()
     {
-        if (!IsHost || MainSceneManager.start < 2 || MainSceneManager.gameover)
+        if (!IsHost || MainSceneManager.start < 2 || MainSceneManager.breakTime > 0 || MainSceneManager.gameover)
         {
+            enemies.Value = waves * 15 + 10 - 20;
+            enemyLeft = enemies.Value;
+            timeLeft = 10f / (waves + 9);
             return;
         }
 
-        if (startTime == 0)
-        {
-            startTime = Time.time;
-        }
+        timeLeft -= Time.deltaTime;
 
-        if (enemyCounter < Sigmoid(Time.time - startTime))
+        if (enemyLeft > 0 && timeLeft < 0)
         {
             GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);
-            enemyCounter++;
+            enemyLeft--;
+            timeLeft = 10f / (waves + 9);
         }
-    }
 
-    private float Sigmoid(float t)
-    {
-        return enemyLimit / (1f + Mathf.Exp(-slope / (timeLimit / 10f) * (t - (timeLimit / 2f))));
+        if (enemies.Value <= 0)
+        {
+            MainSceneManager.breakTime = 60f;
+            waves++;
+        }
     }
 }

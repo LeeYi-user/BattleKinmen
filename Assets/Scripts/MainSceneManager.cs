@@ -16,10 +16,15 @@ public class MainSceneManager : NetworkBehaviour
     [SerializeField] private GameObject storyInfo;
     [SerializeField] private TextMeshProUGUI storyText;
 
+    [SerializeField] private GameObject counters;
+    [SerializeField] private TextMeshProUGUI enemyCounter;
+    [SerializeField] private TextMeshProUGUI waveCounter;
+
     [SerializeField] private GameObject gameoverScreen;
     [SerializeField] private TextMeshProUGUI gameoverMessage;
 
     public static int start;
+    public static float breakTime;
     public static bool gameover;
     public static int playerLives;
 
@@ -93,6 +98,7 @@ public class MainSceneManager : NetworkBehaviour
     private void Start()
     {
         start = 0;
+        breakTime = 30f;
         gameover = false;
         playerLives = 5;
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
@@ -105,6 +111,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Update()
     {
+        Counter();
         TextFade2();
         TextFade1();
 
@@ -120,10 +127,10 @@ public class MainSceneManager : NetworkBehaviour
             return;
         }
 
-        //if (Input.GetKeyDown(KeyCode.P) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
-        //{
-        //    playerLives = 0;
-        //}
+        if (Input.GetKeyDown(KeyCode.P) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
+        {
+            playerLives = 0;
+        }
 
         if (playerLives <= 0)
         {
@@ -134,6 +141,44 @@ public class MainSceneManager : NetworkBehaviour
                 player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("YOU LOSE");
             }
         }
+    }
+
+    private void Counter()
+    {
+        if (start < 2 || gameover)
+        {
+            return;
+        }
+
+        breakTime = Mathf.Max(breakTime - Time.deltaTime, 0f);
+
+        if (breakTime > 0)
+        {
+            int minutes = (int)breakTime / 60;
+            int seconds = (int)breakTime % 60;
+
+            string minstr = minutes.ToString();
+
+            if (minstr.Length == 1)
+            {
+                minstr = "0" + minstr;
+            }
+
+            string secstr = seconds.ToString();
+
+            if (secstr.Length == 1)
+            {
+                secstr = "0" + secstr;
+            }
+
+            enemyCounter.text = minstr + ":" + secstr;
+        }
+        else
+        {
+            enemyCounter.text = EnemySpawn.enemies.Value.ToString();
+        }
+
+        waveCounter.text = "Wave " + EnemySpawn.waves.ToString();
     }
 
     private void TextFade2()
@@ -147,6 +192,7 @@ public class MainSceneManager : NetworkBehaviour
         {
             if (phase == 0)
             {
+                counters.SetActive(false);
                 gameoverScreen.SetActive(true);
                 gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
                 targetColor = new Color(0, 0, 0, 1);
@@ -237,6 +283,7 @@ public class MainSceneManager : NetworkBehaviour
                 }
 
                 startMenu.SetActive(false);
+                counters.SetActive(true);
             }
 
             phase++;
