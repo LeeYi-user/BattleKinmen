@@ -25,6 +25,8 @@ public class MainSceneManager : NetworkBehaviour
     [SerializeField] private GameObject gameoverScreen;
     [SerializeField] private TextMeshProUGUI gameoverMessage;
 
+    [SerializeField] private GameObject popup;
+
     public int start;
     public NetworkVariable<float> breakTime = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public bool gameover;
@@ -131,9 +133,14 @@ public class MainSceneManager : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.P) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
+        //if (Input.GetKeyDown(KeyCode.P) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
+        //{
+        //    playerLives = 0;
+        //}
+
+        if (Input.GetKeyDown(KeyCode.K) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
         {
-            playerLives = 0;
+            Popup("測試成功!");
         }
 
         if (playerLives <= 0)
@@ -335,5 +342,13 @@ public class MainSceneManager : NetworkBehaviour
     {
         gameover = true;
         phase = 0;
+    }
+
+    public void Popup(string msg)
+    {
+        GameObject popGO = Instantiate(popup, popup.transform.position, Quaternion.identity);
+
+        popGO.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        popGO.GetComponent<TextMeshProUGUI>().text = msg;
     }
 }
