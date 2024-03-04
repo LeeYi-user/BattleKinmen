@@ -29,7 +29,7 @@ public class EnemySpawn : NetworkBehaviour
 
         if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.Instance.gameover)
         {
-            enemies.Value = waves.Value * 15 + 10 - 20;
+            enemies.Value = waves.Value * 15 - 10;
             enemyLeft = enemies.Value;
             timeLeft = 10f / (waves.Value + 9);
             return;

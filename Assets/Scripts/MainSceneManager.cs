@@ -38,9 +38,8 @@ public class MainSceneManager : NetworkBehaviour
     private Color targetColor = new Color(1, 1, 1, 0);
 
     public List<string> popups;
-    private int count;
 
-    private bool disconnecting;
+    public static bool disconnecting;
 
     private void Awake()
     {
@@ -64,9 +63,6 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
-        disconnecting = true;
-        UnityLobby.Instance.QuitLobby();
-
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
 
         if (!IsHost)
@@ -112,12 +108,20 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Start()
     {
+        if (disconnecting)
+        {
+            disconnecting = false;
+            Disconnect();
+        }
+
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
 
         if (UnityLobby.Instance.hostLobby != null)
         {
             UnityRelay.Instance.CreateRelay(UnityLobby.Instance.hostLobby.MaxPlayers);
         }
+
+        Popup("按下 Backspace 退出");
     }
 
     private void Update()
@@ -127,10 +131,9 @@ public class MainSceneManager : NetworkBehaviour
         TextFade2();
         TextFade1();
 
-        if (Input.GetKeyDown(KeyCode.Backspace) && playerCounter.text != "0" && (start < 2 || gameover || Cursor.lockState == CursorLockMode.Locked))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            NetworkManager.Shutdown();
-            Cursor.lockState = CursorLockMode.None;
+            Disconnect();
             return;
         }
 
@@ -143,17 +146,6 @@ public class MainSceneManager : NetworkBehaviour
         //{
         //    playerLives = 0;
         //}
-
-        if (Input.GetKeyDown(KeyCode.K) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
-        {
-            Popup("測試成功");
-        }
-
-        if (Input.GetKeyDown(KeyCode.L) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
-        {
-            count++;
-            Popup("測試" + count.ToString());
-        }
 
         if (playerLives <= 0)
         {
@@ -252,8 +244,7 @@ public class MainSceneManager : NetworkBehaviour
             }
             else if (phase == 4)
             {
-                NetworkManager.Shutdown();
-                Cursor.lockState = CursorLockMode.None;
+                Disconnect();
                 pause = true;
             }
 
@@ -378,5 +369,29 @@ public class MainSceneManager : NetworkBehaviour
 
         popGO.transform.SetParent(GameObject.Find("Canvas").transform, false);
         popGO.GetComponent<TextMeshProUGUI>().text = msg;
+    }
+
+    private void Disconnect()
+    {
+        if (disconnecting)
+        {
+            return;
+        }
+
+        disconnecting = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        NetworkManager.Shutdown();
+        UnityLobby.Instance.QuitLobby();
+        StartCoroutine(LoadSceneAsync("SampleScene"));
+    }
+
+    private IEnumerator LoadSceneAsync(string sceneName)
+    {
+        Debug.Log(UnityLobby.Instance.joinedLobby);
+
+        yield return new WaitUntil(() => UnityLobby.Instance.joinedLobby == null);
+
+        SceneManager.LoadScene(sceneName);
     }
 }

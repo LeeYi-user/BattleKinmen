@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
@@ -32,7 +33,7 @@ public class UnityRelay : MonoBehaviour
             UnityLobby.Instance.UpdateLobbyCode(joinCode);
             UnityLobby.Instance.UpdateLobbyState("started");
         }
-        catch (RelayServiceException e)
+        catch (Exception e)
         {
             SceneManager.LoadScene("SampleScene");
             Debug.Log(e);
@@ -49,7 +50,7 @@ public class UnityRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartClient();
         }
-        catch (RelayServiceException e)
+        catch (Exception e)
         {
             SceneManager.LoadScene("SampleScene");
             Debug.Log(e);
