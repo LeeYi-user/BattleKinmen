@@ -11,16 +11,16 @@ public class Popup : MonoBehaviour
     private bool translating;
     private Color targetColor;
     private float timeLeft;
+    private int phase;
+    private bool pause;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         targetColor = new Color(1, 1, 1, 1);
         timeLeft = 0.25f;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (!translating)
         {
@@ -28,16 +28,7 @@ public class Popup : MonoBehaviour
             StartCoroutine(Translate(new Vector3(0, 75, 0), 0.25f));
         }
 
-        if (timeLeft <= Time.deltaTime)
-        {
-            text.color = targetColor;
-            Destroy(gameObject, 0.75f);
-        }
-        else
-        {
-            text.color = Color.Lerp(text.color, targetColor, Time.deltaTime / timeLeft);
-            timeLeft -= Time.deltaTime;
-        }
+        TextFade();
     }
 
     private IEnumerator Translate(Vector3 deltaPosition, float duration)
@@ -52,5 +43,46 @@ public class Popup : MonoBehaviour
         }
 
         rectTransform.localPosition = endPosition;
+    }
+
+    private void TextFade()
+    {
+        if (pause)
+        {
+            return;
+        }
+
+        if (timeLeft <= Time.deltaTime)
+        {
+            text.color = targetColor;
+
+            if (phase == 0)
+            {
+                StartCoroutine(Pause(0.5f));
+            }
+            else if (phase == 1)
+            {
+                targetColor = new Color(1, 1, 1, 0);
+                timeLeft = 0.25f;
+            }
+            else if (phase == 2)
+            {
+                Destroy(gameObject);
+            }
+
+            phase++;
+        }
+        else
+        {
+            text.color = Color.Lerp(text.color, targetColor, Time.deltaTime / timeLeft);
+            timeLeft -= Time.deltaTime;
+        }
+    }
+
+    private IEnumerator Pause(float seconds)
+    {
+        pause = true;
+        yield return new WaitForSeconds(seconds);
+        pause = false;
     }
 }
