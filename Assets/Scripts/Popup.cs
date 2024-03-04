@@ -67,12 +67,16 @@ public class Popup : MonoBehaviour
             }
             else if (phase == 1)
             {
-                MainSceneManager.Instance.popups.Remove(text.text);
                 targetColor = new Color(1, 1, 1, 0);
                 timeLeft = 0.25f;
             }
             else if (phase == 2)
             {
+                if (MainSceneManager.Instance.popups.Contains(text.text))
+                {
+                    MainSceneManager.Instance.popups.Clear();
+                }
+                
                 Destroy(gameObject);
             }
 

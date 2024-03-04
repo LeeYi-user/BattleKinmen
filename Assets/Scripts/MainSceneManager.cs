@@ -371,11 +371,6 @@ public class MainSceneManager : NetworkBehaviour
             popups.Add(msg);
         }
 
-        if (popups.Count >= 5)
-        {
-            popups.Clear();
-        }
-
         GameObject popGO = Instantiate(popup, popup.transform.position - popups.IndexOf(msg) * new Vector3(0, 25, 0), Quaternion.identity);
 
         popGO.transform.SetParent(GameObject.Find("Canvas").transform, false);
