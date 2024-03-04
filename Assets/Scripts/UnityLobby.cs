@@ -102,6 +102,12 @@ public class UnityLobby : MonoBehaviour
                 return;
             }
 
+            if (!SampleSceneManager.Instance)
+            {
+                Debug.Log(e);
+                return;
+            }
+
             if (!SampleSceneManager.Instance.mainMenu.activeSelf)
             {
                 SampleSceneManager.Instance.roomerMenu.SetActive(false);

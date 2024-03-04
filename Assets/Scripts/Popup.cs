@@ -22,6 +22,11 @@ public class Popup : MonoBehaviour
 
     private void Update()
     {
+        if (text.text == "")
+        {
+            return;
+        }
+
         if (!translating)
         {
             translating = true;
@@ -62,6 +67,7 @@ public class Popup : MonoBehaviour
             }
             else if (phase == 1)
             {
+                MainSceneManager.Instance.popups.Remove(text.text);
                 targetColor = new Color(1, 1, 1, 0);
                 timeLeft = 0.25f;
             }

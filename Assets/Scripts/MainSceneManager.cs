@@ -37,6 +37,9 @@ public class MainSceneManager : NetworkBehaviour
     private float timeLeft;
     private Color targetColor = new Color(1, 1, 1, 0);
 
+    public List<string> popups;
+    private int count;
+
     private void Awake()
     {
         Instance = this;
@@ -140,7 +143,13 @@ public class MainSceneManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.K) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
         {
-            Popup("測試成功!");
+            Popup("測試成功");
+        }
+
+        if (Input.GetKeyDown(KeyCode.L) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
+        {
+            count++;
+            Popup("測試" + count.ToString());
         }
 
         if (playerLives <= 0)
@@ -346,7 +355,28 @@ public class MainSceneManager : NetworkBehaviour
 
     public void Popup(string msg)
     {
-        GameObject popGO = Instantiate(popup, popup.transform.position, Quaternion.identity);
+        bool exist = false;
+
+        foreach (string str in popups)
+        {
+            if (str == msg)
+            {
+                exist = true;
+                break;
+            }
+        }
+
+        if (!exist)
+        {
+            popups.Add(msg);
+        }
+
+        if (popups.Count >= 5)
+        {
+            popups.Clear();
+        }
+
+        GameObject popGO = Instantiate(popup, popup.transform.position - popups.IndexOf(msg) * new Vector3(0, 25, 0), Quaternion.identity);
 
         popGO.transform.SetParent(GameObject.Find("Canvas").transform, false);
         popGO.GetComponent<TextMeshProUGUI>().text = msg;
