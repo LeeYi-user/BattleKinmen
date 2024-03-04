@@ -91,7 +91,7 @@ public class UnityLobby : MonoBehaviour
                 if (joinedLobby.Data["state"].Value == "started")
                 {
                     SampleSceneManager.start = 3;
-                    UnityRelay.Instance.JoinRelay(joinedLobby.Data["code"].Value);
+                    StartCoroutine(JoinRelayAsync());
                 }
             }
         }
@@ -119,6 +119,12 @@ public class UnityLobby : MonoBehaviour
             joinedLobby = null;
             Debug.Log(e);
         }
+    }
+
+    IEnumerator JoinRelayAsync()
+    {
+        yield return new WaitUntil(() => joinedLobby.Data["code"].Value != "");
+        UnityRelay.Instance.JoinRelay(joinedLobby.Data["code"].Value);
     }
 
     IEnumerator LoadSceneAsync(string sceneName)

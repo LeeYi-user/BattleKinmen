@@ -40,6 +40,8 @@ public class MainSceneManager : NetworkBehaviour
     public List<string> popups;
     private int count;
 
+    private bool disconnecting;
+
     private void Awake()
     {
         Instance = this;
@@ -62,6 +64,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
+        disconnecting = true;
         UnityLobby.Instance.QuitLobby();
 
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
@@ -165,7 +168,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Counter2()
     {
-        if (start < 2 || gameover)
+        if (start < 2 || gameover || disconnecting)
         {
             return;
         }
@@ -201,7 +204,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Counter1()
     {
-        if (!IsHost || start < 2 || gameover)
+        if (!IsHost || start < 2 || gameover || disconnecting)
         {
             return;
         }
