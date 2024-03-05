@@ -65,6 +65,9 @@ public class MainSceneManager : NetworkBehaviour
     {
         if (!disconnecting)
         {
+            disconnecting = true;
+            Cursor.lockState = CursorLockMode.None;
+
             SceneManager.LoadScene("SampleScene");
         }
 
@@ -113,7 +116,6 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Start()
     {
-        disconnecting = false;
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
 
         if (UnityLobby.Instance.hostLobby != null)

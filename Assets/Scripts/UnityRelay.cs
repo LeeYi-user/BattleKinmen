@@ -41,6 +41,11 @@ public class UnityRelay : MonoBehaviour
     {
         try
         {
+            if (MainSceneManager.disconnecting)
+            {
+                return;
+            }
+
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
