@@ -63,6 +63,11 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
+        if (!disconnecting)
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
 
         if (!IsHost)
