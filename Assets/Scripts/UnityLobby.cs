@@ -6,7 +6,6 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
 
 public class UnityLobby : MonoBehaviour
 {
@@ -78,7 +77,7 @@ public class UnityLobby : MonoBehaviour
                             UpdateLobbyCount();
                         }
                     }
-                    else
+                    else if (lobby.Data["state"].Value == "starting")
                     {
                         SampleSceneManager.start = 1;
                         StartCoroutine(LoadSceneAsync("MainScene"));
@@ -97,12 +96,7 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
-            if (!SampleSceneManager.Instance)
+            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance)
             {
                 Debug.Log(e);
                 return;
@@ -149,7 +143,6 @@ public class UnityLobby : MonoBehaviour
     {
         try
         {
-            MainSceneManager.disconnecting = false;
             CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
             {
                 Player = CreatePlayer("就緒"),
@@ -180,11 +173,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -251,11 +239,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -264,7 +247,6 @@ public class UnityLobby : MonoBehaviour
     {
         try
         {
-            MainSceneManager.disconnecting = false;
             JoinLobbyByIdOptions joinLobbyByIdOptions = new JoinLobbyByIdOptions
             {
                 Player = CreatePlayer("閒置")
@@ -276,11 +258,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -388,11 +365,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -413,11 +385,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -438,11 +405,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -463,11 +425,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -476,25 +433,13 @@ public class UnityLobby : MonoBehaviour
     {
         try
         {
-            try
-            {
-                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
-            }
-            catch
-            {
-
-            }
+            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
 
             hostLobby = null;
             joinedLobby = null;
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -510,11 +455,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }
@@ -527,11 +467,6 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
-            {
-                return;
-            }
-
             Debug.Log(e);
         }
     }

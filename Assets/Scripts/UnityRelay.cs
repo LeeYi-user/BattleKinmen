@@ -7,8 +7,6 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using UnityEngine;
-using TMPro;
-using UnityEngine.SceneManagement;
 
 public class UnityRelay : MonoBehaviour
 {
@@ -35,7 +33,6 @@ public class UnityRelay : MonoBehaviour
         }
         catch (Exception e)
         {
-            SceneManager.LoadScene("SampleScene");
             Debug.Log(e);
         }
     }
@@ -52,7 +49,6 @@ public class UnityRelay : MonoBehaviour
         }
         catch (Exception e)
         {
-            SceneManager.LoadScene("SampleScene");
             Debug.Log(e);
         }
     }

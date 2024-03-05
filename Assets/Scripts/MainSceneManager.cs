@@ -39,7 +39,7 @@ public class MainSceneManager : NetworkBehaviour
 
     public List<string> popups;
 
-    public static bool disconnecting;
+    private bool disconnecting;
 
     private void Awake()
     {
@@ -108,12 +108,6 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Start()
     {
-        if (disconnecting)
-        {
-            disconnecting = false;
-            Disconnect();
-        }
-
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
 
         if (UnityLobby.Instance.hostLobby != null)
@@ -378,20 +372,19 @@ public class MainSceneManager : NetworkBehaviour
             return;
         }
 
+        if (UnityLobby.Instance.hostLobby == null)
+        {
+            UnityLobby.Instance.QuitLobby();
+        }
+        else
+        {
+            UnityLobby.Instance.DeleteLobby();
+        }
+
         disconnecting = true;
         Cursor.lockState = CursorLockMode.None;
 
         NetworkManager.Shutdown();
-        UnityLobby.Instance.QuitLobby();
-        StartCoroutine(LoadSceneAsync("SampleScene"));
-    }
-
-    private IEnumerator LoadSceneAsync(string sceneName)
-    {
-        Debug.Log(UnityLobby.Instance.joinedLobby);
-
-        yield return new WaitUntil(() => UnityLobby.Instance.joinedLobby == null);
-
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene("SampleScene");
     }
 }
