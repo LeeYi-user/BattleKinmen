@@ -77,7 +77,7 @@ public class UnityLobby : MonoBehaviour
                             UpdateLobbyCount();
                         }
                     }
-                    else if (lobby.Data["state"].Value == "starting")
+                    else
                     {
                         SampleSceneManager.start = 1;
                         StartCoroutine(LoadSceneAsync("MainScene"));
@@ -96,18 +96,16 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance)
+            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance || MainSceneManager.disconnecting)
             {
                 Debug.Log(e);
                 return;
             }
 
-            if (!SampleSceneManager.Instance.mainMenu.activeSelf)
-            {
-                SampleSceneManager.Instance.roomerMenu.SetActive(false);
-                SampleSceneManager.Instance.infoMenu.SetActive(false);
-                SampleSceneManager.Instance.lobbyMenu.SetActive(true);
-            }
+            SampleSceneManager.Instance.ownerMenu.SetActive(false);
+            SampleSceneManager.Instance.roomerMenu.SetActive(false);
+            SampleSceneManager.Instance.infoMenu.SetActive(false);
+            SampleSceneManager.Instance.lobbyMenu.SetActive(true);
 
             hostLobby = null;
             joinedLobby = null;
@@ -164,6 +162,7 @@ public class UnityLobby : MonoBehaviour
 
             hostLobby = lobby;
             joinedLobby = hostLobby;
+            MainSceneManager.disconnecting = false;
         }
         catch (Exception e)
         {
@@ -249,6 +248,7 @@ public class UnityLobby : MonoBehaviour
             Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(lobbyId, joinLobbyByIdOptions);
 
             joinedLobby = lobby;
+            MainSceneManager.disconnecting = false;
         }
         catch (Exception e)
         {

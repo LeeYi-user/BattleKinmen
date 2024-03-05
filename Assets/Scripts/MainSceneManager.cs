@@ -39,7 +39,7 @@ public class MainSceneManager : NetworkBehaviour
 
     public List<string> popups;
 
-    private bool disconnecting;
+    public static bool disconnecting;
 
     private void Awake()
     {
@@ -113,6 +113,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Start()
     {
+        disconnecting = false;
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
 
         if (UnityLobby.Instance.hostLobby != null)
