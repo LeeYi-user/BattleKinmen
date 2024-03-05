@@ -219,8 +219,24 @@ public class SampleSceneManager : MonoBehaviour
     public void OwnerMenuStartButtonClick()
     {
         start = 3;
-        SceneManager.LoadScene("MainScene");
+        StartCoroutine(LoadSceneAsync("MainScene"));
         UnityLobby.Instance.UpdateLobbyState("starting");
+    }
+
+    IEnumerator LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+
+        loadMenu.SetActive(true);
+
+        while (!operation.isDone)
+        {
+            float progress = Mathf.Clamp01(operation.progress / 0.9f);
+
+            progressSlider.value = progress;
+
+            yield return null;
+        }
     }
 
     public void RoomerMenuQuitButtonClick()
