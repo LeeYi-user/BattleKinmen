@@ -27,7 +27,7 @@ public class EnemySpawn : NetworkBehaviour
             return;
         }
 
-        if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.Instance.gameover)
+        if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
         {
             enemies.Value = waves.Value * 15 - 10;
             enemyLeft = enemies.Value;
