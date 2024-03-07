@@ -63,13 +63,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
-        if (!disconnecting)
-        {
-            disconnecting = true;
-            Cursor.lockState = CursorLockMode.None;
-
-            SceneManager.LoadScene("SampleScene");
-        }
+        Disconnect();
 
         NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
 
@@ -135,7 +129,7 @@ public class MainSceneManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            Disconnect();
+            Back();
             return;
         }
 
@@ -246,7 +240,7 @@ public class MainSceneManager : NetworkBehaviour
             }
             else if (phase == 4)
             {
-                Disconnect();
+                Back();
                 pause = true;
             }
 
@@ -373,12 +367,25 @@ public class MainSceneManager : NetworkBehaviour
         popGO.GetComponent<TextMeshProUGUI>().text = msg;
     }
 
-    private void Disconnect()
+    private void Back()
     {
-        if (disconnecting)
+        if (Disconnect())
         {
             return;
         }
+
+        NetworkManager.Shutdown();
+    }
+
+    private bool Disconnect()
+    {
+        if (disconnecting)
+        {
+            return true;
+        }
+
+        disconnecting = true;
+        Cursor.lockState = CursorLockMode.None;
 
         if (UnityLobby.Instance.hostLobby == null)
         {
@@ -389,10 +396,8 @@ public class MainSceneManager : NetworkBehaviour
             UnityLobby.Instance.DeleteLobby();
         }
 
-        disconnecting = true;
-        Cursor.lockState = CursorLockMode.None;
-
-        NetworkManager.Shutdown();
         SceneManager.LoadScene("SampleScene");
+
+        return false;
     }
 }

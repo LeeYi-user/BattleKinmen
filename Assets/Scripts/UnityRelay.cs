@@ -43,14 +43,13 @@ public class UnityRelay : MonoBehaviour
         {
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
-            RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-
-            if (MainSceneManager.disconnecting)
+            if (MainSceneManager.disconnecting || UnityLobby.Instance.joinedLobby.Data["code"].Value != joinCode)
             {
                 return;
             }
 
+            RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartClient();
         }
         catch (Exception e)
