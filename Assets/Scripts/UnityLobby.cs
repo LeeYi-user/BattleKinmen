@@ -96,7 +96,7 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance || MainSceneManager.disconnecting)
+            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance)
             {
                 Debug.Log(e);
                 return;
@@ -153,10 +153,10 @@ public class UnityLobby : MonoBehaviour
                         "friendly_fire", new DataObject(DataObject.VisibilityOptions.Public, "開")
                     },
                     {
-                        "state", new DataObject(DataObject.VisibilityOptions.Public, "waiting")
+                        "state", new DataObject(DataObject.VisibilityOptions.Public, "waiting", DataObject.IndexOptions.S1)
                     },
                     {
-                        "code", new DataObject(DataObject.VisibilityOptions.Public, "", DataObject.IndexOptions.S1)
+                        "code", new DataObject(DataObject.VisibilityOptions.Public, "")
                     }
                 }
             };
@@ -181,7 +181,7 @@ public class UnityLobby : MonoBehaviour
             {
                 Filters = new List<QueryFilter>
                 {
-                    new QueryFilter(QueryFilter.FieldOptions.S1, "", QueryFilter.OpOptions.EQ)
+                    new QueryFilter(QueryFilter.FieldOptions.S1, "waiting", QueryFilter.OpOptions.EQ)
                 }
             };
 
