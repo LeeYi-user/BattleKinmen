@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 
 public class PlayerMovement : NetworkBehaviour
@@ -45,6 +46,12 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!IsOwner)
         {
+            return;
+        }
+
+        if (SceneManager.GetActiveScene().name == "SampleScene")
+        {
+            Destroy(gameObject);
             return;
         }
 

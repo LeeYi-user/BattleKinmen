@@ -113,7 +113,7 @@ public class UnityLobby : MonoBehaviour
         }
     }
 
-    IEnumerator LoadSceneAsync(string sceneName)
+    public IEnumerator LoadSceneAsync(string sceneName)
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
 
@@ -128,7 +128,10 @@ public class UnityLobby : MonoBehaviour
             yield return null;
         }
 
-        SampleSceneManager.start = 2;
+        if (SampleSceneManager.start == 1)
+        {
+            SampleSceneManager.start = 2;
+        }
     }
 
     public async void CreateLobby(string lobbyName, int maxPlayers)
@@ -428,14 +431,14 @@ public class UnityLobby : MonoBehaviour
         try
         {
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
-
-            hostLobby = null;
-            joinedLobby = null;
         }
         catch (Exception e)
         {
             Debug.Log(e);
         }
+
+        hostLobby = null;
+        joinedLobby = null;
     }
 
     public async void DeleteLobby()
@@ -443,14 +446,14 @@ public class UnityLobby : MonoBehaviour
         try
         {
             await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
-
-            hostLobby = null;
-            joinedLobby = null;
         }
         catch (Exception e)
         {
             Debug.Log(e);
         }
+
+        hostLobby = null;
+        joinedLobby = null;
     }
 
     public async void KickPlayer(string playerId)
