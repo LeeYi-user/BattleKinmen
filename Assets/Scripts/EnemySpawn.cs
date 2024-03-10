@@ -12,7 +12,8 @@ public class EnemySpawn : NetworkBehaviour
     public NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    private int enemyLeft;
+    private int leftToSpawn;
+    public int leftForSpawn;
     private float timeLeft;
 
     private void Awake()
@@ -29,25 +30,27 @@ public class EnemySpawn : NetworkBehaviour
 
         if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
         {
-            enemies.Value = waves.Value * 15 - 10;
-            enemyLeft = enemies.Value;
-            timeLeft = 10f / (waves.Value + 9);
+            enemies.Value = waves.Value * 10;
+            leftToSpawn = enemies.Value;
+            leftForSpawn = 30;
+            timeLeft = 15f / (waves.Value + 9f);
             return;
         }
 
         timeLeft -= Time.deltaTime;
 
-        if (enemyLeft > 0 && timeLeft < 0)
+        if (leftToSpawn > 0 && leftForSpawn > 0 && timeLeft < 0)
         {
             GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);
-            enemyLeft--;
-            timeLeft = 10f / (waves.Value + 9);
+            leftToSpawn--;
+            leftForSpawn--;
+            timeLeft = 15f / (waves.Value + 9f);
         }
 
         if (enemies.Value <= 0)
         {
-            MainSceneManager.Instance.breakTime.Value = 60f;
+            MainSceneManager.Instance.breakTime.Value = 30.99f;
             waves.Value++;
         }
     }

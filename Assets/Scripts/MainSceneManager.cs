@@ -34,9 +34,9 @@ public class MainSceneManager : NetworkBehaviour
 
     [Header("Variable")]
     public int start;
-    public NetworkVariable<float> breakTime = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public bool gameover;
-    public int playerLives = 5;
+    public int mapHealth = 5;
     public List<string> popups;
 
     private int phase;
@@ -148,7 +148,7 @@ public class MainSceneManager : NetworkBehaviour
         //    playerLives = 0;
         //}
 
-        if (playerLives <= 0)
+        if (mapHealth <= 0)
         {
             GameOver_ClientRpc();
 

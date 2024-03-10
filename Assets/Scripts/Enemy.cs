@@ -91,12 +91,14 @@ public class Enemy : NetworkBehaviour
         Destroy(gameObject, 2f);
 
         EnemySpawn.Instance.enemies.Value--;
+        EnemySpawn.Instance.leftForSpawn++;
     }
 
     private void Invade()
     {
-        MainSceneManager.Instance.playerLives--;
+        MainSceneManager.Instance.mapHealth--;
         EnemySpawn.Instance.enemies.Value--;
+        EnemySpawn.Instance.leftForSpawn++;
         Destroy(gameObject);
     }
 
