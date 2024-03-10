@@ -10,34 +10,39 @@ public class MainSceneManager : NetworkBehaviour
 {
     public static MainSceneManager Instance;
 
-    [SerializeField] private GameObject startMenu;
+    [Header("Screen")]
+    public GameObject startMenu;
+    public GameObject gamingScreen;
+    public GameObject deathScreen;
+    public GameObject gameoverScreen;
 
-    [SerializeField] private GameObject roomInfo;
-    [SerializeField] private TextMeshProUGUI playerCounter;
+    [Header("Sub Screen")]
+    public GameObject roomInfo;
+    public GameObject storyInfo;
 
-    [SerializeField] private GameObject storyInfo;
-    [SerializeField] private TextMeshProUGUI storyText;
+    [Header("On Screen")]
+    public TextMeshProUGUI playerCounter;
+    public TextMeshProUGUI storyText;
+    public TextMeshProUGUI enemyCounter;
+    public TextMeshProUGUI waveCounter;
+    public GameObject crosshair;
+    public TextMeshProUGUI deathMessage;
+    public TextMeshProUGUI gameoverMessage;
 
-    [SerializeField] private GameObject counters;
-    [SerializeField] private TextMeshProUGUI enemyCounter;
-    [SerializeField] private TextMeshProUGUI waveCounter;
+    [Header("On Screen Prefab")]
+    public GameObject popup;
 
-    [SerializeField] private GameObject gameoverScreen;
-    [SerializeField] private TextMeshProUGUI gameoverMessage;
-
-    [SerializeField] private GameObject popup;
-
+    [Header("Variable")]
     public int start;
     public NetworkVariable<float> breakTime = new NetworkVariable<float>(30, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public bool gameover;
     public int playerLives = 5;
+    public List<string> popups;
 
     private int phase;
     private bool pause;
     private float timeLeft;
     private Color targetColor = new Color(1, 1, 1, 0);
-
-    public List<string> popups;
 
     public static bool disconnecting;
 
@@ -202,7 +207,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void TextFade2()
     {
-        if (!gameover || pause)
+        if (!gameover || pause || disconnecting)
         {
             return;
         }
@@ -211,7 +216,7 @@ public class MainSceneManager : NetworkBehaviour
         {
             if (phase == 0)
             {
-                counters.SetActive(false);
+                gamingScreen.SetActive(false);
                 gameoverScreen.SetActive(true);
                 gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
                 targetColor = new Color(0, 0, 0, 1);
@@ -221,7 +226,6 @@ public class MainSceneManager : NetworkBehaviour
             else if (phase == 1)
             {
                 gameoverScreen.GetComponent<Image>().color = targetColor;
-                gameoverMessage.gameObject.SetActive(true);
                 gameoverMessage.color = new Color(1, 1, 1, 0);
                 targetColor = new Color(1, 1, 1, 1);
                 StartCoroutine(Pause(1f));
@@ -241,7 +245,6 @@ public class MainSceneManager : NetworkBehaviour
             else if (phase == 4)
             {
                 Back();
-                pause = true;
             }
 
             phase++;
@@ -263,7 +266,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void TextFade1()
     {
-        if (start != 1 || pause)
+        if (start != 1 || pause || disconnecting)
         {
             return;
         }
@@ -301,7 +304,7 @@ public class MainSceneManager : NetworkBehaviour
                 }
 
                 startMenu.SetActive(false);
-                counters.SetActive(true);
+                gamingScreen.SetActive(true);
             }
 
             phase++;

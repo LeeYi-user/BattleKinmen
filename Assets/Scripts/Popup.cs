@@ -5,7 +5,6 @@ using TMPro;
 
 public class Popup : MonoBehaviour
 {
-    [SerializeField] private RectTransform rectTransform;
     [SerializeField] private TextMeshProUGUI text;
 
     private bool translating;
@@ -38,16 +37,16 @@ public class Popup : MonoBehaviour
 
     private IEnumerator Translate(Vector3 deltaPosition, float duration)
     {
-        Vector3 startPosition = rectTransform.localPosition;
+        Vector3 startPosition = transform.localPosition;
         Vector3 endPosition = startPosition + deltaPosition;
 
         for (float t = 0; t < duration; t += Time.deltaTime)
         {
-            rectTransform.localPosition = Vector3.Lerp(startPosition, endPosition, t / duration);
+            transform.localPosition = Vector3.Lerp(startPosition, endPosition, t / duration);
             yield return null;
         }
 
-        rectTransform.localPosition = endPosition;
+        transform.localPosition = endPosition;
     }
 
     private void TextFade()

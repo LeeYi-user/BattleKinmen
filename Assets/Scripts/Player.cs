@@ -54,10 +54,9 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
-            GameObject.Find("Death Screen").GetComponent<Image>().enabled = true;
-            GameObject.Find("Death Message").GetComponent<TMP_Text>().text = msg;
-            GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = true;
+            MainSceneManager.Instance.crosshair.SetActive(false);
+            MainSceneManager.Instance.deathScreen.SetActive(true);
+            MainSceneManager.Instance.deathMessage.text = msg;
 
             playerGun.Despawn();
             playerCamera.Despawn();
@@ -95,9 +94,8 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
-            GameObject.Find("Death Screen").GetComponent<Image>().enabled = false;
-            GameObject.Find("Death Message").GetComponent<TMP_Text>().enabled = false;
+            MainSceneManager.Instance.crosshair.SetActive(true);
+            MainSceneManager.Instance.deathScreen.SetActive(false);
 
             playerGun.Respawn();
             playerCamera.Respawn();

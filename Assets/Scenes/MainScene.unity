@@ -6951,7 +6951,7 @@ GameObject:
   m_Component:
   - component: {fileID: 407052964}
   m_Layer: 5
-  m_Name: Counters
+  m_Name: Gaming Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6971,6 +6971,7 @@ RectTransform:
   m_Children:
   - {fileID: 1498705628}
   - {fileID: 353622138}
+  - {fileID: 1375811509}
   m_Father: {fileID: 1421568202}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -14142,7 +14143,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -16947,7 +16948,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1153918249
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16975,7 +16976,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1153918248}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -17043,6 +17044,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 449357415}
     - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
+      propertyPath: crosshair
+      value: 
+      objectReference: {fileID: 1375811508}
+    - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
       propertyPath: startMenu
       value: 
       objectReference: {fileID: 1444935305}
@@ -17055,6 +17060,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 919897848}
     - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
+      propertyPath: deathScreen
+      value: 
+      objectReference: {fileID: 1153918248}
+    - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
       propertyPath: startButton
       value: 
       objectReference: {fileID: 0}
@@ -17062,6 +17071,10 @@ PrefabInstance:
       propertyPath: waveCounter
       value: 
       objectReference: {fileID: 353622139}
+    - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
+      propertyPath: deathMessage
+      value: 
+      objectReference: {fileID: 2068049520}
     - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
       propertyPath: enemyCounter
       value: 
@@ -17074,6 +17087,10 @@ PrefabInstance:
       propertyPath: gameoverText
       value: 
       objectReference: {fileID: 1788985884}
+    - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
+      propertyPath: gamingScreen
+      value: 
+      objectReference: {fileID: 407052963}
     - target: {fileID: 2696779719786680596, guid: f180a157380076c48808eff69afd1bf8, type: 3}
       propertyPath: playerCounter
       value: 
@@ -20590,12 +20607,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375811508}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1421568202}
+  m_Father: {fileID: 407052964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -21361,7 +21378,6 @@ RectTransform:
   m_Children:
   - {fileID: 1444935306}
   - {fileID: 407052964}
-  - {fileID: 1375811509}
   - {fileID: 1153918249}
   - {fileID: 803778838}
   m_Father: {fileID: 0}
@@ -27319,7 +27335,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1788985884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27349,7 +27365,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -28760,7 +28776,7 @@ Transform:
   m_GameObject: {fileID: 1897939989}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.54, z: -1.7320508}
+  m_LocalPosition: {x: 0, y: 3.54, z: -2.003809}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31848,7 +31864,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2068049518}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
