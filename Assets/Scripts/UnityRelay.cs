@@ -24,6 +24,11 @@ public class UnityRelay : MonoBehaviour
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
+            if (MainSceneManager.disconnecting || SampleSceneManager.start != 3)
+            {
+                return;
+            }
+
             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();

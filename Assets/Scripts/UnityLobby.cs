@@ -50,7 +50,7 @@ public class UnityLobby : MonoBehaviour
 
     private async void HandleLobbyPollForUpdates()
     {
-        if (joinedLobby == null)
+        if (joinedLobby == null || MainSceneManager.disconnecting)
         {
             lobbyUpdateTimer = 0f;
             return;
