@@ -219,6 +219,7 @@ public class MainSceneManager : NetworkBehaviour
                 gamingScreen.SetActive(false);
                 gameoverScreen.SetActive(true);
                 gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+                gameoverMessage.color = new Color(1, 1, 1, 0);
                 targetColor = new Color(0, 0, 0, 1);
                 StartCoroutine(Pause(2f));
                 timeLeft = 2f;
@@ -226,7 +227,6 @@ public class MainSceneManager : NetworkBehaviour
             else if (phase == 1)
             {
                 gameoverScreen.GetComponent<Image>().color = targetColor;
-                gameoverMessage.color = new Color(1, 1, 1, 0);
                 targetColor = new Color(1, 1, 1, 1);
                 StartCoroutine(Pause(1f));
                 timeLeft = 3f;
@@ -274,8 +274,13 @@ public class MainSceneManager : NetworkBehaviour
         if (timeLeft <= Time.deltaTime)
         {
             storyText.color = targetColor;
-
-            if (phase == 1)
+            
+            if (phase == 0)
+            {
+                roomInfo.SetActive(false);
+                storyInfo.SetActive(true);
+            }
+            else if (phase == 1)
             {
                 StartCoroutine(Pause(1f));
                 targetColor = new Color(1, 1, 1, 1);
@@ -333,9 +338,6 @@ public class MainSceneManager : NetworkBehaviour
     [ClientRpc]
     private void StartGame_ClientRpc()
     {
-        roomInfo.SetActive(false);
-        storyInfo.SetActive(true);
-
         start = 1;
     }
 
