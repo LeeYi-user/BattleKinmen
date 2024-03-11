@@ -30,9 +30,24 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private Transform fakeBulletSpawnPoint;
 
     private bool isReloading;
-    private int currentAmmo;
+    private ClientNetworkVariable<int> currentAmmo = new ClientNetworkVariable<int>();
     private float nextTimeToFire;
     private bool live;
+
+    private void Awake()
+    {
+        currentAmmo.OnValueChanged += ShowAmmo;
+    }
+
+    private void ShowAmmo()
+    {
+        MainSceneManager.Instance.ammoBar.text = "";
+
+        for (int i = 0; i < currentAmmo.Value; i += 1)
+        {
+            MainSceneManager.Instance.ammoBar.text += "|";
+        }
+    }
 
     private void Start()
     {
@@ -66,7 +81,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        if (currentAmmo <= 0)
+        if (currentAmmo.Value <= 0)
         {
             StartCoroutine(Reload());
             return;
@@ -89,12 +104,12 @@ public class PlayerGun : NetworkBehaviour
         isReloading = false;
         animator.SetBool("isReloading", false);
 
-        currentAmmo = maxAmmo;
+        currentAmmo.Value = maxAmmo;
     }
 
     private void Shoot()
     {
-        currentAmmo--;
+        currentAmmo.Value--;
 
         muzzleFlash.Play();
         PlayFakeMuzzleFlash_ServerRpc();
@@ -234,7 +249,7 @@ public class PlayerGun : NetworkBehaviour
     {
         live = true;
         isReloading = false;
-        currentAmmo = maxAmmo;
+        currentAmmo.Value = maxAmmo;
         nextTimeToFire = 0f;
         realGunSkin.SetActive(true);
     }

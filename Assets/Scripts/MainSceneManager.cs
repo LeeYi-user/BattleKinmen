@@ -27,6 +27,7 @@ public class MainSceneManager : NetworkBehaviour
     public TextMeshProUGUI waveCounter;
     public GameObject crosshair;
     public TextMeshProUGUI healthBar;
+    public TextMeshProUGUI ammoBar;
     public TextMeshProUGUI deathMessage;
     public TextMeshProUGUI gameoverMessage;
 

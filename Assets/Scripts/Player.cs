@@ -38,7 +38,7 @@ public class Player : NetworkBehaviour
     {
         MainSceneManager.Instance.healthBar.text = "";
 
-        for (int i = 0; i < (currentHealth.Value / maxHealth) * 18; i++)
+        for (int i = 0; i < currentHealth.Value; i += 10)
         {
             MainSceneManager.Instance.healthBar.text += "|";
         }
