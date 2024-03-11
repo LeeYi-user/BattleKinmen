@@ -22,6 +22,28 @@ public class Player : NetworkBehaviour
 
     private bool spawning = true;
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        currentHealth.OnValueChanged += OnValueChanged;
+    }
+
+    private void OnValueChanged(float previous, float current)
+    {
+        MainSceneManager.Instance.healthBar.text = "";
+
+        for (int i = 0; i < (currentHealth.Value / maxHealth) * 18; i++)
+        {
+            MainSceneManager.Instance.healthBar.text += "|";
+        }
+    }
+
     private void Update()
     {
         if (!IsHost || spawning)
