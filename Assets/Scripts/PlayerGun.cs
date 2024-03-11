@@ -49,6 +49,7 @@ public class PlayerGun : NetworkBehaviour
 
         Despawn();
     }
+
     private void ShowAmmo()
     {
         MainSceneManager.Instance.ammoBar.text = "";
@@ -77,7 +78,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        if (currentAmmo.Value <= 0)
+        if (currentAmmo.Value <= 0 || (currentAmmo.Value < maxAmmo && Input.GetKey(KeyCode.R)))
         {
             StartCoroutine(Reload());
             return;
