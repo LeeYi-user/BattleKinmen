@@ -31,10 +31,10 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        currentHealth.OnValueChanged += OnValueChanged;
+        currentHealth.OnValueChanged += ShowHealth;
     }
 
-    private void OnValueChanged(float previous, float current)
+    private void ShowHealth(float previous, float current)
     {
         MainSceneManager.Instance.healthBar.text = "";
 

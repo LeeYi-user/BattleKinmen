@@ -34,21 +34,6 @@ public class PlayerGun : NetworkBehaviour
     private float nextTimeToFire;
     private bool live;
 
-    private void Awake()
-    {
-        currentAmmo.OnValueChanged += ShowAmmo;
-    }
-
-    private void ShowAmmo()
-    {
-        MainSceneManager.Instance.ammoBar.text = "";
-
-        for (int i = 0; i < currentAmmo.Value; i += 1)
-        {
-            MainSceneManager.Instance.ammoBar.text += "|";
-        }
-    }
-
     private void Start()
     {
         audioSource.volume = SampleSceneManager.Instance.volume;
@@ -60,7 +45,18 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
+        currentAmmo.OnValueChanged += ShowAmmo;
+
         Despawn();
+    }
+    private void ShowAmmo()
+    {
+        MainSceneManager.Instance.ammoBar.text = "";
+
+        for (int i = 0; i < currentAmmo.Value; i += 1)
+        {
+            MainSceneManager.Instance.ammoBar.text += "|";
+        }
     }
 
     private void FixedUpdate()
