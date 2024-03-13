@@ -10,6 +10,8 @@ public class MainSceneManager : NetworkBehaviour
 {
     public static MainSceneManager Instance;
 
+    public GameObject canvas;
+
     [Header("Screen")]
     public GameObject startMenu;
     public GameObject gamingScreen;
@@ -25,6 +27,7 @@ public class MainSceneManager : NetworkBehaviour
     public TextMeshProUGUI storyText;
     public TextMeshProUGUI enemyCounter;
     public TextMeshProUGUI waveCounter;
+    public TextMeshProUGUI cashCounter;
     public GameObject crosshair;
     public TextMeshProUGUI healthBar;
     public TextMeshProUGUI ammoBar;
@@ -34,12 +37,16 @@ public class MainSceneManager : NetworkBehaviour
     [Header("On Screen Prefab")]
     public GameObject popup;
 
-    [Header("Variable")]
-    public int start;
-    public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public bool gameover;
-    public int mapHealth = 5;
-    public List<string> popups;
+    [Header("On Map")]
+    public Transform playerSpawn;
+
+    [Header("On Map Variable")]
+    public int mapHealth;
+
+    [HideInInspector] public int start;
+    [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [HideInInspector] public bool gameover;
+    [HideInInspector] public List<string> popups;
 
     private int phase;
     private bool pause;
@@ -223,22 +230,22 @@ public class MainSceneManager : NetworkBehaviour
                 gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
                 gameoverMessage.color = new Color(1, 1, 1, 0);
                 targetColor = new Color(0, 0, 0, 1);
-                StartCoroutine(Pause(2f));
                 timeLeft = 2f;
+                StartCoroutine(Pause(2f));
             }
             else if (phase == 1)
             {
                 gameoverScreen.GetComponent<Image>().color = targetColor;
                 targetColor = new Color(1, 1, 1, 1);
-                StartCoroutine(Pause(1f));
                 timeLeft = 3f;
+                StartCoroutine(Pause(1f));
             }
             else if (phase == 2)
             {
                 gameoverMessage.color = targetColor;
                 targetColor = new Color(1, 1, 1, 0);
-                StartCoroutine(Pause(5f));
                 timeLeft = 3f;
+                StartCoroutine(Pause(5f));
             }
             else if (phase == 3)
             {
@@ -284,15 +291,15 @@ public class MainSceneManager : NetworkBehaviour
             }
             else if (phase == 1)
             {
-                StartCoroutine(Pause(1f));
                 targetColor = new Color(1, 1, 1, 1);
                 timeLeft = 3f;
+                StartCoroutine(Pause(1f));
             }
             else if (phase == 2)
             {
-                StartCoroutine(Pause(5f));
                 targetColor = new Color(1, 1, 1, 0);
                 timeLeft = 3f;
+                StartCoroutine(Pause(5f));
             }
             else if (phase == 3)
             {
@@ -370,7 +377,7 @@ public class MainSceneManager : NetworkBehaviour
 
         GameObject popGO = Instantiate(popup, popup.transform.position - popups.IndexOf(msg) * new Vector3(0, 25, 0), Quaternion.identity);
 
-        popGO.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        popGO.transform.SetParent(canvas.transform, false);
         popGO.GetComponent<TextMeshProUGUI>().text = msg;
     }
 

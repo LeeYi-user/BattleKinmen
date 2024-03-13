@@ -7,17 +7,12 @@ public class Popup : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI text;
 
-    private bool translating;
-    private Color targetColor;
-    private float timeLeft;
     private int phase;
     private bool pause;
+    private float timeLeft;
+    private Color targetColor = new Color(1, 1, 1, 0);
 
-    private void Start()
-    {
-        targetColor = new Color(1, 1, 1, 1);
-        timeLeft = 0.25f;
-    }
+    private bool translating;
 
     private void Update()
     {
@@ -26,27 +21,14 @@ public class Popup : MonoBehaviour
             return;
         }
 
-        if (!translating)
-        {
-            translating = true;
-            StartCoroutine(Translate(new Vector3(0, 75, 0), 0.25f));
-        }
-
         TextFade();
-    }
 
-    private IEnumerator Translate(Vector3 deltaPosition, float duration)
-    {
-        Vector3 startPosition = transform.localPosition;
-        Vector3 endPosition = startPosition + deltaPosition;
-
-        for (float t = 0; t < duration; t += Time.deltaTime)
+        if (translating)
         {
-            transform.localPosition = Vector3.Lerp(startPosition, endPosition, t / duration);
-            yield return null;
+            return;
         }
-
-        transform.localPosition = endPosition;
+        
+        StartCoroutine(Translate(new Vector3(0, 75, 0), 0.25f));
     }
 
     private void TextFade()
@@ -62,14 +44,19 @@ public class Popup : MonoBehaviour
 
             if (phase == 0)
             {
-                StartCoroutine(Pause(0.5f));
+                targetColor = new Color(1, 1, 1, 1);
+                timeLeft = 0.25f;
             }
             else if (phase == 1)
+            {
+                StartCoroutine(Pause(0.5f));
+            }
+            else if (phase == 2)
             {
                 targetColor = new Color(1, 1, 1, 0);
                 timeLeft = 0.25f;
             }
-            else if (phase == 2)
+            else if (phase == 3)
             {
                 if (MainSceneManager.Instance.popups.Contains(text.text))
                 {
@@ -93,5 +80,21 @@ public class Popup : MonoBehaviour
         pause = true;
         yield return new WaitForSeconds(seconds);
         pause = false;
+    }
+
+    private IEnumerator Translate(Vector3 deltaPosition, float duration)
+    {
+        translating = true;
+
+        Vector3 startPosition = transform.localPosition;
+        Vector3 endPosition = startPosition + deltaPosition;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            transform.localPosition = Vector3.Lerp(startPosition, endPosition, t / duration);
+            yield return null;
+        }
+
+        transform.localPosition = endPosition;
     }
 }

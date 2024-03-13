@@ -48,7 +48,7 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
-        spawnPoint = GameObject.Find("Player Spawner").transform;
+        spawnPoint = MainSceneManager.Instance.playerSpawn;
         Despawn();
     }
 
