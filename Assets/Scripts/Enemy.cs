@@ -7,7 +7,9 @@ using Unity.Netcode;
 public class Enemy : NetworkBehaviour
 {
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private GameObject cash;
     [SerializeField] private Transform head;
+    [SerializeField] private Transform hips;
     [SerializeField] private float maxHealth;
 
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -25,6 +27,7 @@ public class Enemy : NetworkBehaviour
     private Transform target;
     private bool dying;
     private bool running;
+    private bool invading;
     private float nextTimeToAttack;
 
     private void Start()
@@ -71,6 +74,7 @@ public class Enemy : NetworkBehaviour
         if (Vector3.Distance(transform.position, target.position) < 1f)
         {
             dying = true;
+            invading = true;
             Invade();
             return;
         }
@@ -92,6 +96,19 @@ public class Enemy : NetworkBehaviour
 
         EnemySpawn.Instance.enemies.Value--;
         EnemySpawn.Instance.leftForSpawn++;
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (!IsHost || invading)
+        {
+            return;
+        }
+
+        GameObject cashGO = Instantiate(cash, hips.position, Quaternion.identity);
+        cashGO.GetComponent<NetworkObject>().Spawn(true);
     }
 
     private void Invade()
