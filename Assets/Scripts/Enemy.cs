@@ -102,7 +102,7 @@ public class Enemy : NetworkBehaviour
     {
         base.OnDestroy();
 
-        if (!IsHost || invading)
+        if (!IsHost || invading || MainSceneManager.disconnecting)
         {
             return;
         }
