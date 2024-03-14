@@ -25,9 +25,9 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private Animator animator;
 
     private Transform target;
-    private bool dying;
     private bool running;
     private bool invading;
+    private bool destroying;
     private float nextTimeToAttack;
 
     private void Start()
@@ -44,14 +44,14 @@ public class Enemy : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsHost || dying)
+        if (!IsHost || destroying)
         {
             return;
         }
 
         if (MainSceneManager.Instance.gameover)
         {
-            dying = true;
+            destroying = true;
             Destroy(gameObject);
             return;
         }
@@ -66,15 +66,14 @@ public class Enemy : NetworkBehaviour
 
         if (currentHealth.Value <= 0)
         {
-            dying = true;
+            destroying = true;
             Die();
             return;
         }
 
         if (Vector3.Distance(transform.position, target.position) < 1f)
         {
-            dying = true;
-            invading = true;
+            destroying = true;
             Invade();
             return;
         }
@@ -102,7 +101,7 @@ public class Enemy : NetworkBehaviour
     {
         base.OnDestroy();
 
-        if (!IsHost || invading || MainSceneManager.disconnecting)
+        if (!IsHost || invading || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
         {
             return;
         }
@@ -113,6 +112,7 @@ public class Enemy : NetworkBehaviour
 
     private void Invade()
     {
+        invading = true;
         MainSceneManager.Instance.mapHealth--;
         EnemySpawn.Instance.enemies.Value--;
         EnemySpawn.Instance.leftForSpawn++;
