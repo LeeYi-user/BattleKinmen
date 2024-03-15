@@ -42,7 +42,7 @@ public class MainSceneManager : NetworkBehaviour
 
     [Header("On Map Variable")]
     public int mapHealth;
-    public NetworkVariable<int> teamCash = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [HideInInspector] public int start;
     [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
