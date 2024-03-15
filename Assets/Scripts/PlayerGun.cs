@@ -67,7 +67,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        if ((Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None)
+        if ((Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None && !Shop.Instance.shopMenu.activeSelf)
         {
             Cursor.lockState = CursorLockMode.Locked;
             return;

@@ -136,7 +136,10 @@ public class Enemy : NetworkBehaviour
 
             yield return new WaitForSeconds(0.8f);
 
-            agent.isStopped = false;
+            if (!destroying)
+            {
+                agent.isStopped = false;
+            }
         }
     }
 

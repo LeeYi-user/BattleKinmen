@@ -93,6 +93,8 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (Cursor.lockState == CursorLockMode.None)
         {
+            horizontalInput = 0f;
+            verticalInput = 0f;
             return;
         }
 

@@ -42,7 +42,6 @@ public class MainSceneManager : NetworkBehaviour
 
     [Header("On Map Variable")]
     public int mapHealth;
-    public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [HideInInspector] public int start;
     [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -203,7 +202,7 @@ public class MainSceneManager : NetworkBehaviour
         }
 
         waveCounter.text = "第 " + EnemySpawn.Instance.waves.Value.ToString() + " 波";
-        cashCounter.text = "$ " + teamCash.Value;
+        cashCounter.text = "$ " + Shop.Instance.teamCash.Value;
     }
 
     private void Counter1()
