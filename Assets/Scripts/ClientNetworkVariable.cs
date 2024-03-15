@@ -4,7 +4,10 @@ public class ClientNetworkVariable<T>
 {
     private T _value;
 
-    public Action OnValueChanged;
+    public ClientNetworkVariable(T value)
+    {
+        _value = value;
+    }
 
     public T Value
     {
@@ -22,4 +25,6 @@ public class ClientNetworkVariable<T>
             }
         }
     }
+
+    public Action OnValueChanged;
 }

@@ -10,6 +10,7 @@ public class Shop : NetworkBehaviour
     public static Shop Instance;
 
     [HideInInspector] public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [HideInInspector] public ClientNetworkVariable<int> cashSpent = new ClientNetworkVariable<int>(0);
 
     public GameObject shopMenu;
 
@@ -34,7 +35,7 @@ public class Shop : NetworkBehaviour
 
     [Header("In Container")]
     [SerializeField] private Item[] _items;
-    public Dictionary<string, ShopItem> items = new();
+    public Dictionary<string, ShopItem> items = new Dictionary<string, ShopItem>();
 
     [Header("Other")]
     public TextMeshProUGUI cashCounter;
@@ -73,6 +74,8 @@ public class Shop : NetworkBehaviour
                 BackButtonClick();
             }
         }
+
+        cashCounter.text = "$ " + (teamCash.Value - cashSpent.Value).ToString();
     }
 
     public void BodyCategoryClick()

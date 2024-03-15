@@ -202,7 +202,7 @@ public class MainSceneManager : NetworkBehaviour
         }
 
         waveCounter.text = "第 " + EnemySpawn.Instance.waves.Value.ToString() + " 波";
-        cashCounter.text = "$ " + Shop.Instance.teamCash.Value;
+        cashCounter.text = "$ " + (Shop.Instance.teamCash.Value - Shop.Instance.cashSpent.Value).ToString();
     }
 
     private void Counter1()

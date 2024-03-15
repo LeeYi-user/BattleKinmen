@@ -30,7 +30,7 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private Transform fakeBulletSpawnPoint;
 
     private bool isReloading;
-    private ClientNetworkVariable<int> currentAmmo = new ClientNetworkVariable<int>();
+    private ClientNetworkVariable<int> currentAmmo = new ClientNetworkVariable<int>(0);
     private float nextTimeToFire;
     private bool live;
 
