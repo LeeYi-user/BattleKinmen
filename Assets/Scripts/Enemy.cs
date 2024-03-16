@@ -113,7 +113,7 @@ public class Enemy : NetworkBehaviour
     private void Invade()
     {
         invading = true;
-        MainSceneManager.Instance.mapHealth--;
+        MainSceneManager.Instance.mapDefense--;
         EnemySpawn.Instance.enemies.Value--;
         EnemySpawn.Instance.leftForSpawn++;
         Destroy(gameObject);

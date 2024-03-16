@@ -26,5 +26,5 @@ public class ClientNetworkVariable<T>
         }
     }
 
-    public Action OnValueChanged;
+    public Action OnValueChanged = () => { };
 }

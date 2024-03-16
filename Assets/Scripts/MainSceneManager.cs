@@ -41,7 +41,7 @@ public class MainSceneManager : NetworkBehaviour
     public Transform playerSpawn;
 
     [Header("On Map Variable")]
-    public int mapHealth;
+    public int mapDefense;
 
     [HideInInspector] public int start;
     [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -157,7 +157,7 @@ public class MainSceneManager : NetworkBehaviour
         //    playerLives = 0;
         //}
 
-        if (mapHealth <= 0)
+        if (mapDefense <= 0)
         {
             GameOver_ClientRpc();
 

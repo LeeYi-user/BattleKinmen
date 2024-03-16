@@ -12,32 +12,16 @@ public class Shop : NetworkBehaviour
     [HideInInspector] public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [HideInInspector] public ClientNetworkVariable<int> cashSpent = new ClientNetworkVariable<int>(0);
 
+    [HideInInspector] public List<NetworkVariable<int>> teamItems = new List<NetworkVariable<int>>();
+    [HideInInspector] public NetworkVariable<int> respawnSpeedLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [HideInInspector] public NetworkVariable<int> midSupplyLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [HideInInspector] public NetworkVariable<int> ultCooldownLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [HideInInspector] public NetworkVariable<int> mapDefenseLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     public GameObject shopMenu;
-
-    [Header("Categories")]
-    public Image bodyCategory;
-    public Image weaponCategory;
-    public Image skillCategory;
-    public Image teamCategory;
-
-    [Header("Areas")]
-    public GameObject bodyArea;
-    public GameObject weaponArea;
-    public GameObject skillArea;
-    public GameObject teamArea;
-
-    [System.Serializable]
-    private struct Item
-    {
-        public string name;
-        public ShopItem shopItem;
-    }
-
-    [Header("In Container")]
-    [SerializeField] private Item[] _items;
-    public Dictionary<string, ShopItem> items = new Dictionary<string, ShopItem>();
-
-    [Header("Other")]
+    public GameObject[] categories;
+    public GameObject[] areas;
+    public ShopItem[] shopItems;
     public TextMeshProUGUI cashCounter;
     public Button backButton;
 
@@ -46,11 +30,33 @@ public class Shop : NetworkBehaviour
         Instance = this;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        teamItems.Add(respawnSpeedLevel);
+        teamItems.Add(midSupplyLevel);
+        teamItems.Add(ultCooldownLevel);
+        teamItems.Add(mapDefenseLevel);
+    }
+
     private void Start()
     {
-        foreach (Item item in _items)
+        int i = 0;
+
+        foreach (GameObject category in categories)
         {
-            items[item.name] = item.shopItem;
+            int index = i;
+            category.GetComponent<Button>().onClick.AddListener(() => { CategoryButtonClick(index); });
+            i++;
+        }
+
+        int j = 0;
+
+        foreach (ShopItem shopItem in shopItems)
+        {
+            int index = j;
+            shopItem.upgradeButton.onClick.AddListener(() => { UpgradeButtonClick(index, shopItem); });
+            j++;
         }
     }
 
@@ -76,59 +82,91 @@ public class Shop : NetworkBehaviour
         }
 
         cashCounter.text = "$ " + (teamCash.Value - cashSpent.Value).ToString();
-    }
 
-    public void BodyCategoryClick()
-    {
-        float[] colors = { 1, 0, 0, 0 };
-        SwitchCategories(colors);
-    }
-
-    public void WeaponCategoryClick()
-    {
-        float[] colors = { 0, 1, 0, 0 };
-        SwitchCategories(colors);
-    }
-
-    public void SkillCategoryClick()
-    {
-        float[] colors = { 0, 0, 1, 0 };
-        SwitchCategories(colors);
-    }
-
-    public void TeamCategoryClick()
-    {
-        float[] colors = { 0, 0, 0, 1 };
-        SwitchCategories(colors);
-    }
-
-    public void SwitchCategories(float[] colors)
-    {
-        bodyCategory.color = new Color(166f / 255f, 112f / 255f, 78f / 255f, colors[0]);
-        weaponCategory.color = new Color(166f / 255f, 112f / 255f, 78f / 255f, colors[1]);
-        skillCategory.color = new Color(166f / 255f, 112f / 255f, 78f / 255f, colors[2]);
-        teamCategory.color = new Color(166f / 255f, 112f / 255f, 78f / 255f, colors[3]);
-
-        bool[] actives = { false, false, false, false };
-
-        for (int i = 0; i < 4; i++)
+        if (!IsHost)
         {
-            if (colors[i] == 1)
-            {
-                actives[i] = true;
-                break;
-            }
+            return;
         }
 
-        SwitchAreas(actives);
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            teamCash.Value = 100000;
+        }
     }
 
-    public void SwitchAreas(bool[] actives)
+    public void CategoryButtonClick(int index)
     {
-        bodyArea.SetActive(actives[0]);
-        weaponArea.SetActive(actives[1]);
-        skillArea.SetActive(actives[2]);
-        teamArea.SetActive(actives[3]);
+        int i = 0;
+
+        foreach (GameObject category in categories)
+        {
+            if (i == index)
+            {
+                category.GetComponent<Image>().color = new Color(166f / 255f, 112f / 255f, 78f / 255f, 1f);
+            }
+            else
+            {
+                category.GetComponent<Image>().color = new Color(166f / 255f, 112f / 255f, 78f / 255f, 0f);
+            }
+
+            i++;
+        }
+
+        int j = 0;
+
+        foreach (GameObject area in areas)
+        {
+            if (j == index)
+            {
+                area.SetActive(true);
+            }
+            else
+            {
+                area.SetActive(false);
+            }
+
+            j++;
+        }
+    }
+
+    public void UpgradeButtonClick(int index, ShopItem shopItem)
+    {
+        if (shopItem.levelSlider.value == shopItem.levelSlider.maxValue || shopItem.price > teamCash.Value - cashSpent.Value)
+        {
+            return;
+        }
+
+        cashSpent.Value += shopItem.price;
+        shopItem.levelSlider.value++;
+
+        if (index >= 12)
+        {
+            UpgradeButtonClick_ServerRpc(index - 12);
+        }
+
+        if (shopItem.levelSlider.value < shopItem.levelSlider.maxValue)
+        {
+            if (index < 8)
+            {
+                shopItem.price += 200;
+            }
+            else
+            {
+                shopItem.price += 2000;
+            }
+
+            shopItem.priceText.text = shopItem.price.ToString() + " $";
+        }
+        else
+        {
+            shopItem.priceText.text = "MAX";
+        }
+    }
+
+    [ServerRpc]
+    public void UpgradeButtonClick_ServerRpc(int index)
+    {
+        teamItems[index].Value++;
     }
 
     public void BackButtonClick()
