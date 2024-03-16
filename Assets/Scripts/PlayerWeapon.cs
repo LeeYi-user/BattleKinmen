@@ -15,18 +15,6 @@ public class PlayerWeapon : NetworkBehaviour
 
     public bool live;
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        selectedWeapon.OnValueChanged += SelectWeapon;
-    }
-
     private void Start()
     {
         if (!IsOwner)
@@ -34,12 +22,14 @@ public class PlayerWeapon : NetworkBehaviour
             return;
         }
 
+        selectedWeapon.OnValueChanged += SelectWeapon;
+
         Despawn();
     }
 
     private void Update()
     {
-        if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
+        if (!IsOwner || MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
         {
             return;
         }
@@ -54,13 +44,13 @@ public class PlayerWeapon : NetworkBehaviour
             {
                 selectedWeapon.Value++;
             }
-
-            animator.SetInteger("selectedWeapon", selectedWeapon.Value);
         }
     }
 
     public void SelectWeapon()
     {
+        animator.SetInteger("selectedWeapon", selectedWeapon.Value);
+
         int i = 0;
 
         foreach (Transform weapon in transform)
