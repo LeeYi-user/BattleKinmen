@@ -37,9 +37,16 @@ public class PlayerCamera : NetworkBehaviour
             return;
         }
 
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None && !Shop.Instance.shopMenu.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
+            return;
         }
 
         if (!live || Cursor.lockState == CursorLockMode.None)

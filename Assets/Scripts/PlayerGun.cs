@@ -16,7 +16,6 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private int maxAmmo; // 5
     [SerializeField] private float reloadTime; // 1
 
-    [SerializeField] private GameObject realGunSkin;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Animator animator;
@@ -26,28 +25,22 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private float BulletSpeed; // 100
 
     [SerializeField] private ParticleSystem fakeMuzzleFlash;
-    [SerializeField] private AudioSource fakeAudioSource;
     [SerializeField] private Transform fakeBulletSpawnPoint;
 
     private bool isReloading;
     private ClientNetworkVariable<int> currentAmmo = new ClientNetworkVariable<int>(0);
     private float nextTimeToFire;
-    private bool live;
 
     private void Start()
     {
         audioSource.volume = SampleSceneManager.Instance.volume;
-        fakeAudioSource.volume = SampleSceneManager.Instance.volume;
 
         if (!IsOwner)
         {
-            realGunSkin.SetActive(false);
             return;
         }
 
         currentAmmo.OnValueChanged += ShowAmmo;
-
-        Despawn();
     }
 
     private void ShowAmmo()
@@ -62,14 +55,8 @@ public class PlayerGun : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsOwner || !live)
+        if (!IsOwner || !transform.parent.GetComponent<PlayerWeapon>().live)
         {
-            return;
-        }
-
-        if ((Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None && !Shop.Instance.shopMenu.activeSelf)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
             return;
         }
 
@@ -133,8 +120,10 @@ public class PlayerGun : NetworkBehaviour
             }
         }
 
-        CreateBulletTrail_ServerRpc(BulletSpawnPoint.position, true, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
-        CreateBulletTrail_ServerRpc(fakeBulletSpawnPoint.position, false, hit.point, hit.normal, MadeImpact, fpsCam.transform.forward);
+        if (MadeImpact > 0)
+        {
+            CreateBulletImpact_ServerRpc(MadeImpact, hit.point, hit.normal);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -163,7 +152,7 @@ public class PlayerGun : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            fakeAudioSource.PlayOneShot(audioClip);
+            audioSource.PlayOneShot(audioClip);
         }
     }
 
@@ -180,74 +169,17 @@ public class PlayerGun : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void CreateBulletTrail_ServerRpc(Vector3 position, bool IsReal, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, Vector3 forward)
+    private void CreateBulletImpact_ServerRpc(int MadeImpact, Vector3 HitPoint, Vector3 HitNormal)
     {
-        TrailRenderer trail = Instantiate(BulletTrail, position, Quaternion.identity);
-
-        trail.GetComponent<NetworkObject>().Spawn(true);
-
-        if (MadeImpact > 0)
-        {
-            StartCoroutine(SpawnTrail(trail, HitPoint, HitNormal, MadeImpact, IsReal));
-        }
-        else
-        {
-            StartCoroutine(SpawnTrail(trail, position + forward * range, Vector3.zero, MadeImpact, IsReal));
-        }
-
-        CreateBulletTrail_ClientRpc(trail.GetComponent<NetworkObject>().NetworkObjectId, IsReal);
-    }
-
-    private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, int MadeImpact, bool IsReal)
-    {
-        Vector3 startPosition = Trail.transform.position;
-        float distance = Vector3.Distance(Trail.transform.position, HitPoint);
-        float remainingDistance = distance;
-
-        while (remainingDistance > 0)
-        {
-            Trail.transform.position = Vector3.Lerp(startPosition, HitPoint, 1 - (remainingDistance / distance));
-            remainingDistance -= BulletSpeed * Time.deltaTime;
-            yield return null;
-        }
-
-        Trail.transform.position = HitPoint;
-
-        if ((MadeImpact > 0) && IsReal)
-        {
-            GameObject impactGO = Instantiate(impactEffect[MadeImpact - 1], HitPoint, Quaternion.LookRotation(HitNormal));
-            impactGO.GetComponent<NetworkObject>().Spawn(true);
-            Destroy(impactGO, 2f);
-        }
-
-        Destroy(Trail.gameObject, Trail.time);
-    }
-
-    [ClientRpc]
-    private void CreateBulletTrail_ClientRpc(ulong objectId, bool IsReal)
-    {
-        GameObject trailGO = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
-
-        trailGO.SetActive(false);
-
-        //if (IsOwner != IsReal)
-        //{
-        //    trailGO.SetActive(false);
-        //}
-    }
-
-    public void Despawn()
-    {
-        live = false;
-        realGunSkin.SetActive(false);
+        GameObject impactGO = Instantiate(impactEffect[MadeImpact - 1], HitPoint, Quaternion.LookRotation(HitNormal));
+        impactGO.GetComponent<NetworkObject>().Spawn(true);
+        Destroy(impactGO, 2f);
     }
 
     public void Respawn()
     {
-        live = true;
         isReloading = false;
         currentAmmo.Value = maxAmmo;
         nextTimeToFire = 0f;
-        realGunSkin.SetActive(true);
     }
 }

@@ -14,9 +14,8 @@ public class Player : NetworkBehaviour
 
     [SerializeField] private CapsuleCollider bodyCollider;
     [SerializeField] private SkinnedMeshRenderer[] bodySkins;
-    [SerializeField] private GameObject fakeGunSkin;
 
-    [SerializeField] private PlayerGun playerGun;
+    [SerializeField] private PlayerWeapon playerWeapon;
     [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private PlayerMovement playerMovement;
 
@@ -80,7 +79,7 @@ public class Player : NetworkBehaviour
             MainSceneManager.Instance.deathScreen.SetActive(true);
             MainSceneManager.Instance.deathMessage.text = msg;
 
-            playerGun.Despawn();
+            playerWeapon.Despawn();
             playerCamera.Despawn();
             playerMovement.Despawn();
         }
@@ -90,8 +89,6 @@ public class Player : NetworkBehaviour
             {
                 bodySkin.enabled = false;
             }
-
-            fakeGunSkin.SetActive(false);
         }
     }
 
@@ -119,7 +116,7 @@ public class Player : NetworkBehaviour
             MainSceneManager.Instance.crosshair.SetActive(true);
             MainSceneManager.Instance.deathScreen.SetActive(false);
 
-            playerGun.Respawn();
+            playerWeapon.Respawn();
             playerCamera.Respawn();
             playerMovement.Respawn();
             FinishSpawning_ServerRpc();
@@ -130,8 +127,6 @@ public class Player : NetworkBehaviour
             {
                 bodySkin.enabled = true;
             }
-
-            fakeGunSkin.SetActive(true);
         }
     }
 
