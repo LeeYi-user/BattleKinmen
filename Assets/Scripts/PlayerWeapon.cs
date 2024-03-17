@@ -11,12 +11,15 @@ public class PlayerWeapon : NetworkBehaviour
     [SerializeField] private Transform thirdPersonWeapons;
     [SerializeField] private Transform thirdPersonRigs;
 
+    [SerializeField] private AudioSource audioSource;
     [SerializeField] private Animator animator;
 
     public bool live;
 
     private void Start()
     {
+        audioSource.volume = SampleSceneManager.Instance.volume;
+
         if (!IsOwner)
         {
             return;
@@ -138,6 +141,10 @@ public class PlayerWeapon : NetworkBehaviour
             if (weapon.GetComponent<PlayerGun>() != null)
             {
                 weapon.GetComponent<PlayerGun>().Respawn();
+            }
+            else if (weapon.GetComponent<PlayerKnife>() != null)
+            {
+                weapon.GetComponent<PlayerKnife>().Respawn();
             }
         }
     }

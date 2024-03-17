@@ -33,8 +33,6 @@ public class PlayerGun : NetworkBehaviour
 
     private void Start()
     {
-        audioSource.volume = SampleSceneManager.Instance.volume;
-
         if (!IsOwner)
         {
             return;
