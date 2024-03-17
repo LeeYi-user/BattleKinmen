@@ -2872,8 +2872,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4887348db03efe438d464eac0a3a3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fpsCam: {fileID: 4548373580233231170}
+  range: 2
+  damage: 50
+  attackRate: 1.25
+  impactEffect:
+  - {fileID: 1000012142692022, guid: a475880e7da0e9548aa05cb7933752cd, type: 3}
+  - {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285, type: 3}
+  audioSource: {fileID: 381878828213061017}
+  audioClip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
   animator: {fileID: 4780597247273948614}
-  fireRate: 1.25
 --- !u!95 &4780597247273948614
 Animator:
   serializedVersion: 5

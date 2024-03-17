@@ -53,6 +53,11 @@ public class PlayerGun : NetworkBehaviour
 
     private void OnEnable()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
         animator.SetTrigger("reset");
 
         isReloading = false;
