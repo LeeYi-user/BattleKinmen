@@ -51,6 +51,19 @@ public class PlayerGun : NetworkBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        animator.SetTrigger("reset");
+
+        isReloading = false;
+
+        if (currentAmmo.Value <= 0)
+        {
+            StartCoroutine(Reload());
+            return;
+        }
+    }
+
     private void FixedUpdate()
     {
         if (!IsOwner || !transform.parent.GetComponent<PlayerWeapon>().live)

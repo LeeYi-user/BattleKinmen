@@ -10,6 +10,11 @@ public class PlayerKnife : NetworkBehaviour
 
     private float nextTimeToAttack;
 
+    private void OnEnable()
+    {
+        animator.SetTrigger("reset");
+    }
+
     private void FixedUpdate()
     {
         if (!IsOwner || !transform.parent.GetComponent<PlayerWeapon>().live)
