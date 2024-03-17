@@ -21,6 +21,8 @@ public class Player : NetworkBehaviour
 
     private bool spawning = true;
 
+    public Dictionary<string, int> playerItems = new Dictionary<string, int>();
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -40,6 +42,14 @@ public class Player : NetworkBehaviour
         for (int i = 0; i < currentHealth.Value; i += 10)
         {
             MainSceneManager.Instance.healthBar.text += "|";
+        }
+    }
+
+    private void Start()
+    {
+        foreach (ShopItem shopItem in Shop.Instance.shopItems)
+        {
+            playerItems[shopItem.name] = (int)shopItem.levelSlider.value;
         }
     }
 

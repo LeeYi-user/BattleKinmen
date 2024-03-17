@@ -11,41 +11,18 @@ public class Shop : NetworkBehaviour
 
     [HideInInspector] public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [HideInInspector] public ClientNetworkVariable<int> cashSpent = new ClientNetworkVariable<int>(0);
-
-    [HideInInspector] public List<NetworkVariable<int>> teamItems = new List<NetworkVariable<int>>();
-    [HideInInspector] public NetworkVariable<int> respawnSpeedLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [HideInInspector] public NetworkVariable<int> midSupplyLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [HideInInspector] public NetworkVariable<int> ultCooldownLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [HideInInspector] public NetworkVariable<int> mapDefenseLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
-    [System.Serializable]
-    public struct Item
-    {
-        public string name;
-        public ShopItem shopItem;
-    }
-
-    public Dictionary<string, ShopItem> itemTable = new Dictionary<string, ShopItem>();
+    [HideInInspector] public Dictionary<string, int> teamItems = new Dictionary<string, int>();
 
     public GameObject shopMenu;
     public GameObject[] categories;
     public GameObject[] areas;
-    public Item[] items;
+    public ShopItem[] shopItems;
     public TextMeshProUGUI cashCounter;
     public Button backButton;
 
     private void Awake()
     {
         Instance = this;
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        teamItems.Add(respawnSpeedLevel);
-        teamItems.Add(midSupplyLevel);
-        teamItems.Add(ultCooldownLevel);
-        teamItems.Add(mapDefenseLevel);
     }
 
     private void Start()
@@ -61,11 +38,17 @@ public class Shop : NetworkBehaviour
 
         int j = 0;
 
-        foreach (Item item in items)
+        foreach (ShopItem shopItem in shopItems)
         {
             int index = j;
-            item.shopItem.upgradeButton.onClick.AddListener(() => { UpgradeButtonClick(index, item.shopItem); });
-            itemTable[item.name] = item.shopItem;
+
+            if (index >= 12)
+            {
+                teamItems[shopItem.name] = (int)shopItem.levelSlider.value;
+            }
+
+            shopItem.upgradeButton.onClick.AddListener(() => { UpgradeButtonClick(index, shopItem); });
+            shopItem.levelSlider.onValueChanged.AddListener(delegate { LevelUpgraded(index, shopItem); });
             j++;
         }
     }
@@ -149,11 +132,6 @@ public class Shop : NetworkBehaviour
         cashSpent.Value += shopItem.price;
         shopItem.levelSlider.value++;
 
-        if (index >= 12)
-        {
-            UpgradeButtonClick_ServerRpc(index - 12);
-        }
-
         if (shopItem.levelSlider.value < shopItem.levelSlider.maxValue)
         {
             if (index < 8)
@@ -173,10 +151,24 @@ public class Shop : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    public void UpgradeButtonClick_ServerRpc(int index)
+    public void LevelUpgraded(int index, ShopItem shopItem)
     {
-        teamItems[index].Value++;
+        LevelUpgraded_ServerRpc(index, NetworkManager.LocalClient.PlayerObject.NetworkObjectId, shopItem.name, (int)shopItem.levelSlider.value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void LevelUpgraded_ServerRpc(int index, ulong objectId, string name, int level)
+    {
+        if (index < 12)
+        {
+            NetworkManager.SpawnManager.SpawnedObjects[objectId].GetComponent<Player>().playerItems[name] = level;
+            Debug.Log(level);
+        }
+        else
+        {
+            teamItems[name]++;
+            Debug.Log(teamItems[name]);
+        }
     }
 
     public void BackButtonClick()

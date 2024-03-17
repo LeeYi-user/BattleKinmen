@@ -10,5 +10,7 @@ public class ShopItem : MonoBehaviour
     public TextMeshProUGUI priceText;
     public Slider levelSlider;
     public Button upgradeButton;
+
+    public new string name;
     public int price;
 }
