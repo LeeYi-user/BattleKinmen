@@ -18,10 +18,19 @@ public class Shop : NetworkBehaviour
     [HideInInspector] public NetworkVariable<int> ultCooldownLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [HideInInspector] public NetworkVariable<int> mapDefenseLevel = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    [System.Serializable]
+    public struct Item
+    {
+        public string name;
+        public ShopItem shopItem;
+    }
+
+    public Dictionary<string, ShopItem> itemTable = new Dictionary<string, ShopItem>();
+
     public GameObject shopMenu;
     public GameObject[] categories;
     public GameObject[] areas;
-    public ShopItem[] shopItems;
+    public Item[] items;
     public TextMeshProUGUI cashCounter;
     public Button backButton;
 
@@ -52,10 +61,11 @@ public class Shop : NetworkBehaviour
 
         int j = 0;
 
-        foreach (ShopItem shopItem in shopItems)
+        foreach (Item item in items)
         {
             int index = j;
-            shopItem.upgradeButton.onClick.AddListener(() => { UpgradeButtonClick(index, shopItem); });
+            item.shopItem.upgradeButton.onClick.AddListener(() => { UpgradeButtonClick(index, item.shopItem); });
+            itemTable[item.name] = item.shopItem;
             j++;
         }
     }
