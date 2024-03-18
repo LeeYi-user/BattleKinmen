@@ -153,21 +153,22 @@ public class Shop : NetworkBehaviour
 
     public void LevelUpgraded(int index, ShopItem shopItem)
     {
-        LevelUpgraded_ServerRpc(index, NetworkManager.LocalClient.PlayerObject.NetworkObjectId, shopItem.name, (int)shopItem.levelSlider.value);
+        if (!IsHost)
+        {
+            NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerItems[shopItem.name] = (int)shopItem.levelSlider.value;
+        }
+        
+        LevelUpgraded_ServerRpc(NetworkManager.LocalClient.PlayerObject.NetworkObjectId, index, shopItem.name, (int)shopItem.levelSlider.value);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void LevelUpgraded_ServerRpc(int index, ulong objectId, string name, int level)
+    public void LevelUpgraded_ServerRpc(ulong objectId, int index, string name, int level)
     {
-        if (index < 12)
-        {
-            NetworkManager.SpawnManager.SpawnedObjects[objectId].GetComponent<Player>().playerItems[name] = level;
-            Debug.Log(level);
-        }
-        else
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].GetComponent<Player>().playerItems[name] = level;
+
+        if (index >= 12)
         {
             teamItems[name]++;
-            Debug.Log(teamItems[name]);
         }
     }
 
