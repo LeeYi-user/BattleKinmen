@@ -121,9 +121,16 @@ public class Enemy : NetworkBehaviour
 
     private IEnumerator Shoot()
     {
-        GameObject player = FindClosestPlayer();
+        List<Transform> players = new List<Transform>();
 
-        if (!Physics.Linecast(head.transform.position, player.transform.Find("Main Camera").transform.position, whatIsGround))
+        foreach (NetworkClient client in NetworkManager.ConnectedClients.Values)
+        {
+            players.Add(client.PlayerObject.transform);
+        }
+
+        Transform player = GetClosestPlayer(players);
+
+        if (!Physics.Linecast(head.transform.position, player.GetComponent<Player>().head.position, whatIsGround))
         {
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
@@ -143,26 +150,24 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    public GameObject FindClosestPlayer()
+    Transform GetClosestPlayer(List<Transform> players)
     {
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("Player");
-        GameObject closest = null;
-        float distance = Mathf.Infinity;
-        Vector3 position = transform.position;
+        Transform tMin = null;
+        float minDist = Mathf.Infinity;
+        Vector3 currentPos = transform.position;
 
-        foreach (GameObject go in gos)
+        foreach (Transform t in players)
         {
-            Vector3 diff = go.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
+            float dist = Vector3.Distance(t.position, currentPos);
 
-            if (curDistance < distance)
+            if (dist < minDist)
             {
-                closest = go;
-                distance = curDistance;
+                tMin = t;
+                minDist = dist;
             }
         }
 
-        return closest;
+        return tMin;
     }
 
     [ClientRpc]

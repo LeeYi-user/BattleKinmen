@@ -77,7 +77,7 @@ public class UnityLobby : MonoBehaviour
                             UpdateLobbyCount();
                         }
                     }
-                    else
+                    else if (!MainSceneManager.disconnecting)
                     {
                         SampleSceneManager.start = 1;
                         StartCoroutine(LoadSceneAsync("MainScene"));

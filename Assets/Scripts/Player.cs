@@ -7,6 +7,8 @@ using TMPro;
 
 public class Player : NetworkBehaviour
 {
+    public Transform head;
+
     [SerializeField] private float maxHealth; // 100
     [SerializeField] private float minAltitude; // -10
 
