@@ -32,7 +32,7 @@ public class PlayerWeapon : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
+        if (!IsOwner || !live)
         {
             return;
         }
