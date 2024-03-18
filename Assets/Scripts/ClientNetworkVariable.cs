@@ -21,10 +21,10 @@ public class ClientNetworkVariable<T>
             if (!_value.Equals(value))
             {
                 _value = value;
-                OnValueChanged.Invoke();
+                OnValueChanged?.Invoke();
             }
         }
     }
 
-    public Action OnValueChanged = () => { };
+    public Action OnValueChanged;
 }

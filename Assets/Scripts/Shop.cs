@@ -83,7 +83,7 @@ public class Shop : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            teamCash.Value = 100000;
+            teamCash.Value += 50000;
         }
     }
 

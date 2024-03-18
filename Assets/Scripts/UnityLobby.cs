@@ -96,7 +96,7 @@ public class UnityLobby : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance)
+            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance || MainSceneManager.disconnecting)
             {
                 Debug.Log(e);
                 return;
