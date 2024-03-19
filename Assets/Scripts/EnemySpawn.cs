@@ -12,6 +12,8 @@ public class EnemySpawn : NetworkBehaviour
     public NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    public float enemyHealth;
+    public float enemyDelay;
     private int leftToSpawn;
     public int leftForSpawn;
     private float timeLeft;
@@ -30,10 +32,11 @@ public class EnemySpawn : NetworkBehaviour
 
         if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
         {
+            enemyHealth = Mathf.Min(waves.Value * 15, 90);
             enemies.Value = waves.Value * 10;
             leftToSpawn = enemies.Value;
             leftForSpawn = 30;
-            timeLeft = 15f / (waves.Value + 9f);
+            timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
             return;
         }
 
@@ -45,7 +48,7 @@ public class EnemySpawn : NetworkBehaviour
             enemy.GetComponent<NetworkObject>().Spawn(true);
             leftToSpawn--;
             leftForSpawn--;
-            timeLeft = 15f / (waves.Value + 9f);
+            timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
         }
 
         if (enemies.Value <= 0)

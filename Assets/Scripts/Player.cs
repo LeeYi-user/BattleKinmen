@@ -8,12 +8,11 @@ using TMPro;
 public class Player : NetworkBehaviour
 {
     public Transform head;
+    public NetworkVariable<float> maxHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> bulletproof = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    [SerializeField] private float maxHealth; // 100
     [SerializeField] private float minAltitude; // -10
-
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
     [SerializeField] private CapsuleCollider bodyCollider;
     [SerializeField] private SkinnedMeshRenderer[] bodySkins;
 
@@ -22,8 +21,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerMovement playerMovement;
 
     private bool spawning = true;
-
-    public Dictionary<string, int> playerItems = new Dictionary<string, int>();
 
     public override void OnNetworkSpawn()
     {
@@ -47,14 +44,6 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void Start()
-    {
-        foreach (ShopItem shopItem in Shop.Instance.shopItems)
-        {
-            playerItems[shopItem.name] = (int)shopItem.levelSlider.value;
-        }
-    }
-
     private void Update()
     {
         if (!IsHost || spawning)
@@ -71,13 +60,13 @@ public class Player : NetworkBehaviour
         {
             spawning = true;
             PlayerDespawn_ClientRpc("YOU DIED");
-            StartCoroutine(Respawn(2f));
+            StartCoroutine(Respawn(MainSceneManager.Instance.respawnCooldown));
         }
     }
 
     public void TakeDamage(float damage)
     {
-        currentHealth.Value -= damage;
+        currentHealth.Value -= damage / bulletproof.Value;
     }
 
     [ClientRpc]
@@ -113,7 +102,7 @@ public class Player : NetworkBehaviour
             yield break;
         }
 
-        currentHealth.Value = maxHealth;
+        currentHealth.Value = maxHealth.Value;
 
         PlayerRespawn_ClientRpc();
     }

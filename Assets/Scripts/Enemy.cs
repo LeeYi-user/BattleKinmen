@@ -10,9 +10,8 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private GameObject cash;
     [SerializeField] private Transform head;
     [SerializeField] private Transform hips;
-    [SerializeField] private float maxHealth;
 
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private float currentHealth;
 
     [SerializeField] private LayerMask whatIsPlayer;
     [SerializeField] private LayerMask whatIsGround;
@@ -39,7 +38,8 @@ public class Enemy : NetworkBehaviour
             return;
         }
 
-        target = GameObject.Find("Enemy Target").transform;
+        currentHealth = EnemySpawn.Instance.enemyHealth;
+        target = MainSceneManager.Instance.enemyTarget;
     }
 
     private void Update()
@@ -59,12 +59,11 @@ public class Enemy : NetworkBehaviour
         if (!running)
         {
             running = true;
-            currentHealth.Value = maxHealth;
             agent.SetDestination(target.position);
             animator.SetBool("isRunning", true);
         }
 
-        if (currentHealth.Value <= 0)
+        if (currentHealth <= 0)
         {
             destroying = true;
             Die();
@@ -113,7 +112,7 @@ public class Enemy : NetworkBehaviour
     private void Invade()
     {
         invading = true;
-        MainSceneManager.Instance.mapDefense--;
+        MainSceneManager.Instance.currentDefense--;
         EnemySpawn.Instance.enemies.Value--;
         EnemySpawn.Instance.leftForSpawn++;
         Destroy(gameObject);
@@ -184,6 +183,6 @@ public class Enemy : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        currentHealth.Value -= damage;
+        currentHealth -= damage;
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +11,6 @@ public class Shop : NetworkBehaviour
 
     [HideInInspector] public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [HideInInspector] public ClientNetworkVariable<int> cashSpent = new ClientNetworkVariable<int>(0);
-    [HideInInspector] public Dictionary<string, int> teamItems = new Dictionary<string, int>();
 
     public GameObject shopMenu;
     public GameObject[] categories;
@@ -42,13 +41,8 @@ public class Shop : NetworkBehaviour
         {
             int index = j;
 
-            if (index >= 12)
-            {
-                teamItems[shopItem.name] = (int)shopItem.levelSlider.value;
-            }
-
             shopItem.upgradeButton.onClick.AddListener(() => { UpgradeButtonClick(index, shopItem); });
-            shopItem.levelSlider.onValueChanged.AddListener(delegate { LevelUpgraded(index, shopItem); });
+            shopItem.levelSlider.onValueChanged.AddListener(delegate { LevelUpgraded(shopItem); });
             j++;
         }
     }
@@ -151,24 +145,52 @@ public class Shop : NetworkBehaviour
         }
     }
 
-    public void LevelUpgraded(int index, ShopItem shopItem)
+    public void LevelUpgraded(ShopItem shopItem)
     {
-        if (!IsHost)
-        {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerItems[shopItem.name] = (int)shopItem.levelSlider.value;
-        }
-        
-        LevelUpgraded_ServerRpc(NetworkManager.LocalClient.PlayerObject.NetworkObjectId, index, shopItem.name, (int)shopItem.levelSlider.value);
+        LevelUpgraded_ServerRpc(NetworkManager.LocalClient.PlayerObject.NetworkObjectId, shopItem.name, (int)shopItem.levelSlider.value);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void LevelUpgraded_ServerRpc(ulong objectId, int index, string name, int level)
+    public void LevelUpgraded_ServerRpc(ulong objectId, string name, int level)
     {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].GetComponent<Player>().playerItems[name] = level;
+        GameObject player = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
 
-        if (index >= 12)
+        switch (name)
         {
-            teamItems[name]++;
+            case "health": // 需要更改 maxHealth 和 currentHealth
+                break;
+            case "movingSpeed": // 需要更改 moveSpeed
+                break;
+            case "jumpHeight": // 需要更改 jumpForce
+                break;
+            case "bulletproof": // 需要更改 bulletproof
+                break;
+            case "damage": // 需要更改 damage
+                break;
+            case "ammo": // 需要更改 maxAmmo
+                break;
+            case "attackSpeed": // 需要更改 fireRate 和 attackRate
+                break;
+            case "reloadSpeed": // 需要更改 reloadTime
+                break;
+            case "caber": // 需要額外做技能
+                break;
+            case "landmine": // 需要額外做技能
+                break;
+            case "heal": // 需要額外做技能
+                break;
+            case "nuke": // 需要額外做技能
+                break;
+            case "respawnSpeed": // 需要更改 respawnCooldown
+                break;
+            case "enemyDelay": // 需要更改 enemyDelay
+                break;
+            case "cashBonus": // 需要更改 cashBonus
+                break;
+            case "mapDefense": // 需要更改 maxDefense 和 currentDefense
+                break;
+            default:
+                break;
         }
     }
 

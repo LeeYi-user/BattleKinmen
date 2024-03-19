@@ -41,7 +41,7 @@ public class Cash : NetworkBehaviour
 
         if (other.transform.CompareTag("Player"))
         {
-            Shop.Instance.teamCash.Value += 100;
+            Shop.Instance.teamCash.Value += (int)(100 * MainSceneManager.Instance.cashBonus);
             Destroy(gameObject);
         }
     }

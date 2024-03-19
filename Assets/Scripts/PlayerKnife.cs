@@ -7,8 +7,8 @@ public class PlayerKnife : NetworkBehaviour
 {
     [SerializeField] private Camera fpsCam;
     [SerializeField] private float range;
-    [SerializeField] private float damage;
-    [SerializeField] private float attackRate;
+    public NetworkVariable<float> damage = new NetworkVariable<float>(50f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> attackRate = new NetworkVariable<float>(1.25f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [SerializeField] private GameObject[] impactEffect;
     [SerializeField] private AudioSource audioSource;
@@ -36,7 +36,7 @@ public class PlayerKnife : NetworkBehaviour
 
         if (Input.GetButton("Fire1") && Time.time >= nextTimeToAttack && Cursor.lockState == CursorLockMode.Locked)
         {
-            nextTimeToAttack = Time.time + 1f / attackRate;
+            nextTimeToAttack = Time.time + 1f / attackRate.Value;
             Attack();
         }
     }
@@ -55,12 +55,12 @@ public class PlayerKnife : NetworkBehaviour
             if (hit.transform.gameObject.CompareTag("Player"))
             {
                 MadeImpact = 2;
-                AttackPlayer_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
+                AttackPlayer_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage.Value);
             }
             else if (hit.transform.gameObject.CompareTag("Enemy"))
             {
                 MadeImpact = 2;
-                AttackEnemy_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
+                AttackEnemy_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage.Value);
             }
         }
 

@@ -5,30 +5,22 @@ using UnityEngine;
 
 public class PlayerGun : NetworkBehaviour
 {
-    [SerializeField] private float damage; // 30
+    public NetworkVariable<float> damage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private float range; // 100
-    [SerializeField] private float fireRate; // 0.5
+    public NetworkVariable<float> fireRate = new NetworkVariable<float>(0.5f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> maxAmmo = new NetworkVariable<int>(5, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public ClientNetworkVariable<int> currentAmmo = new ClientNetworkVariable<int>(0);
+    public NetworkVariable<float> reloadTime = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [SerializeField] private Camera fpsCam;
     [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private ParticleSystem fakeMuzzleFlash;
     [SerializeField] private GameObject[] impactEffect;
-
-    [SerializeField] private int maxAmmo; // 5
-    [SerializeField] private float reloadTime; // 1
-
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Animator animator;
 
-    [SerializeField] private Transform BulletSpawnPoint;
-    [SerializeField] private TrailRenderer BulletTrail;
-    [SerializeField] private float BulletSpeed; // 100
-
-    [SerializeField] private ParticleSystem fakeMuzzleFlash;
-    [SerializeField] private Transform fakeBulletSpawnPoint;
-
     private bool isReloading;
-    private ClientNetworkVariable<int> currentAmmo = new ClientNetworkVariable<int>(0);
     private float nextTimeToFire;
 
     private void Start()
@@ -38,7 +30,18 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
+        maxAmmo.OnValueChanged += UpdateAmmo;
         currentAmmo.OnValueChanged += ShowAmmo;
+    }
+
+    private void UpdateAmmo(int previous, int current)
+    {
+        if (isReloading)
+        {
+            return;
+        }
+
+        StartCoroutine(Reload());
     }
 
     private void ShowAmmo()
@@ -81,7 +84,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        if (currentAmmo.Value <= 0 || (currentAmmo.Value < maxAmmo && Input.GetKey(KeyCode.R)))
+        if (currentAmmo.Value <= 0 || (currentAmmo.Value < maxAmmo.Value && Input.GetKey(KeyCode.R)))
         {
             StartCoroutine(Reload());
             return;
@@ -89,7 +92,7 @@ public class PlayerGun : NetworkBehaviour
 
         if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire && Cursor.lockState == CursorLockMode.Locked)
         {
-            nextTimeToFire = Time.time + 1f / fireRate;
+            nextTimeToFire = Time.time + 1f / fireRate.Value;
             Shoot();
         }
     }
@@ -99,12 +102,12 @@ public class PlayerGun : NetworkBehaviour
         isReloading = true;
         animator.SetBool("isReloading", true);
 
-        yield return new WaitForSeconds(reloadTime);
+        yield return new WaitForSeconds(reloadTime.Value);
 
         isReloading = false;
         animator.SetBool("isReloading", false);
 
-        currentAmmo.Value = maxAmmo;
+        currentAmmo.Value = maxAmmo.Value;
     }
 
     private void Shoot()
@@ -127,12 +130,12 @@ public class PlayerGun : NetworkBehaviour
             if (hit.transform.gameObject.CompareTag("Player"))
             {
                 MadeImpact = 2;
-                ShootPlayer_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
+                ShootPlayer_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage.Value);
             }
             else if (hit.transform.gameObject.CompareTag("Enemy"))
             {
                 MadeImpact = 2;
-                ShootEnemy_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage);
+                ShootEnemy_ServerRpc(hit.transform.gameObject.GetComponent<NetworkObject>().NetworkObjectId, damage.Value);
             }
         }
 
@@ -195,7 +198,7 @@ public class PlayerGun : NetworkBehaviour
     public void Respawn()
     {
         isReloading = false;
-        currentAmmo.Value = maxAmmo;
+        currentAmmo.Value = maxAmmo.Value;
         nextTimeToFire = 0f;
     }
 }

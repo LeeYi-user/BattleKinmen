@@ -39,9 +39,13 @@ public class MainSceneManager : NetworkBehaviour
 
     [Header("On Map")]
     public Transform playerSpawn;
+    public Transform enemyTarget;
 
     [Header("On Map Variable")]
-    public int mapDefense;
+    public float respawnCooldown;
+    public float cashBonus;
+    public int maxDefense;
+    public int currentDefense;
 
     [HideInInspector] public int start;
     [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -125,6 +129,7 @@ public class MainSceneManager : NetworkBehaviour
     private void Start()
     {
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
+        currentDefense = maxDefense;
 
         if (UnityLobby.Instance.hostLobby != null)
         {
@@ -152,12 +157,7 @@ public class MainSceneManager : NetworkBehaviour
             return;
         }
 
-        //if (Input.GetKeyDown(KeyCode.P) && start == 2 && Cursor.lockState == CursorLockMode.Locked)
-        //{
-        //    playerLives = 0;
-        //}
-
-        if (mapDefense <= 0)
+        if (currentDefense <= 0)
         {
             GameOver_ClientRpc();
 

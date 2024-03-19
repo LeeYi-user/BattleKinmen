@@ -9,9 +9,9 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float gravity;
 
     [Header("Movement")]
-    [SerializeField] private float moveSpeed;
+    public NetworkVariable<float> moveSpeed = new NetworkVariable<float>(5f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private float groundDrag;
-    [SerializeField] private float jumpForce;
+    public NetworkVariable<float> jumpForce = new NetworkVariable<float>(2f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private float jumpCooldown;
     [SerializeField] private float airMultiplier;
 
@@ -113,7 +113,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         exitingSlope = true;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        rb.AddForce(transform.up * Mathf.Sqrt(jumpForce * -2f * gravity), ForceMode.Impulse);
+        rb.AddForce(transform.up * Mathf.Sqrt(jumpForce.Value * -2f * gravity), ForceMode.Impulse);
     }
 
     private void ResetJump()
@@ -130,16 +130,16 @@ public class PlayerMovement : NetworkBehaviour
 
         if (OnSlope() && !exitingSlope)
         {
-            if (rb.velocity.magnitude > moveSpeed)
+            if (rb.velocity.magnitude > moveSpeed.Value)
             {
-                rb.velocity = rb.velocity.normalized * moveSpeed;
+                rb.velocity = rb.velocity.normalized * moveSpeed.Value;
             }
         }
         else
         {
-            if (flatVel.magnitude > moveSpeed)
+            if (flatVel.magnitude > moveSpeed.Value)
             {
-                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * moveSpeed.Value;
                 rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
             }
         }
@@ -151,7 +151,7 @@ public class PlayerMovement : NetworkBehaviour
 
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed.Value * 20f, ForceMode.Force);
 
             if (rb.velocity.y > 0)
             {
@@ -160,11 +160,11 @@ public class PlayerMovement : NetworkBehaviour
         }
         else if (grounded)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed.Value * 10f, ForceMode.Force);
         }
         else
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed.Value * 10f * airMultiplier, ForceMode.Force);
         }
 
         if (!OnSlope())
