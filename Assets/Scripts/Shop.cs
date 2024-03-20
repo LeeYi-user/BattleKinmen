@@ -154,6 +154,8 @@ public class Shop : NetworkBehaviour
     public void LevelUpgraded_ServerRpc(ulong objectId, string name, int level)
     {
         GameObject player = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
+        PlayerGun playerGun = player.GetComponent<Player>().playerWeapon.transform.GetChild(0).GetComponent<PlayerGun>();
+        PlayerKnife playerKnife = player.GetComponent<Player>().playerWeapon.transform.GetChild(1).GetComponent<PlayerKnife>();
 
         switch (name)
         {
@@ -168,11 +170,14 @@ public class Shop : NetworkBehaviour
             case "damage": // 需要更改 damage
                 break;
             case "ammo": // 需要更改 maxAmmo
-                player.GetComponent<Player>().playerWeapon.transform.GetChild(0).GetComponent<PlayerGun>().maxAmmo.Value += 2;
+                playerGun.maxAmmo.Value += 2;
                 break;
             case "attackSpeed": // 需要更改 fireRate 和 attackRate
+                playerGun.fireRate.Value += 0.5f / 2.5f;
+                playerKnife.attackRate.Value += 1.25f / 5f;
                 break;
             case "reloadSpeed": // 需要更改 reloadTime
+                playerGun.reloadTime.Value -= 0.1f;
                 break;
             case "caber": // 需要額外做技能
                 break;

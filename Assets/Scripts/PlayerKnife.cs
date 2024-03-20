@@ -5,17 +5,27 @@ using Unity.Netcode;
 
 public class PlayerKnife : NetworkBehaviour
 {
-    [SerializeField] private Camera fpsCam;
-    [SerializeField] private float range;
+    [SerializeField] private float range; // 2
     public NetworkVariable<float> damage = new NetworkVariable<float>(50f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> attackRate = new NetworkVariable<float>(1.25f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    [SerializeField] private Camera fpsCam;
     [SerializeField] private GameObject[] impactEffect;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Animator animator;
 
     private float nextTimeToAttack;
+
+    private void Start()
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        attackRate.OnValueChanged += UpdateAttackAnimSpeed;
+    }
 
     private void OnEnable()
     {
@@ -24,7 +34,13 @@ public class PlayerKnife : NetworkBehaviour
             return;
         }
 
+        UpdateAttackAnimSpeed(0, 0);
         animator.SetTrigger("reset");
+    }
+
+    private void UpdateAttackAnimSpeed(float previous, float current)
+    {
+        animator.SetFloat("attackAnimSpeed", attackRate.Value / 1.25f);
     }
 
     private void FixedUpdate()

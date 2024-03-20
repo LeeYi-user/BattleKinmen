@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class PlayerGun : NetworkBehaviour
 {
-    public NetworkVariable<float> damage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private float range; // 100
+    public NetworkVariable<float> damage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> fireRate = new NetworkVariable<float>(0.5f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> maxAmmo = new NetworkVariable<int>(5, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public ClientNetworkVariable<int> currentAmmo = new ClientNetworkVariable<int>(0);
@@ -32,16 +32,18 @@ public class PlayerGun : NetworkBehaviour
 
         maxAmmo.OnValueChanged += UpdateAmmo;
         currentAmmo.OnValueChanged += ShowAmmo;
+        fireRate.OnValueChanged += UpdateFireAnimSpeed;
+        reloadTime.OnValueChanged += UpdateReloadAnimSpeed;
     }
 
     private void UpdateAmmo(int previous, int current)
     {
-        if (isReloading)
+        if (!IsOwner || isReloading)
         {
             return;
         }
 
-        currentAmmo.Value = 0;
+        currentAmmo.Value += current - previous;
     }
 
     private void ShowAmmo()
@@ -61,6 +63,8 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
+        UpdateFireAnimSpeed(0, 0);
+        UpdateReloadAnimSpeed(0, 0);
         animator.SetTrigger("reset");
 
         isReloading = false;
@@ -70,6 +74,16 @@ public class PlayerGun : NetworkBehaviour
             StartCoroutine(Reload());
             return;
         }
+    }
+
+    private void UpdateFireAnimSpeed(float previous, float current)
+    {
+        animator.SetFloat("fireAnimSpeed", fireRate.Value / 0.5f);
+    }
+
+    private void UpdateReloadAnimSpeed(float previous, float current)
+    {
+        animator.SetFloat("reloadAnimSpeed", 1f / reloadTime.Value);
     }
 
     private void FixedUpdate()
