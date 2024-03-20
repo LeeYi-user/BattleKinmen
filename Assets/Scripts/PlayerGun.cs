@@ -41,7 +41,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        StartCoroutine(Reload());
+        currentAmmo.Value = 0;
     }
 
     private void ShowAmmo()

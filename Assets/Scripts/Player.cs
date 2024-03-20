@@ -16,9 +16,9 @@ public class Player : NetworkBehaviour
     [SerializeField] private CapsuleCollider bodyCollider;
     [SerializeField] private SkinnedMeshRenderer[] bodySkins;
 
-    [SerializeField] private PlayerWeapon playerWeapon;
-    [SerializeField] private PlayerCamera playerCamera;
-    [SerializeField] private PlayerMovement playerMovement;
+    public PlayerWeapon playerWeapon;
+    public PlayerCamera playerCamera;
+    public PlayerMovement playerMovement;
 
     private bool spawning = true;
 

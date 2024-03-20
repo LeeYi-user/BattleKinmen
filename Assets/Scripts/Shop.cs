@@ -168,6 +168,7 @@ public class Shop : NetworkBehaviour
             case "damage": // 需要更改 damage
                 break;
             case "ammo": // 需要更改 maxAmmo
+                player.GetComponent<Player>().playerWeapon.transform.GetChild(0).GetComponent<PlayerGun>().maxAmmo.Value += 2;
                 break;
             case "attackSpeed": // 需要更改 fireRate 和 attackRate
                 break;
