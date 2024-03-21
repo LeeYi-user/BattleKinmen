@@ -36,7 +36,7 @@ public class EnemySpawn : NetworkBehaviour
             enemyDamage = 26 + waves.Value * 4;
             enemies.Value = waves.Value * 10;
             leftToSpawn = enemies.Value;
-            leftForSpawn = 40;
+            leftForSpawn = enemies.Value;
             timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
             return;
         }
