@@ -2872,10 +2872,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4887348db03efe438d464eac0a3a3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fpsCam: {fileID: 4548373580233231170}
   range: 2
-  damage: 50
-  attackRate: 1.25
+  damage:
+    m_InternalValue: 50
+  attackRate:
+    m_InternalValue: 1.25
+  fpsCam: {fileID: 4548373580233231170}
   impactEffect:
   - {fileID: 1000012142692022, guid: a475880e7da0e9548aa05cb7933752cd, type: 3}
   - {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285, type: 3}
@@ -4106,9 +4108,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orientation: {fileID: 882260932156254348}
   gravity: -30
-  moveSpeed: 5
+  moveSpeed:
+    m_InternalValue: 5
   groundDrag: 5
-  jumpForce: 2
+  jumpForce:
+    m_InternalValue: 2
   jumpCooldown: 0.25
   airMultiplier: 0.4
   jumpKey: 32
@@ -4174,9 +4178,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 4268002248662545384}
-  maxHealth: 100
+  maxHealth:
+    m_InternalValue: 100
   currentHealth:
     m_InternalValue: 0
+  bulletproof:
+    m_InternalValue: 1
   minAltitude: -10
   bodyCollider: {fileID: 2018536490657055789}
   bodySkins:
@@ -6369,24 +6376,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be5e90695bc0f0a47898bbbff024b319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 30
   range: 100
-  fireRate: 0.5
+  damage:
+    m_InternalValue: 30
+  fireRate:
+    m_InternalValue: 0.5
+  maxAmmo:
+    m_InternalValue: 5
+  reloadTime:
+    m_InternalValue: 1
   fpsCam: {fileID: 4548373580233231170}
   muzzleFlash: {fileID: 4916185976115717958}
+  fakeMuzzleFlash: {fileID: 1333000955606032931}
   impactEffect:
   - {fileID: 1000012142692022, guid: a475880e7da0e9548aa05cb7933752cd, type: 3}
   - {fileID: 1000010191825552, guid: 83e55d3418297934fab882559d009285, type: 3}
-  maxAmmo: 5
-  reloadTime: 1
   audioSource: {fileID: 381878828213061017}
   audioClip: {fileID: 8300000, guid: a764377339b869e459f5e53fb9258f73, type: 3}
   animator: {fileID: 1494972039382797256}
-  BulletSpawnPoint: {fileID: 5082478284688209484}
-  BulletTrail: {fileID: 6082088667196707117, guid: 84077dac0b5c6f64fb7baa8d8751f7a5, type: 3}
-  BulletSpeed: 100
-  fakeMuzzleFlash: {fileID: 1333000955606032931}
-  fakeBulletSpawnPoint: {fileID: 1211080469475439401}
+  isFiring: 0
 --- !u!95 &1494972039382797256
 Animator:
   serializedVersion: 5

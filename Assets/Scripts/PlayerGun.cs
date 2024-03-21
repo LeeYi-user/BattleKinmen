@@ -20,6 +20,7 @@ public class PlayerGun : NetworkBehaviour
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Animator animator;
 
+    private bool isFiring;
     private bool isReloading;
     private float nextTimeToFire;
 
@@ -93,7 +94,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        if (isReloading)
+        if (isFiring || isReloading)
         {
             return;
         }
@@ -111,6 +112,12 @@ public class PlayerGun : NetworkBehaviour
         }
     }
 
+    public void FinishFiring()
+    {
+        isFiring = false;
+        animator.SetBool("isFiring", false);
+    }
+
     private IEnumerator Reload()
     {
         isReloading = true;
@@ -126,11 +133,12 @@ public class PlayerGun : NetworkBehaviour
 
     private void Shoot()
     {
+        isFiring = true;
         currentAmmo.Value--;
 
         muzzleFlash.Play();
         PlayFakeMuzzleFlash_ServerRpc();
-        animator.SetTrigger("isFiring");
+        animator.SetBool("isFiring", true);
         audioSource.PlayOneShot(audioClip);
         PlayFakeAudioSource_ServerRpc();
 
