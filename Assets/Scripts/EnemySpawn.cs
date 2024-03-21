@@ -56,7 +56,7 @@ public class EnemySpawn : NetworkBehaviour
 
         if (enemies.Value <= 0)
         {
-            MainSceneManager.Instance.breakTime.Value = 15.99f;
+            MainSceneManager.Instance.breakTime.Value = 20.99f;
             waves.Value++;
         }
     }
