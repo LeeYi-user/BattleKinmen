@@ -48,8 +48,14 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
+        moveSpeed.OnValueChanged += UpdateRunAnimSpeed;
         spawnPoint = MainSceneManager.Instance.playerSpawn;
         Despawn();
+    }
+
+    private void UpdateRunAnimSpeed(float previous, float current)
+    {
+        animator.SetFloat("runAnimSpeed", 1 + (moveSpeed.Value - 5f) / 1.25f * 0.125f);
     }
 
     private void Update()

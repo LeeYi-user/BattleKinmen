@@ -154,6 +154,7 @@ public class Shop : NetworkBehaviour
     public void LevelUpgraded_ServerRpc(ulong objectId, string name, int level)
     {
         GameObject player = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         PlayerGun playerGun = player.GetComponent<Player>().playerWeapon.transform.GetChild(0).GetComponent<PlayerGun>();
         PlayerKnife playerKnife = player.GetComponent<Player>().playerWeapon.transform.GetChild(1).GetComponent<PlayerKnife>();
 
@@ -162,8 +163,10 @@ public class Shop : NetworkBehaviour
             case "health": // 需要更改 maxHealth 和 currentHealth
                 break;
             case "movingSpeed": // 需要更改 moveSpeed
+                playerMovement.moveSpeed.Value += 5f / 4f;
                 break;
             case "jumpHeight": // 需要更改 jumpForce
+                playerMovement.jumpForce.Value += 2f / 4f;
                 break;
             case "bulletproof": // 需要更改 bulletproof
                 break;
