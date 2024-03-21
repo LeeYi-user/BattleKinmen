@@ -93,7 +93,6 @@ public class Enemy : NetworkBehaviour
         Destroy(gameObject, 2f);
 
         EnemySpawn.Instance.enemies.Value--;
-        EnemySpawn.Instance.leftForSpawn++;
     }
 
     public override void OnDestroy()
@@ -114,7 +113,6 @@ public class Enemy : NetworkBehaviour
         invading = true;
         MainSceneManager.Instance.currentDefense--;
         EnemySpawn.Instance.enemies.Value--;
-        EnemySpawn.Instance.leftForSpawn++;
         Destroy(gameObject);
     }
 

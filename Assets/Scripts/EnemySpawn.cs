@@ -16,7 +16,6 @@ public class EnemySpawn : NetworkBehaviour
     public float enemyDelay;
     public float enemyDamage;
     private int leftToSpawn;
-    public int leftForSpawn;
     private float timeLeft;
 
     private void Awake()
@@ -36,27 +35,25 @@ public class EnemySpawn : NetworkBehaviour
             enemyDamage = 26 + waves.Value * 4;
             enemies.Value = waves.Value * 10;
             leftToSpawn = enemies.Value;
-            leftForSpawn = enemies.Value;
-            timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
+            timeLeft = 0;
             return;
         }
 
         timeLeft -= Time.deltaTime;
 
-        if (leftToSpawn > 0 && leftForSpawn > 0 && timeLeft < 0)
+        if (leftToSpawn > 0 && timeLeft < 0)
         {
+            leftToSpawn--;
+            timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
             enemyHealth = Random.Range(1f, 30f + waves.Value * 5f);
 
             GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);
-            leftToSpawn--;
-            leftForSpawn--;
-            timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
         }
 
         if (enemies.Value <= 0)
         {
-            MainSceneManager.Instance.breakTime.Value = 20.99f;
+            MainSceneManager.Instance.breakTime.Value = 21f;
             waves.Value++;
         }
     }
