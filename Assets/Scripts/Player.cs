@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
     public Transform head;
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<float> bulletproof = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> bulletproof = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [SerializeField] private float minAltitude; // -10
     [SerializeField] private CapsuleCollider bodyCollider;
@@ -66,7 +66,7 @@ public class Player : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        currentHealth.Value -= damage / bulletproof.Value;
+        currentHealth.Value -= damage * (1f - bulletproof.Value);
     }
 
     [ClientRpc]

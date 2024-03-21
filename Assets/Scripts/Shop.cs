@@ -153,7 +153,7 @@ public class Shop : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void LevelUpgraded_ServerRpc(ulong objectId, string name, int level)
     {
-        GameObject player = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject;
+        Player player = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>();
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         PlayerGun playerGun = player.GetComponent<Player>().playerWeapon.transform.GetChild(0).GetComponent<PlayerGun>();
         PlayerKnife playerKnife = player.GetComponent<Player>().playerWeapon.transform.GetChild(1).GetComponent<PlayerKnife>();
@@ -161,6 +161,8 @@ public class Shop : NetworkBehaviour
         switch (name)
         {
             case "health": // 需要更改 maxHealth 和 currentHealth
+                player.maxHealth.Value += 25f;
+                player.currentHealth.Value += 25f;
                 break;
             case "movingSpeed": // 需要更改 moveSpeed
                 playerMovement.moveSpeed.Value += 5f / 4f;
@@ -169,8 +171,11 @@ public class Shop : NetworkBehaviour
                 playerMovement.jumpForce.Value += 2f / 4f;
                 break;
             case "bulletproof": // 需要更改 bulletproof
+                player.bulletproof.Value += 0.1f;
                 break;
             case "damage": // 需要更改 damage
+                playerGun.damage.Value += 15f;
+                playerKnife.damage.Value += 25f;
                 break;
             case "ammo": // 需要更改 maxAmmo
                 playerGun.maxAmmo.Value += 2;
@@ -191,12 +196,22 @@ public class Shop : NetworkBehaviour
             case "nuke": // 需要額外做技能
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
+                MainSceneManager.Instance.respawnCooldown -= 0.5f;
                 break;
             case "enemyDelay": // 需要更改 enemyDelay
+                EnemySpawn.Instance.enemyDelay += 0.1f;
                 break;
             case "cashBonus": // 需要更改 cashBonus
+                MainSceneManager.Instance.cashBonus += 0.1f;
                 break;
             case "mapDefense": // 需要更改 maxDefense 和 currentDefense
+                MainSceneManager.Instance.currentDefense += 1;
+
+                if (MainSceneManager.Instance.maxDefense < MainSceneManager.Instance.currentDefense)
+                {
+                    MainSceneManager.Instance.maxDefense = MainSceneManager.Instance.currentDefense;
+                }
+
                 break;
             default:
                 break;
