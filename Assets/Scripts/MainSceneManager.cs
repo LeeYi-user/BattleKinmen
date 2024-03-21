@@ -48,7 +48,7 @@ public class MainSceneManager : NetworkBehaviour
     public int currentDefense;
 
     [HideInInspector] public int start;
-    [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(15.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [HideInInspector] public bool gameover;
     [HideInInspector] public List<string> popups;
 

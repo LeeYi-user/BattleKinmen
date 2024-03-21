@@ -138,7 +138,7 @@ public class Enemy : NetworkBehaviour
             animator.SetTrigger("isFiring");
             PlayMuzzleFlash_ClientRpc();
             PlayAudioSource_ClientRpc();
-            player.GetComponent<Player>().TakeDamage(30f);
+            player.GetComponent<Player>().TakeDamage(EnemySpawn.Instance.enemyDamage);
 
             yield return new WaitForSeconds(0.8f);
 
