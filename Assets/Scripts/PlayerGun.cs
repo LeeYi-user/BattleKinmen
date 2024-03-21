@@ -68,6 +68,7 @@ public class PlayerGun : NetworkBehaviour
         UpdateReloadAnimSpeed(0, 0);
         animator.SetTrigger("reset");
 
+        isFiring = false;
         isReloading = false;
 
         if (currentAmmo.Value <= 0)

@@ -36,7 +36,7 @@ public class EnemySpawn : NetworkBehaviour
             enemyDamage = 26 + waves.Value * 4;
             enemies.Value = waves.Value * 10;
             leftToSpawn = enemies.Value;
-            leftForSpawn = enemies.Value / 2;
+            leftForSpawn = 40;
             timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
             return;
         }
@@ -45,7 +45,7 @@ public class EnemySpawn : NetworkBehaviour
 
         if (leftToSpawn > 0 && leftForSpawn > 0 && timeLeft < 0)
         {
-            enemyHealth = Random.Range(1f, 30f + waves.Value * 2.5f);
+            enemyHealth = Random.Range(1f, 30f + waves.Value * 5f);
 
             GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
             enemy.GetComponent<NetworkObject>().Spawn(true);
