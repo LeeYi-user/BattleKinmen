@@ -196,7 +196,7 @@ public class Shop : NetworkBehaviour
             case "nuke": // 需要額外做技能
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
-                MainSceneManager.Instance.respawnCooldown -= 0.5f;
+                MainSceneManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);
                 break;
             case "enemyDelay": // 需要更改 enemyDelay
                 EnemySpawn.Instance.enemyDelay += 0.1f;

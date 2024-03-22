@@ -63,6 +63,11 @@ public class PlayerCamera : NetworkBehaviour
 
     public void Spawn()
     {
+        if (MainSceneManager.Instance.gameover)
+        {
+            return;
+        }
+
         xRotation = 0;
         yRotation = 90;
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
