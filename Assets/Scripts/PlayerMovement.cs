@@ -211,6 +211,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         live = false;
         rb.constraints = RigidbodyConstraints.FreezeAll;
+        rb.MovePosition(new Vector3(100f, 50f, 125f));
     }
 
     public void Respawn()

@@ -14,8 +14,6 @@ public class PlayerCamera : NetworkBehaviour
     public float xRotation;
     public float yRotation;
 
-    private bool live;
-
     private void Start()
     {
         if (!IsOwner)
@@ -27,7 +25,6 @@ public class PlayerCamera : NetworkBehaviour
         }
 
         Billboard.cam = transform;
-        Despawn();
     }
 
     private void Update()
@@ -49,7 +46,7 @@ public class PlayerCamera : NetworkBehaviour
             return;
         }
 
-        if (!live || Cursor.lockState == CursorLockMode.None)
+        if (Cursor.lockState == CursorLockMode.None)
         {
             return;
         }
@@ -64,14 +61,8 @@ public class PlayerCamera : NetworkBehaviour
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
-    public void Despawn()
+    public void Spawn()
     {
-        live = false;
-    }
-
-    public void Respawn()
-    {
-        live = true;
         xRotation = 0;
         yRotation = 90;
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);

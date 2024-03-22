@@ -11,13 +11,14 @@ public class Player : NetworkBehaviour
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> bulletproof = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<bool> invincible = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [SerializeField] private float minAltitude; // -10
     [SerializeField] private CapsuleCollider bodyCollider;
     [SerializeField] private SkinnedMeshRenderer[] bodySkins;
 
-    public PlayerWeapon playerWeapon;
     public PlayerCamera playerCamera;
+    public PlayerWeapon playerWeapon;
     public PlayerMovement playerMovement;
 
     private bool spawning = true;
@@ -32,6 +33,7 @@ public class Player : NetworkBehaviour
         }
 
         currentHealth.OnValueChanged += ShowHealth;
+        invincible.OnValueChanged += ChangeHealth;
     }
 
     private void ShowHealth(float previous, float current)
@@ -41,6 +43,18 @@ public class Player : NetworkBehaviour
         for (int i = 0; i < currentHealth.Value; i += 10)
         {
             MainSceneManager.Instance.healthBar.text += "|";
+        }
+    }
+
+    private void ChangeHealth(bool previous, bool current)
+    {
+        if (invincible.Value)
+        {
+            MainSceneManager.Instance.healthBar.color = Color.yellow;
+        }
+        else
+        {
+            MainSceneManager.Instance.healthBar.color = Color.green;
         }
     }
 
@@ -66,6 +80,11 @@ public class Player : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (invincible.Value)
+        {
+            return;
+        }
+
         currentHealth.Value -= damage * (1f - bulletproof.Value);
     }
 
@@ -80,8 +99,8 @@ public class Player : NetworkBehaviour
             MainSceneManager.Instance.deathScreen.SetActive(true);
             MainSceneManager.Instance.deathMessage.text = msg;
 
+            playerCamera.Spawn();
             playerWeapon.Despawn();
-            playerCamera.Despawn();
             playerMovement.Despawn();
         }
         else
@@ -103,6 +122,7 @@ public class Player : NetworkBehaviour
         }
 
         currentHealth.Value = maxHealth.Value;
+        invincible.Value = true;
 
         PlayerRespawn_ClientRpc();
     }
@@ -117,8 +137,8 @@ public class Player : NetworkBehaviour
             MainSceneManager.Instance.crosshair.SetActive(true);
             MainSceneManager.Instance.deathScreen.SetActive(false);
 
+            playerCamera.Spawn();
             playerWeapon.Respawn();
-            playerCamera.Respawn();
             playerMovement.Respawn();
             FinishSpawning_ServerRpc();
         }
@@ -141,5 +161,7 @@ public class Player : NetworkBehaviour
     {
         yield return new WaitUntil(() => transform.position.y >= minAltitude);
         spawning = false;
+        yield return new WaitForSeconds(3f);
+        invincible.Value = false;
     }
 }
