@@ -63,8 +63,9 @@ public class PlayerKnife : NetworkBehaviour
 
         RaycastHit hit;
         int MadeImpact = 0;
+        int layerMasks = 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemy");
 
-        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
+        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range, layerMasks))
         {
             MadeImpact = 1;
 

@@ -32,15 +32,15 @@ public class Cash : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        body.SetActive(false);
-
-        if (!IsHost)
-        {
-            return;
-        }
-
         if (other.transform.CompareTag("Player"))
         {
+            body.SetActive(false);
+
+            if (!IsHost)
+            {
+                return;
+            }
+
             Shop.Instance.teamCash.Value += (int)(100 * MainSceneManager.Instance.cashBonus);
             Destroy(gameObject);
         }

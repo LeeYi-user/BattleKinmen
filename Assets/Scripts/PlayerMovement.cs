@@ -189,11 +189,11 @@ public class PlayerMovement : NetworkBehaviour
         //Debug.DrawRay(orientation.position + Vector3.up * 0.3f, Vector3.right * 0.6f, Color.green);
         //Debug.DrawRay(orientation.position, Vector3.down * 0.3f, Color.green);
 
-        if (grounded && (Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.forward, out slopeHit, 0.6f) ||
-                         Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.back, out slopeHit, 0.6f) ||
-                         Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.left, out slopeHit, 0.6f) ||
-                         Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.right, out slopeHit, 0.6f) ||
-                         Physics.Raycast(orientation.position, Vector3.down, out slopeHit, 0.3f)))
+        if (grounded && (Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.forward, out slopeHit, 0.6f, whatIsGround) ||
+                         Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.back, out slopeHit, 0.6f, whatIsGround) ||
+                         Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.left, out slopeHit, 0.6f, whatIsGround) ||
+                         Physics.Raycast(orientation.position + Vector3.up * 0.3f, Vector3.right, out slopeHit, 0.6f, whatIsGround) ||
+                         Physics.Raycast(orientation.position, Vector3.down, out slopeHit, 0.3f, whatIsGround)))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;

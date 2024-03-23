@@ -15,6 +15,7 @@ public class PlayerWeapon : NetworkBehaviour
     [SerializeField] private Animator animator;
 
     [SerializeField] private GameObject grenade;
+    [SerializeField] private GameObject landmine;
 
     public bool live;
 
@@ -51,10 +52,16 @@ public class PlayerWeapon : NetworkBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             Transform playerCamera = NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.transform;
             LaunchGrenade_ServerRpc(playerCamera.position, playerCamera.forward, playerCamera.right);
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Transform playerCamera = NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.transform;
+            PlaceLandmine_ServerRpc(playerCamera.position);
         }
     }
 
@@ -65,6 +72,18 @@ public class PlayerWeapon : NetworkBehaviour
         grenadeGO.GetComponent<Grenade>().forceAxis = zAxis;
         grenadeGO.GetComponent<Grenade>().rotateAxis = xAxis;
         grenadeGO.GetComponent<NetworkObject>().Spawn(true);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlaceLandmine_ServerRpc(Vector3 pos)
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(pos, Vector3.down, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
+        {
+            GameObject landmineGO = Instantiate(landmine, hit.point, Quaternion.Euler(-90f, 0f, Random.Range(0f, 360f)));
+            landmineGO.GetComponent<NetworkObject>().Spawn(true);
+        }
     }
 
     public void SelectWeapon()
