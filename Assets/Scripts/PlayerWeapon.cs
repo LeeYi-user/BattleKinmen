@@ -14,6 +14,8 @@ public class PlayerWeapon : NetworkBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private Animator animator;
 
+    [SerializeField] private GameObject grenade;
+
     public bool live;
 
     private void Start()
@@ -48,6 +50,21 @@ public class PlayerWeapon : NetworkBehaviour
                 selectedWeapon.Value++;
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Transform playerCamera = NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.transform;
+            LaunchGrenade_ServerRpc(playerCamera.position, playerCamera.forward, playerCamera.right);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void LaunchGrenade_ServerRpc(Vector3 pos, Vector3 zAxis, Vector3 xAxis)
+    {
+        GameObject grenadeGO = Instantiate(grenade, pos, Random.rotation);
+        grenadeGO.GetComponent<Grenade>().forceAxis = zAxis;
+        grenadeGO.GetComponent<Grenade>().rotateAxis = xAxis;
+        grenadeGO.GetComponent<NetworkObject>().Spawn(true);
     }
 
     public void SelectWeapon()

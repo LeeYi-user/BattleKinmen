@@ -187,7 +187,7 @@ public class Shop : NetworkBehaviour
             case "reloadSpeed": // 需要更改 reloadTime
                 playerGun.reloadTime.Value -= 0.1f;
                 break;
-            case "caber": // 需要額外做技能
+            case "grenade": // 需要額外做技能
                 break;
             case "landmine": // 需要額外做技能
                 break;
