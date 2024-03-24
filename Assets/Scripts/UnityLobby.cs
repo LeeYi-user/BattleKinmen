@@ -285,7 +285,7 @@ public class UnityLobby : MonoBehaviour
                     "status", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, status)
                 },
                 {
-                    "class", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.Instance.classes[SampleSceneManager.playerClass])
+                    "class", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, SampleSceneManager.classes[SampleSceneManager.playerClass])
                 }
             }
         };

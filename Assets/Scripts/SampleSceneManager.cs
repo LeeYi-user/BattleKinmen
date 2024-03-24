@@ -38,7 +38,7 @@ public class SampleSceneManager : MonoBehaviour
     public Slider volumeSlider;
     public Slider progressSlider;
 
-    public string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
+    public static string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
     public static string playerName = "玩家";
     public static int playerClass = 0;
 

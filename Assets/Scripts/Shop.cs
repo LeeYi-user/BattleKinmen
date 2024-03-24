@@ -13,9 +13,9 @@ public class Shop : NetworkBehaviour
     [HideInInspector] public ClientNetworkVariable<int> cashSpent = new ClientNetworkVariable<int>(0);
 
     public GameObject shopMenu;
-    public GameObject[] categories;
-    public GameObject[] areas;
-    public ShopItem[] shopItems;
+    public List<GameObject> categories;
+    public List<GameObject> areas;
+    public List<ShopItem> shopItems;
     public TextMeshProUGUI cashCounter;
     public Button backButton;
 
@@ -51,6 +51,16 @@ public class Shop : NetworkBehaviour
             shopItem.upgradeButton.onClick.AddListener(() => { UpgradeButtonClick(index, shopItem); });
             shopItem.levelSlider.onValueChanged.AddListener(delegate { LevelUpgraded(shopItem); });
             j++;
+        }
+
+        categories[2].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = SampleSceneManager.classes[SampleSceneManager.playerClass].Substring(0, 2);
+
+        for (int k = 0; k < 3; k++)
+        {
+            if (k != SampleSceneManager.playerClass)
+            {
+                areas.RemoveAt(k + 2 - (6 - areas.Count));
+            }
         }
     }
 
@@ -135,7 +145,7 @@ public class Shop : NetworkBehaviour
 
         if (shopItem.levelSlider.value < shopItem.levelSlider.maxValue)
         {
-            if (index < 8)
+            if (index < 20)
             {
                 shopItem.price += 200;
             }
@@ -194,13 +204,41 @@ public class Shop : NetworkBehaviour
             case "reloadSpeed": // 需要更改 reloadTime
                 playerGun.reloadTime.Value -= 0.1f;
                 break;
-            case "grenade": // 需要額外做技能
+            case "grenadeCooldown": // 需要額外做技能
+                Debug.Log(name);
                 break;
-            case "landmine": // 需要額外做技能
+            case "grenadeRange": // 需要額外做技能
+                Debug.Log(name);
                 break;
-            case "heal": // 需要額外做技能
+            case "grenadeDamage": // 需要額外做技能
+                Debug.Log(name);
                 break;
-            case "nuke": // 需要額外做技能
+            case "grenadeDistance": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "landmineCooldown": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "landmineRange": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "landmineDamage": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "landmineLife": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "healCooldown": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "healRange": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "healAmount": // 需要額外做技能
+                Debug.Log(name);
+                break;
+            case "healInv": // 需要額外做技能
+                Debug.Log(name);
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
                 MainSceneManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);
