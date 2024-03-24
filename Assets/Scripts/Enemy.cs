@@ -31,7 +31,7 @@ public class Enemy : NetworkBehaviour
 
     private void Start()
     {
-        audioSource.volume = SampleSceneManager.Instance.volume;
+        audioSource.volume = SampleSceneManager.volume;
 
         if (!IsHost)
         {

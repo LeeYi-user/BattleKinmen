@@ -87,7 +87,7 @@ public class UnityLobby : MonoBehaviour
 
             if (SampleSceneManager.start == 2)
             {
-                if (joinedLobby.Data["state"].Value == "started")
+                if (joinedLobby.Data["code"].Value != "")
                 {
                     SampleSceneManager.start = 3;
                     UnityRelay.Instance.JoinRelay(joinedLobby.Data["code"].Value);

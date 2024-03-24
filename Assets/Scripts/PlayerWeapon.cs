@@ -21,7 +21,7 @@ public class PlayerWeapon : NetworkBehaviour
 
     private void Start()
     {
-        audioSource.volume = SampleSceneManager.Instance.volume;
+        audioSource.volume = SampleSceneManager.volume;
 
         if (!IsOwner)
         {

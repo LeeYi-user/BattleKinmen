@@ -45,8 +45,8 @@ public class SampleSceneManager : MonoBehaviour
     public string selectedLobbyId;
     public string selectedPlayerId;
 
-    public float sens;
-    public float volume;
+    public static float sens = 0.25f;
+    public static float volume = 0.25f;
 
     private float lobbyQueryTimer;
 
@@ -220,7 +220,7 @@ public class SampleSceneManager : MonoBehaviour
     {
         start = 3;
         StartCoroutine(UnityLobby.Instance.LoadSceneAsync("MainScene"));
-        UnityLobby.Instance.UpdateLobbyState("starting");
+        UnityLobby.Instance.UpdateLobbyState("started");
     }
 
     public void RoomerMenuQuitButtonClick()
