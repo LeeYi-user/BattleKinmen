@@ -211,6 +211,12 @@ public class PlayerMovement : NetworkBehaviour
     {
         live = false;
         rb.constraints = RigidbodyConstraints.FreezeAll;
+
+        if (MainSceneManager.Instance.gameover)
+        {
+            return;
+        }
+
         rb.MovePosition(new Vector3(100f, 50f, 125f));
     }
 

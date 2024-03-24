@@ -63,6 +63,12 @@ public class PlayerWeapon : NetworkBehaviour
             Transform playerCamera = NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.transform;
             PlaceLandmine_ServerRpc(playerCamera.position);
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Vector3 playerPosition = NetworkManager.LocalClient.PlayerObject.transform.position;
+            HealPlayers_ServerRpc(playerPosition);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -83,6 +89,19 @@ public class PlayerWeapon : NetworkBehaviour
         {
             GameObject landmineGO = Instantiate(landmine, hit.point, Quaternion.Euler(-90f, 0f, Random.Range(0f, 360f)));
             landmineGO.GetComponent<NetworkObject>().Spawn(true);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void HealPlayers_ServerRpc(Vector3 pos)
+    {
+        Collider[] colliders = Physics.OverlapSphere(pos, 6f, 1 << LayerMask.NameToLayer("Player"));
+
+        foreach (Collider collider in colliders)
+        {
+            Player player = collider.transform.parent.GetComponent<Player>();
+            player.currentHealth.Value = Mathf.Min(player.currentHealth.Value + 50, player.maxHealth.Value);
+            player.invTime.Value += 1f;
         }
     }
 

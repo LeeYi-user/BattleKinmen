@@ -11,7 +11,7 @@ public class Player : NetworkBehaviour
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> currentHealth = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<float> bulletproof = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<bool> invincible = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<float> invTime = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [SerializeField] private float minAltitude; // -10
     [SerializeField] private CapsuleCollider bodyCollider;
@@ -33,7 +33,7 @@ public class Player : NetworkBehaviour
         }
 
         currentHealth.OnValueChanged += ShowHealth;
-        invincible.OnValueChanged += ChangeHealth;
+        invTime.OnValueChanged += ChangeHealth;
     }
 
     private void ShowHealth(float previous, float current)
@@ -46,9 +46,9 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void ChangeHealth(bool previous, bool current)
+    private void ChangeHealth(float previous, float current)
     {
-        if (invincible.Value)
+        if (invTime.Value > 0f)
         {
             MainSceneManager.Instance.healthBar.color = Color.yellow;
         }
@@ -63,6 +63,11 @@ public class Player : NetworkBehaviour
         if (!IsHost || spawning)
         {
             return;
+        }
+
+        if (invTime.Value > 0)
+        {
+            invTime.Value -= Time.deltaTime;
         }
 
         if (transform.position.y < minAltitude)
@@ -80,7 +85,7 @@ public class Player : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (invincible.Value)
+        if (invTime.Value > 0f)
         {
             return;
         }
@@ -122,7 +127,7 @@ public class Player : NetworkBehaviour
         }
 
         currentHealth.Value = maxHealth.Value;
-        invincible.Value = true;
+        invTime.Value = 3f;
 
         PlayerRespawn_ClientRpc();
     }
@@ -161,7 +166,5 @@ public class Player : NetworkBehaviour
     {
         yield return new WaitUntil(() => transform.position.y >= minAltitude);
         spawning = false;
-        yield return new WaitForSeconds(3f);
-        invincible.Value = false;
     }
 }
