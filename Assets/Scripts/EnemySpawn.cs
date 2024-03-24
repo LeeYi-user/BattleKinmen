@@ -23,6 +23,13 @@ public class EnemySpawn : NetworkBehaviour
         Instance = this;
     }
 
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        Instance = null;
+    }
+
     private void Update()
     {
         if (!IsHost)

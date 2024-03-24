@@ -24,6 +24,13 @@ public class Shop : NetworkBehaviour
         Instance = this;
     }
 
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        Instance = null;
+    }
+
     private void Start()
     {
         int i = 0;

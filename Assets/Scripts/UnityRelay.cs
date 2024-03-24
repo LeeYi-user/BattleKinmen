@@ -17,6 +17,11 @@ public class UnityRelay : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
+
     public async void CreateRelay(int maxPlayers)
     {
         try

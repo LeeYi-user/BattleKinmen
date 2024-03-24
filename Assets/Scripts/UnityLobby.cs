@@ -25,6 +25,11 @@ public class UnityLobby : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
+
     private void Update()
     {
         HandleHeartbeatTimer();

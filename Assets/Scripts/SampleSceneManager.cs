@@ -57,6 +57,11 @@ public class SampleSceneManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
+
     private void Start()
     {
         lobbyMenuPlayerNameInput.text = playerName;

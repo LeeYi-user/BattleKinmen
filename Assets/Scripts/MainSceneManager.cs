@@ -64,6 +64,13 @@ public class MainSceneManager : NetworkBehaviour
         Instance = this;
     }
 
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        Instance = null;
+    }
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
