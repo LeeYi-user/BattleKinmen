@@ -164,16 +164,16 @@ public class Shop : NetworkBehaviour
 
     public void LevelUpgraded(ShopItem shopItem)
     {
-        LevelUpgraded_ServerRpc(NetworkManager.LocalClient.PlayerObject.NetworkObjectId, shopItem.name, (int)shopItem.levelSlider.value);
+        LevelUpgraded_ServerRpc(NetworkManager.LocalClient.PlayerObject.NetworkObjectId, shopItem.name);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void LevelUpgraded_ServerRpc(ulong objectId, string name, int level)
+    public void LevelUpgraded_ServerRpc(ulong objectId, string name)
     {
-        Player player = NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>();
+        Player player = NetworkManager.SpawnManager.SpawnedObjects[objectId].GetComponent<Player>();
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
-        PlayerGun playerGun = player.GetComponent<Player>().playerWeapon.transform.GetChild(0).GetComponent<PlayerGun>();
-        PlayerKnife playerKnife = player.GetComponent<Player>().playerWeapon.transform.GetChild(1).GetComponent<PlayerKnife>();
+        PlayerGun playerGun = player.playerWeapon.transform.GetChild(0).GetComponent<PlayerGun>();
+        PlayerKnife playerKnife = player.playerWeapon.transform.GetChild(1).GetComponent<PlayerKnife>();
 
         switch (name)
         {
@@ -205,40 +205,40 @@ public class Shop : NetworkBehaviour
                 playerGun.reloadTime.Value -= 0.1f;
                 break;
             case "grenadeCooldown": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.grenadeCooldown.Value -= 2.5f;
                 break;
             case "grenadeRange": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.grenadeRange.Value += 0.75f;
                 break;
             case "grenadeDamage": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.grenadeDamage.Value += 15f;
                 break;
             case "grenadeDistance": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.grenadeDistance.Value += 175f;
                 break;
             case "landmineCooldown": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.landmineCooldown.Value -= 5f;
                 break;
             case "landmineRange": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.landmineRange.Value += 0.75f;
                 break;
             case "landmineDamage": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.landmineDamage.Value += 15f;
                 break;
             case "landmineLife": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.landmineLife.Value += 5f;
                 break;
             case "healCooldown": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.healCooldown.Value -= 7.5f;
                 break;
             case "healRange": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.healRange.Value += 1.5f;
                 break;
             case "healAmount": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.healAmount.Value += 25f;
                 break;
             case "healInv": // 需要額外做技能
-                Debug.Log(name);
+                player.playerWeapon.healInv.Value += 1f;
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
                 MainSceneManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);

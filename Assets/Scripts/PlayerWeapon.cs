@@ -17,7 +17,24 @@ public class PlayerWeapon : NetworkBehaviour
     [SerializeField] private GameObject grenade;
     [SerializeField] private GameObject landmine;
 
+    public NetworkVariable<float> grenadeCooldown = new NetworkVariable<float>(15f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -2.5
+    public NetworkVariable<float> grenadeRange = new NetworkVariable<float>(4f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.75
+    public NetworkVariable<float> grenadeDamage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +15
+    public NetworkVariable<float> grenadeDistance = new NetworkVariable<float>(700f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +175
+
+    public NetworkVariable<float> landmineCooldown = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -5
+    public NetworkVariable<float> landmineRange = new NetworkVariable<float>(4f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.75
+    public NetworkVariable<float> landmineDamage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +15
+    public NetworkVariable<float> landmineLife = new NetworkVariable<float>(20f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +5
+
+    public NetworkVariable<float> healCooldown = new NetworkVariable<float>(60f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -7.5
+    public NetworkVariable<float> healRange = new NetworkVariable<float>(6f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +1.5
+    public NetworkVariable<float> healAmount = new NetworkVariable<float>(50f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +25
+    public NetworkVariable<float> healInv = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +1
+
     public bool live;
+
+    private float cooldown;
 
     private void Start()
     {
@@ -35,7 +52,17 @@ public class PlayerWeapon : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || !live)
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        if (cooldown > 0)
+        {
+            cooldown -= Time.deltaTime;
+        }
+
+        if (!live)
         {
             return;
         }
@@ -52,22 +79,33 @@ public class PlayerWeapon : NetworkBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (cooldown > 0)
         {
-            Transform playerCamera = NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.transform;
-            LaunchGrenade_ServerRpc(playerCamera.position, playerCamera.forward, playerCamera.right);
+            return;
         }
 
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            Transform playerCamera = NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.transform;
-            PlaceLandmine_ServerRpc(playerCamera.position);
-        }
+            Transform player = NetworkManager.LocalClient.PlayerObject.transform;
+            Transform playerCamera = player.GetComponent<Player>().playerCamera.transform;
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            Vector3 playerPosition = NetworkManager.LocalClient.PlayerObject.transform.position;
-            HealPlayers_ServerRpc(playerPosition);
+            switch (SampleSceneManager.playerClass)
+            {
+                case 0:
+                    cooldown = grenadeCooldown.Value;
+                    LaunchGrenade_ServerRpc(playerCamera.position, playerCamera.forward, playerCamera.right);
+                    break;
+                case 1:
+                    cooldown = landmineCooldown.Value;
+                    PlaceLandmine_ServerRpc(playerCamera.position);
+                    break;
+                case 2:
+                    cooldown = healCooldown.Value;
+                    HealPlayers_ServerRpc(player.position);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -77,6 +115,9 @@ public class PlayerWeapon : NetworkBehaviour
         GameObject grenadeGO = Instantiate(grenade, pos, Random.rotation);
         grenadeGO.GetComponent<Grenade>().forceAxis = zAxis;
         grenadeGO.GetComponent<Grenade>().rotateAxis = xAxis;
+        grenadeGO.GetComponent<Grenade>().force = grenadeDistance.Value;
+        grenadeGO.GetComponent<Grenade>().explosionRange = grenadeRange.Value;
+        grenadeGO.GetComponent<Grenade>().explosionDamage = grenadeDamage.Value;
         grenadeGO.GetComponent<NetworkObject>().Spawn(true);
     }
 
@@ -88,6 +129,9 @@ public class PlayerWeapon : NetworkBehaviour
         if (Physics.Raycast(pos, Vector3.down, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
         {
             GameObject landmineGO = Instantiate(landmine, hit.point, Quaternion.Euler(-90f, 0f, Random.Range(0f, 360f)));
+            landmineGO.GetComponent<Landmine>().lifetime = landmineLife.Value;
+            landmineGO.GetComponent<Landmine>().explosionRange = landmineRange.Value;
+            landmineGO.GetComponent<Landmine>().explosionDamage = landmineDamage.Value;
             landmineGO.GetComponent<NetworkObject>().Spawn(true);
         }
     }
@@ -95,13 +139,13 @@ public class PlayerWeapon : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void HealPlayers_ServerRpc(Vector3 pos)
     {
-        Collider[] colliders = Physics.OverlapSphere(pos, 6f, 1 << LayerMask.NameToLayer("Player"));
+        Collider[] colliders = Physics.OverlapSphere(pos, healRange.Value, 1 << LayerMask.NameToLayer("Player"));
 
         foreach (Collider collider in colliders)
         {
             Player player = collider.transform.parent.GetComponent<Player>();
-            player.currentHealth.Value = Mathf.Min(player.currentHealth.Value + 50, player.maxHealth.Value);
-            player.invTime.Value += 1f;
+            player.currentHealth.Value = Mathf.Min(player.currentHealth.Value + healAmount.Value, player.maxHealth.Value);
+            player.invTime.Value += healInv.Value;
         }
     }
 

@@ -12,6 +12,10 @@ public class Grenade : NetworkBehaviour
     public Vector3 forceAxis;
     public Vector3 rotateAxis;
 
+    public float force;
+    public float explosionRange;
+    public float explosionDamage;
+
     void Start()
     {
         if (!IsHost)
@@ -19,7 +23,7 @@ public class Grenade : NetworkBehaviour
             return;
         }
 
-        rb.AddForce(forceAxis * 1000f, ForceMode.Force);
+        rb.AddForce(forceAxis * force, ForceMode.Force);
     }
 
     void FixedUpdate()
@@ -43,11 +47,11 @@ public class Grenade : NetworkBehaviour
 
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Ground")
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, 6f, 1 << LayerMask.NameToLayer("Enemy"));
+            Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRange, 1 << LayerMask.NameToLayer("Enemy"));
 
             foreach (Collider collider in colliders)
             {
-                collider.GetComponent<Enemy>().TakeDamage(100f);
+                collider.GetComponent<Enemy>().TakeDamage(explosionDamage);
             }
 
             GameObject explosionGO = Instantiate(explosion, transform.position, Quaternion.identity);
