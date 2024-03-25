@@ -66,7 +66,7 @@ public class Shop : NetworkBehaviour
 
     private void Update()
     {
-        if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
+        if (MainSceneManager.Instance.start < 2 || MainSceneManager.gameover || MainSceneManager.disconnecting)
         {
             return;
         }

@@ -37,7 +37,7 @@ public class EnemySpawn : NetworkBehaviour
             return;
         }
 
-        if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
+        if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.gameover || MainSceneManager.disconnecting)
         {
             enemyDamage = 30 + waves.Value * 5;
             enemies.Value = waves.Value * 10;

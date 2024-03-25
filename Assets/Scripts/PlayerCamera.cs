@@ -63,7 +63,7 @@ public class PlayerCamera : NetworkBehaviour
 
     public void Spawn()
     {
-        if (MainSceneManager.Instance.gameover)
+        if (MainSceneManager.gameover)
         {
             return;
         }

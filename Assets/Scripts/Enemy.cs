@@ -49,7 +49,7 @@ public class Enemy : NetworkBehaviour
             return;
         }
 
-        if (MainSceneManager.Instance.gameover)
+        if (MainSceneManager.gameover)
         {
             destroying = true;
             Destroy(gameObject);
@@ -99,7 +99,7 @@ public class Enemy : NetworkBehaviour
     {
         base.OnDestroy();
 
-        if (!IsHost || invading || MainSceneManager.Instance.gameover || MainSceneManager.disconnecting)
+        if (!IsHost || invading || MainSceneManager.gameover || MainSceneManager.disconnecting)
         {
             return;
         }

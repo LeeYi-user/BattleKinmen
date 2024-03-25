@@ -49,7 +49,6 @@ public class MainSceneManager : NetworkBehaviour
 
     [HideInInspector] public int start;
     [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(20.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [HideInInspector] public bool gameover;
     [HideInInspector] public List<string> popups;
 
     private int phase;
@@ -57,11 +56,13 @@ public class MainSceneManager : NetworkBehaviour
     private float timeLeft;
     private Color targetColor = new Color(1, 1, 1, 0);
 
+    public static bool gameover;
     public static bool disconnecting;
 
     private void Awake()
     {
         Instance = this;
+        gameover = false;
     }
 
     public override void OnDestroy()
