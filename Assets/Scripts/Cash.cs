@@ -24,7 +24,7 @@ public class Cash : NetworkBehaviour
             return;
         }
 
-        if (MainSceneManager.gameover || (MainSceneManager.Instance.breakTime.Value < 1f && MainSceneManager.Instance.breakTime.Value > 0f))
+        if (MainSceneManager.gameover)
         {
             Destroy(gameObject);
         }

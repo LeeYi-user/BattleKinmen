@@ -205,22 +205,22 @@ public class Shop : NetworkBehaviour
                 playerGun.reloadTime.Value -= 0.1f;
                 break;
             case "grenadeCooldown": // 需要額外做技能
-                player.playerWeapon.grenadeCooldown.Value -= 2.5f;
+                player.playerWeapon.grenadeCooldown.Value -= 2f;
                 break;
             case "grenadeRange": // 需要額外做技能
-                player.playerWeapon.grenadeRange.Value += 0.75f;
+                player.playerWeapon.grenadeRange.Value += 0.25f;
                 break;
             case "grenadeDamage": // 需要額外做技能
                 player.playerWeapon.grenadeDamage.Value += 15f;
                 break;
             case "grenadeDistance": // 需要額外做技能
-                player.playerWeapon.grenadeDistance.Value += 175f;
+                player.playerWeapon.grenadeDistance.Value += 100f;
                 break;
             case "landmineCooldown": // 需要額外做技能
-                player.playerWeapon.landmineCooldown.Value -= 5f;
+                player.playerWeapon.landmineCooldown.Value -= 2f;
                 break;
             case "landmineRange": // 需要額外做技能
-                player.playerWeapon.landmineRange.Value += 0.75f;
+                player.playerWeapon.landmineRange.Value += 0.25f;
                 break;
             case "landmineDamage": // 需要額外做技能
                 player.playerWeapon.landmineDamage.Value += 15f;
@@ -229,7 +229,7 @@ public class Shop : NetworkBehaviour
                 player.playerWeapon.landmineLife.Value += 5f;
                 break;
             case "healCooldown": // 需要額外做技能
-                player.playerWeapon.healCooldown.Value -= 7.5f;
+                player.playerWeapon.healCooldown.Value -= 5f;
                 break;
             case "healRange": // 需要額外做技能
                 player.playerWeapon.healRange.Value += 1.5f;
@@ -238,7 +238,7 @@ public class Shop : NetworkBehaviour
                 player.playerWeapon.healAmount.Value += 25f;
                 break;
             case "healInv": // 需要額外做技能
-                player.playerWeapon.healInv.Value += 1f;
+                player.playerWeapon.healInv.Value += 0.5f;
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
                 MainSceneManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);

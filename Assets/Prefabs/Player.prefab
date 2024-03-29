@@ -359,6 +359,30 @@ MonoBehaviour:
   animator: {fileID: 4298338301654596385}
   grenade: {fileID: 2307821352900391274, guid: 720e1cbfca0ab9e4980128961d92fa03, type: 3}
   landmine: {fileID: 7531426962167355116, guid: ff489c4e5aa6f75409c129fe30c017f3, type: 3}
+  grenadeCooldown:
+    m_InternalValue: 10
+  grenadeRange:
+    m_InternalValue: 5
+  grenadeDamage:
+    m_InternalValue: 30
+  grenadeDistance:
+    m_InternalValue: 900
+  landmineCooldown:
+    m_InternalValue: 10
+  landmineRange:
+    m_InternalValue: 5
+  landmineDamage:
+    m_InternalValue: 30
+  landmineLife:
+    m_InternalValue: 20
+  healCooldown:
+    m_InternalValue: 30
+  healRange:
+    m_InternalValue: 6
+  healAmount:
+    m_InternalValue: 50
+  healInv:
+    m_InternalValue: 1
   live: 0
 --- !u!82 &381878828213061017
 AudioSource:
@@ -4186,7 +4210,7 @@ MonoBehaviour:
     m_InternalValue: 0
   bulletproof:
     m_InternalValue: 0
-  invincible:
+  invTime:
     m_InternalValue: 0
   minAltitude: -10
   bodyCollider: {fileID: 2018536490657055789}

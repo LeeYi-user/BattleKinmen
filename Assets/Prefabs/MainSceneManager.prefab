@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2744582949
+  GlobalObjectIdHash: 404086404
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -84,11 +84,12 @@ MonoBehaviour:
   gameoverMessage: {fileID: 0}
   popup: {fileID: 0}
   playerSpawn: {fileID: 0}
-  mapHealth: 0
-  teamCash:
-    m_InternalValue: 0
+  enemyTarget: {fileID: 0}
+  respawnCooldown: 0
+  cashBonus: 0
+  maxDefense: 0
+  currentDefense: 0
   start: 0
   breakTime:
     m_InternalValue: 30.99
-  gameover: 0
   popups: []

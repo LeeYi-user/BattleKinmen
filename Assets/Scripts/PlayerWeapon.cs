@@ -17,20 +17,20 @@ public class PlayerWeapon : NetworkBehaviour
     [SerializeField] private GameObject grenade;
     [SerializeField] private GameObject landmine;
 
-    public NetworkVariable<float> grenadeCooldown = new NetworkVariable<float>(15f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -2.5
-    public NetworkVariable<float> grenadeRange = new NetworkVariable<float>(4f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.75
+    public NetworkVariable<float> grenadeCooldown = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -2
+    public NetworkVariable<float> grenadeRange = new NetworkVariable<float>(5f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.25
     public NetworkVariable<float> grenadeDamage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +15
-    public NetworkVariable<float> grenadeDistance = new NetworkVariable<float>(700f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +175
+    public NetworkVariable<float> grenadeDistance = new NetworkVariable<float>(900f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +100
 
-    public NetworkVariable<float> landmineCooldown = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -5
-    public NetworkVariable<float> landmineRange = new NetworkVariable<float>(4f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.75
+    public NetworkVariable<float> landmineCooldown = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -2
+    public NetworkVariable<float> landmineRange = new NetworkVariable<float>(5f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.25
     public NetworkVariable<float> landmineDamage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +15
     public NetworkVariable<float> landmineLife = new NetworkVariable<float>(20f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +5
 
-    public NetworkVariable<float> healCooldown = new NetworkVariable<float>(60f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -7.5
+    public NetworkVariable<float> healCooldown = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -5
     public NetworkVariable<float> healRange = new NetworkVariable<float>(6f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +1.5
     public NetworkVariable<float> healAmount = new NetworkVariable<float>(50f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +25
-    public NetworkVariable<float> healInv = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +1
+    public NetworkVariable<float> healInv = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.5
 
     public bool live;
 
