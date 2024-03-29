@@ -232,9 +232,6 @@ public class PlayerWeapon : NetworkBehaviour
 
     public void Respawn()
     {
-        live = true;
-        selectedWeapon.Value = 0;
-
         foreach (Transform weapon in transform)
         {
             if (weapon.GetComponent<PlayerGun>() != null)
@@ -246,5 +243,8 @@ public class PlayerWeapon : NetworkBehaviour
                 weapon.GetComponent<PlayerKnife>().Respawn();
             }
         }
+
+        live = true;
+        selectedWeapon.Value = 0;
     }
 }
