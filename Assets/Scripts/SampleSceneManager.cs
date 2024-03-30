@@ -50,11 +50,10 @@ public class SampleSceneManager : MonoBehaviour
 
     private float lobbyQueryTimer;
 
-    public static int start;
-
     private void Awake()
     {
         Instance = this;
+        UnityLobby.Instance.start = 0;
     }
 
     private void OnDestroy()
@@ -68,7 +67,6 @@ public class SampleSceneManager : MonoBehaviour
         lobbyMenuClassOptionText.text = classes[playerClass];
         sensSlider.value = sens;
         volumeSlider.value = volume;
-        start = 0;
     }
 
     private void Update()
@@ -223,9 +221,9 @@ public class SampleSceneManager : MonoBehaviour
 
     public void OwnerMenuStartButtonClick()
     {
-        start = 3;
-        StartCoroutine(UnityLobby.Instance.LoadSceneAsync("MainScene"));
+        UnityLobby.Instance.start = 3;
         UnityLobby.Instance.UpdateLobbyState("started");
+        StartCoroutine(UnityLobby.Instance.LoadSceneAsync("MainScene"));
     }
 
     public void RoomerMenuQuitButtonClick()

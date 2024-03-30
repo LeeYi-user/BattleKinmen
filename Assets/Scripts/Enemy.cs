@@ -39,7 +39,7 @@ public class Enemy : NetworkBehaviour
         }
 
         currentHealth = EnemySpawn.Instance.enemyHealth;
-        target = MainSceneManager.Instance.enemyTarget;
+        target = EnemySpawn.Instance.enemyTarget;
     }
 
     private void Update()
@@ -49,7 +49,7 @@ public class Enemy : NetworkBehaviour
             return;
         }
 
-        if (MainSceneManager.gameover)
+        if (PlayerManager.gameOver)
         {
             destroying = true;
             Destroy(gameObject);
@@ -99,7 +99,7 @@ public class Enemy : NetworkBehaviour
     {
         base.OnDestroy();
 
-        if (!IsHost || invading || MainSceneManager.gameover || MainSceneManager.disconnecting)
+        if (!IsHost || invading || PlayerManager.gameOver || UnityRelay.disconnecting)
         {
             return;
         }

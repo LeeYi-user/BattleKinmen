@@ -20,6 +20,8 @@ public class UnityLobby : MonoBehaviour
     [SerializeField] private GameObject lobbyUIPrefab;
     [SerializeField] private GameObject playerUIPrefab;
 
+    public int start;
+
     private void Awake()
     {
         Instance = this;
@@ -55,7 +57,7 @@ public class UnityLobby : MonoBehaviour
 
     private async void HandleLobbyPollForUpdates()
     {
-        if (joinedLobby == null || MainSceneManager.disconnecting)
+        if (joinedLobby == null || UnityRelay.disconnecting)
         {
             lobbyUpdateTimer = 0f;
             return;
@@ -71,7 +73,7 @@ public class UnityLobby : MonoBehaviour
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
 
-                if (SampleSceneManager.start == 0)
+                if (start == 0)
                 {
                     if (lobby.Data["state"].Value == "waiting")
                     {
@@ -82,26 +84,26 @@ public class UnityLobby : MonoBehaviour
                             UpdateLobbyCount();
                         }
                     }
-                    else if (!MainSceneManager.disconnecting)
+                    else if (!UnityRelay.disconnecting)
                     {
-                        SampleSceneManager.start = 1;
+                        start = 1;
                         StartCoroutine(LoadSceneAsync("MainScene"));
                     }
                 }
             }
 
-            if (SampleSceneManager.start == 2)
+            if (start == 2)
             {
                 if (joinedLobby.Data["code"].Value != "")
                 {
-                    SampleSceneManager.start = 3;
+                    start = 3;
                     UnityRelay.Instance.JoinRelay(joinedLobby.Data["code"].Value);
                 }
             }
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance || MainSceneManager.disconnecting)
+            if (e.ToString().Contains("Rate limit") || !SampleSceneManager.Instance || UnityRelay.disconnecting)
             {
                 Debug.Log(e);
                 return;
@@ -133,9 +135,9 @@ public class UnityLobby : MonoBehaviour
             yield return null;
         }
 
-        if (SampleSceneManager.start == 1)
+        if (start == 1)
         {
-            SampleSceneManager.start = 2;
+            start = 2;
         }
     }
 
@@ -170,7 +172,7 @@ public class UnityLobby : MonoBehaviour
 
             hostLobby = lobby;
             joinedLobby = hostLobby;
-            MainSceneManager.disconnecting = false;
+            UnityRelay.disconnecting = false;
         }
         catch (Exception e)
         {
@@ -256,7 +258,7 @@ public class UnityLobby : MonoBehaviour
             Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(lobbyId, joinLobbyByIdOptions);
 
             joinedLobby = lobby;
-            MainSceneManager.disconnecting = false;
+            UnityRelay.disconnecting = false;
         }
         catch (Exception e)
         {

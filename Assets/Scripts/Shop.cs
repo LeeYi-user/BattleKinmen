@@ -10,7 +10,8 @@ public class Shop : NetworkBehaviour
     public static Shop Instance;
 
     [HideInInspector] public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [HideInInspector] public ClientNetworkVariable<int> cashSpent = new ClientNetworkVariable<int>(0);
+    [HideInInspector] public int cashSpent = 0;
+    [HideInInspector] public float cashBonus = 1f;
 
     public GameObject shopMenu;
     public List<GameObject> categories;
@@ -66,7 +67,7 @@ public class Shop : NetworkBehaviour
 
     private void Update()
     {
-        if (MainSceneManager.Instance.start < 2 || MainSceneManager.gameover || MainSceneManager.disconnecting)
+        if (PlayerManager.Instance.gameStart < 2 || UnityRelay.disconnecting)
         {
             return;
         }
@@ -76,7 +77,7 @@ public class Shop : NetworkBehaviour
             if (!shopMenu.activeSelf)
             {
                 Cursor.lockState = CursorLockMode.None;
-                MainSceneManager.Instance.gamingScreen.SetActive(false);
+                PlayerManager.Instance.gamingScreen.SetActive(false);
                 shopMenu.SetActive(true);
             }
             else
@@ -85,7 +86,7 @@ public class Shop : NetworkBehaviour
             }
         }
 
-        cashCounter.text = "$ " + (teamCash.Value - cashSpent.Value).ToString();
+        cashCounter.text = "$ " + (teamCash.Value - cashSpent).ToString();
 
         if (!IsHost)
         {
@@ -135,12 +136,12 @@ public class Shop : NetworkBehaviour
 
     public void UpgradeButtonClick(int index, ShopItem shopItem)
     {
-        if (shopItem.levelSlider.value == shopItem.levelSlider.maxValue || shopItem.price > teamCash.Value - cashSpent.Value)
+        if (shopItem.levelSlider.value == shopItem.levelSlider.maxValue || shopItem.price > teamCash.Value - cashSpent)
         {
             return;
         }
 
-        cashSpent.Value += shopItem.price;
+        cashSpent += shopItem.price;
         shopItem.levelSlider.value++;
 
         if (shopItem.levelSlider.value < shopItem.levelSlider.maxValue)
@@ -241,13 +242,13 @@ public class Shop : NetworkBehaviour
                 player.playerWeapon.healInv.Value += 0.5f;
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
-                MainSceneManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);
+                PlayerManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);
                 break;
             case "enemyDelay": // 需要更改 enemyDelay
                 EnemySpawn.Instance.enemyDelay += 0.1f;
                 break;
             case "cashBonus": // 需要更改 cashBonus
-                MainSceneManager.Instance.cashBonus += 0.1f;
+                cashBonus += 0.1f;
                 break;
             case "mapDefense": // 需要更改 maxDefense 和 currentDefense
                 MainSceneManager.Instance.currentDefense += 1;
@@ -266,7 +267,7 @@ public class Shop : NetworkBehaviour
     public void BackButtonClick()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        MainSceneManager.Instance.gamingScreen.SetActive(true);
+        PlayerManager.Instance.gamingScreen.SetActive(true);
         shopMenu.SetActive(false);
     }
 }

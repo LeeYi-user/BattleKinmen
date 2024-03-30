@@ -58,9 +58,9 @@ public class Popup : MonoBehaviour
             }
             else if (phase == 3)
             {
-                if (MainSceneManager.Instance.popups.Contains(text.text))
+                if (PopupManager.Instance.popups.Contains(text.text))
                 {
-                    MainSceneManager.Instance.popups.Clear();
+                    PopupManager.Instance.popups.Clear();
                 }
                 
                 Destroy(gameObject);

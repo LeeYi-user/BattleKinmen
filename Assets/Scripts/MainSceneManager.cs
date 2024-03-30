@@ -10,59 +10,31 @@ public class MainSceneManager : NetworkBehaviour
 {
     public static MainSceneManager Instance;
 
-    public GameObject canvas;
+    [Header("Parent UI")]
+    public GameObject storyScreen;
 
-    [Header("Screen")]
-    public GameObject startMenu;
-    public GameObject gamingScreen;
-    public GameObject deathScreen;
-    public GameObject gameoverScreen;
-
-    [Header("Sub Screen")]
-    public GameObject roomInfo;
-    public GameObject storyInfo;
-
-    [Header("On Screen")]
-    public TextMeshProUGUI playerCounter;
+    [Header("Child UI")]
     public TextMeshProUGUI storyText;
     public TextMeshProUGUI enemyCounter;
     public TextMeshProUGUI waveCounter;
     public TextMeshProUGUI cashCounter;
-    public GameObject crosshair;
-    public TextMeshProUGUI healthBar;
-    public TextMeshProUGUI ammoBar;
-    public TextMeshProUGUI deathMessage;
     public TextMeshProUGUI gameoverMessage;
 
-    [Header("On Screen Prefab")]
-    public GameObject popup;
-
-    [Header("On Map")]
-    public Transform playerSpawn;
-    public Transform enemyTarget;
-
-    [Header("On Map Variable")]
-    public float respawnCooldown;
-    public float cashBonus;
+    [Header("Defense")]
     public int maxDefense;
     public int currentDefense;
 
-    [HideInInspector] public int start;
-    [HideInInspector] public NetworkVariable<float> breakTime = new NetworkVariable<float>(20.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [HideInInspector] public List<string> popups;
+    [HideInInspector]
+    public NetworkVariable<float> breakTime = new NetworkVariable<float>(30.99f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private int phase;
     private bool pause;
     private float timeLeft;
     private Color targetColor = new Color(1, 1, 1, 0);
 
-    public static bool gameover;
-    public static bool disconnecting;
-
     private void Awake()
     {
         Instance = this;
-        gameover = false;
     }
 
     public override void OnDestroy()
@@ -72,102 +44,30 @@ public class MainSceneManager : NetworkBehaviour
         Instance = null;
     }
 
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-
-        NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
-
-        if (!IsHost)
-        {
-            return;
-        }
-
-        NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
-        NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
-    }
-
-    private void NetworkManager_OnClientStopped(bool obj)
-    {
-        Disconnect();
-
-        NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
-
-        if (!IsHost)
-        {
-            return;
-        }
-
-        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
-        NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
-    }
-
-    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
-    {
-        if (start > 0)
-        {
-            NetworkManager.DisconnectClient(clientId);
-            return;
-        }
-
-        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count);
-    }
-
-    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
-    {
-        if (start > 0)
-        {
-            return;
-        }
-
-        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count - 1);
-    }
-
-    [ClientRpc]
-    private void UpdateCounter_ClientRpc(int count)
-    {
-        playerCounter.text = count.ToString() + " / " + UnityLobby.Instance.joinedLobby.Players.Count;
-
-        if (IsHost && start == 0 && count == UnityLobby.Instance.joinedLobby.Players.Count)
-        {
-            StartCoroutine(StartGame(1f));
-        }
-    }
-
     private void Start()
     {
-        playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
         currentDefense = maxDefense;
-
-        if (UnityLobby.Instance.hostLobby != null)
-        {
-            UnityRelay.Instance.CreateRelay(UnityLobby.Instance.hostLobby.MaxPlayers);
-        }
-
-        Popup("按下 Backspace 退出");
     }
 
     private void Update()
     {
+        GameOver();
         Counter2();
         Counter1();
         TextFade2();
         TextFade1();
+    }
 
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            Back();
-            return;
-        }
-
-        if (!IsHost || gameover)
+    private void GameOver()
+    {
+        if (!IsHost || PlayerManager.gameOver)
         {
             return;
         }
 
         if (currentDefense <= 0)
         {
-            GameOver_ClientRpc();
+            PlayerManager.Instance.GameOver_ClientRpc();
 
             foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
             {
@@ -178,7 +78,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void Counter2()
     {
-        if (start < 2 || gameover || disconnecting)
+        if (PlayerManager.Instance.gameStart < 2 || PlayerManager.gameOver || UnityRelay.disconnecting)
         {
             return;
         }
@@ -210,12 +110,12 @@ public class MainSceneManager : NetworkBehaviour
         }
 
         waveCounter.text = "第 " + EnemySpawn.Instance.waves.Value.ToString() + " 波";
-        cashCounter.text = "$ " + (Shop.Instance.teamCash.Value - Shop.Instance.cashSpent.Value).ToString();
+        cashCounter.text = "$ " + (Shop.Instance.teamCash.Value - Shop.Instance.cashSpent).ToString();
     }
 
     private void Counter1()
     {
-        if (!IsHost || start < 2 || gameover || disconnecting)
+        if (!IsHost || PlayerManager.Instance.gameStart < 2 || PlayerManager.gameOver || UnityRelay.disconnecting)
         {
             return;
         }
@@ -225,7 +125,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void TextFade2()
     {
-        if (!gameover || pause || disconnecting)
+        if (pause || !PlayerManager.gameOver || UnityRelay.disconnecting)
         {
             return;
         }
@@ -234,9 +134,9 @@ public class MainSceneManager : NetworkBehaviour
         {
             if (phase == 0)
             {
-                gamingScreen.SetActive(false);
-                gameoverScreen.SetActive(true);
-                gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+                PlayerManager.Instance.gamingScreen.SetActive(false);
+                PlayerManager.Instance.gameoverScreen.SetActive(true);
+                PlayerManager.Instance.gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
                 gameoverMessage.color = new Color(1, 1, 1, 0);
                 targetColor = new Color(0, 0, 0, 1);
                 timeLeft = 2f;
@@ -244,7 +144,7 @@ public class MainSceneManager : NetworkBehaviour
             }
             else if (phase == 1)
             {
-                gameoverScreen.GetComponent<Image>().color = targetColor;
+                PlayerManager.Instance.gameoverScreen.GetComponent<Image>().color = targetColor;
                 targetColor = new Color(1, 1, 1, 1);
                 timeLeft = 3f;
                 StartCoroutine(Pause(1f));
@@ -262,7 +162,7 @@ public class MainSceneManager : NetworkBehaviour
             }
             else if (phase == 4)
             {
-                Back();
+                PlayerManager.Instance.Back();
             }
 
             phase++;
@@ -271,7 +171,7 @@ public class MainSceneManager : NetworkBehaviour
         {
             if (phase == 1)
             {
-                gameoverScreen.GetComponent<Image>().color = Color.Lerp(gameoverScreen.GetComponent<Image>().color, targetColor, Time.deltaTime / timeLeft);
+                PlayerManager.Instance.gameoverScreen.GetComponent<Image>().color = Color.Lerp(PlayerManager.Instance.gameoverScreen.GetComponent<Image>().color, targetColor, Time.deltaTime / timeLeft);
             }
             else if (phase > 1)
             {
@@ -284,7 +184,7 @@ public class MainSceneManager : NetworkBehaviour
 
     private void TextFade1()
     {
-        if (start != 1 || pause || disconnecting)
+        if (pause || PlayerManager.Instance.gameStart != 1 || UnityRelay.disconnecting)
         {
             return;
         }
@@ -295,8 +195,8 @@ public class MainSceneManager : NetworkBehaviour
             
             if (phase == 0)
             {
-                roomInfo.SetActive(false);
-                storyInfo.SetActive(true);
+                PlayerManager.Instance.loadingScreen.SetActive(false);
+                storyScreen.SetActive(true);
             }
             else if (phase == 1)
             {
@@ -316,7 +216,8 @@ public class MainSceneManager : NetworkBehaviour
             }
             else if (phase == 4)
             {
-                start = 2;
+                phase = -1;
+                PlayerManager.Instance.gameStart = 2;
 
                 if (IsHost)
                 {
@@ -326,8 +227,8 @@ public class MainSceneManager : NetworkBehaviour
                     }
                 }
 
-                startMenu.SetActive(false);
-                gamingScreen.SetActive(true);
+                storyScreen.SetActive(false);
+                PlayerManager.Instance.gamingScreen.SetActive(true);
             }
 
             phase++;
@@ -344,83 +245,5 @@ public class MainSceneManager : NetworkBehaviour
         pause = true;
         yield return new WaitForSeconds(seconds);
         pause = false;
-    }
-
-    private IEnumerator StartGame(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-
-        StartGame_ClientRpc();
-    }
-
-    [ClientRpc]
-    private void StartGame_ClientRpc()
-    {
-        start = 1;
-    }
-
-    [ClientRpc]
-    private void GameOver_ClientRpc()
-    {
-        gameover = true;
-        phase = 0;
-    }
-
-    public void Popup(string msg)
-    {
-        bool exist = false;
-
-        foreach (string str in popups)
-        {
-            if (str == msg)
-            {
-                exist = true;
-                break;
-            }
-        }
-
-        if (!exist)
-        {
-            popups.Add(msg);
-        }
-
-        GameObject popGO = Instantiate(popup, popup.transform.position - popups.IndexOf(msg) * new Vector3(0, 25, 0), Quaternion.identity);
-
-        popGO.transform.SetParent(canvas.transform, false);
-        popGO.GetComponent<TextMeshProUGUI>().text = msg;
-    }
-
-    private void Back()
-    {
-        if (Disconnect())
-        {
-            return;
-        }
-
-        NetworkManager.Shutdown();
-    }
-
-    private bool Disconnect()
-    {
-        if (disconnecting)
-        {
-            return true;
-        }
-
-        disconnecting = true;
-        Cursor.lockState = CursorLockMode.None;
-
-        if (UnityLobby.Instance.hostLobby == null)
-        {
-            UnityLobby.Instance.QuitLobby();
-        }
-        else
-        {
-            UnityLobby.Instance.DeleteLobby();
-        }
-
-        SceneManager.LoadScene("SampleScene");
-
-        return false;
     }
 }

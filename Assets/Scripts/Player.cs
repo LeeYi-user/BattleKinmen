@@ -38,11 +38,11 @@ public class Player : NetworkBehaviour
 
     private void ShowHealth(float previous, float current)
     {
-        MainSceneManager.Instance.healthBar.text = "";
+        PlayerManager.Instance.healthBar.text = "";
 
         for (int i = 0; i < currentHealth.Value; i += 10)
         {
-            MainSceneManager.Instance.healthBar.text += "|";
+            PlayerManager.Instance.healthBar.text += "|";
         }
     }
 
@@ -50,11 +50,11 @@ public class Player : NetworkBehaviour
     {
         if (invTime.Value > 0f)
         {
-            MainSceneManager.Instance.healthBar.color = Color.yellow;
+            PlayerManager.Instance.healthBar.color = Color.yellow;
         }
         else
         {
-            MainSceneManager.Instance.healthBar.color = Color.green;
+            PlayerManager.Instance.healthBar.color = Color.green;
         }
     }
 
@@ -79,7 +79,7 @@ public class Player : NetworkBehaviour
         {
             spawning = true;
             PlayerDespawn_ClientRpc("YOU DIED");
-            StartCoroutine(Respawn(MainSceneManager.Instance.respawnCooldown));
+            StartCoroutine(Respawn(PlayerManager.Instance.respawnCooldown));
         }
     }
 
@@ -100,9 +100,9 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            MainSceneManager.Instance.crosshair.SetActive(false);
-            MainSceneManager.Instance.deathScreen.SetActive(true);
-            MainSceneManager.Instance.deathMessage.text = msg;
+            PlayerManager.Instance.gamingScreen.SetActive(false);
+            PlayerManager.Instance.deathScreen.SetActive(true);
+            PlayerManager.Instance.deathMessage.text = msg;
 
             playerCamera.Spawn();
             playerWeapon.Despawn();
@@ -121,7 +121,7 @@ public class Player : NetworkBehaviour
     {
         yield return new WaitForSeconds(seconds);
 
-        if (MainSceneManager.gameover)
+        if (PlayerManager.gameOver)
         {
             yield break;
         }
@@ -143,8 +143,8 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            MainSceneManager.Instance.crosshair.SetActive(true);
-            MainSceneManager.Instance.deathScreen.SetActive(false);
+            PlayerManager.Instance.gamingScreen.SetActive(true);
+            PlayerManager.Instance.deathScreen.SetActive(false);
 
             playerCamera.Spawn();
             playerWeapon.Respawn();

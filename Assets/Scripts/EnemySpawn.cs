@@ -12,6 +12,7 @@ public class EnemySpawn : NetworkBehaviour
     public NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    public Transform enemyTarget;
     public float enemyHealth;
     public float enemyDelay;
     public float enemyDamage;
@@ -37,7 +38,7 @@ public class EnemySpawn : NetworkBehaviour
             return;
         }
 
-        if (MainSceneManager.Instance.start < 2 || MainSceneManager.Instance.breakTime.Value > 0 || MainSceneManager.gameover || MainSceneManager.disconnecting)
+        if (PlayerManager.Instance.gameStart < 2 || MainSceneManager.Instance.breakTime.Value > 0 || PlayerManager.gameOver || UnityRelay.disconnecting)
         {
             enemyDamage = 30 + waves.Value * 5;
             enemies.Value = waves.Value * 10;

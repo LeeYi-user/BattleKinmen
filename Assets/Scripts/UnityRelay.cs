@@ -12,6 +12,8 @@ public class UnityRelay : MonoBehaviour
 {
     public static UnityRelay Instance;
 
+    public static bool disconnecting;
+
     private void Awake()
     {
         Instance = this;
@@ -29,7 +31,7 @@ public class UnityRelay : MonoBehaviour
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-            if (MainSceneManager.disconnecting || SampleSceneManager.start != 3)
+            if (disconnecting || UnityLobby.Instance.start != 3)
             {
                 return;
             }
@@ -52,7 +54,7 @@ public class UnityRelay : MonoBehaviour
         {
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
-            if (MainSceneManager.disconnecting || UnityLobby.Instance.joinedLobby.Data["code"].Value != joinCode)
+            if (disconnecting || UnityLobby.Instance.joinedLobby.Data["code"].Value != joinCode)
             {
                 return;
             }

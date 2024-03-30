@@ -38,7 +38,7 @@ public class Landmine : NetworkBehaviour
     {
         base.OnDestroy();
 
-        if (!IsHost || MainSceneManager.disconnecting)
+        if (!IsHost || UnityRelay.disconnecting)
         {
             return;
         }
