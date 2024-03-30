@@ -25,7 +25,7 @@ public class PlayerWeapon : NetworkBehaviour
     public NetworkVariable<float> landmineCooldown = new NetworkVariable<float>(10f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -2
     public NetworkVariable<float> landmineRange = new NetworkVariable<float>(5f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +0.25
     public NetworkVariable<float> landmineDamage = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +15
-    public NetworkVariable<float> landmineLife = new NetworkVariable<float>(20f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +5
+    public NetworkVariable<float> landmineLimit = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +1
 
     public NetworkVariable<float> healCooldown = new NetworkVariable<float>(30f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // -5
     public NetworkVariable<float> healRange = new NetworkVariable<float>(6f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); // +1.5
@@ -35,6 +35,8 @@ public class PlayerWeapon : NetworkBehaviour
     public bool live;
 
     private float cooldown;
+
+    public List<GameObject> landmines;
 
     private void Start()
     {
@@ -97,7 +99,7 @@ public class PlayerWeapon : NetworkBehaviour
                     break;
                 case 1:
                     cooldown = landmineCooldown.Value;
-                    PlaceLandmine_ServerRpc(playerCamera.position);
+                    PlaceLandmine_ServerRpc(playerCamera.position, NetworkObjectId);
                     break;
                 case 2:
                     cooldown = healCooldown.Value;
@@ -122,17 +124,23 @@ public class PlayerWeapon : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PlaceLandmine_ServerRpc(Vector3 pos)
+    private void PlaceLandmine_ServerRpc(Vector3 pos, ulong objectId)
     {
         RaycastHit hit;
 
         if (Physics.Raycast(pos, Vector3.down, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
         {
             GameObject landmineGO = Instantiate(landmine, hit.point, Quaternion.Euler(-90f, 0f, Random.Range(0f, 360f)));
-            landmineGO.GetComponent<Landmine>().lifetime = landmineLife.Value;
+            landmineGO.GetComponent<Landmine>().ownerId = objectId;
             landmineGO.GetComponent<Landmine>().explosionRange = landmineRange.Value;
             landmineGO.GetComponent<Landmine>().explosionDamage = landmineDamage.Value;
             landmineGO.GetComponent<NetworkObject>().Spawn(true);
+            landmines.Add(landmineGO);
+
+            if (landmines.Count > landmineLimit.Value)
+            {
+                Destroy(landmines[0]);
+            }
         }
     }
 

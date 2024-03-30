@@ -225,8 +225,8 @@ public class Shop : NetworkBehaviour
             case "landmineDamage": // 需要額外做技能
                 player.playerWeapon.landmineDamage.Value += 15f;
                 break;
-            case "landmineLife": // 需要額外做技能
-                player.playerWeapon.landmineLife.Value += 5f;
+            case "landmineLimit": // 需要額外做技能
+                player.playerWeapon.landmineLimit.Value += 1f;
                 break;
             case "healCooldown": // 需要額外做技能
                 player.playerWeapon.healCooldown.Value -= 5f;

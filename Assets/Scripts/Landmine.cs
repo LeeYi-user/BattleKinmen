@@ -7,19 +7,9 @@ public class Landmine : NetworkBehaviour
 {
     [SerializeField] private GameObject explosion;
 
-    public float lifetime;
+    public ulong ownerId;
     public float explosionRange;
     public float explosionDamage;
-
-    private void Start()
-    {
-        if (!IsHost)
-        {
-            return;
-        }
-
-        Destroy(gameObject, lifetime);
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -42,5 +32,17 @@ public class Landmine : NetworkBehaviour
             Destroy(explosionGO, 2f);
             Destroy(gameObject);
         }
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (!IsHost || MainSceneManager.disconnecting)
+        {
+            return;
+        }
+
+        NetworkManager.SpawnManager.SpawnedObjects[ownerId].GetComponent<Player>().playerWeapon.landmines.Remove(gameObject);
     }
 }
