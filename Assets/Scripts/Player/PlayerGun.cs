@@ -64,6 +64,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
+        ShowAmmo();
         UpdateFireAnimSpeed(0, 0);
         UpdateReloadAnimSpeed(0, 0);
         animator.SetTrigger("reset");

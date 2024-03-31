@@ -36,6 +36,7 @@ public class PlayerKnife : NetworkBehaviour
 
         UpdateAttackAnimSpeed(0, 0);
         animator.SetTrigger("reset");
+        PlayerManager.Instance.ammoBar.text = "";
     }
 
     private void UpdateAttackAnimSpeed(float previous, float current)
