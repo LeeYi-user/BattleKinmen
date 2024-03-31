@@ -67,8 +67,13 @@ public class ShopManager : NetworkBehaviour
 
     private void Update()
     {
-        if (PlayerManager.Instance.gameStart < 2 || RelayManager.disconnecting)
+        if (!PlayerManager.Instance.gamingScreen.activeSelf || PlayerManager.Instance.gameStart < 2 || RelayManager.disconnecting)
         {
+            if (shopMenu.activeSelf)
+            {
+                BackButtonClick();
+            }
+
             return;
         }
 
@@ -78,7 +83,6 @@ public class ShopManager : NetworkBehaviour
             {
                 NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.disable = true;
                 Cursor.lockState = CursorLockMode.None;
-                PlayerManager.Instance.gamingScreen.SetActive(false);
                 shopMenu.SetActive(true);
             }
             else
@@ -261,7 +265,6 @@ public class ShopManager : NetworkBehaviour
     {
         NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.disable = false;
         Cursor.lockState = CursorLockMode.Locked;
-        PlayerManager.Instance.gamingScreen.SetActive(true);
         shopMenu.SetActive(false);
     }
 }
