@@ -64,7 +64,7 @@ public class PlayerWeapon : NetworkBehaviour
             cooldown -= Time.deltaTime;
         }
 
-        if (!live)
+        if (!live || Cursor.lockState == CursorLockMode.None)
         {
             return;
         }

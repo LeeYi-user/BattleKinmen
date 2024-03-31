@@ -101,7 +101,7 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        if (currentAmmo.Value <= 0 || (currentAmmo.Value < maxAmmo.Value && Input.GetKey(KeyCode.R)))
+        if (currentAmmo.Value <= 0 || (currentAmmo.Value < maxAmmo.Value && Input.GetKey(KeyCode.R) && Cursor.lockState == CursorLockMode.Locked))
         {
             StartCoroutine(Reload());
             return;
