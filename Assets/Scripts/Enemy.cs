@@ -70,7 +70,7 @@ public class Enemy : NetworkBehaviour
             return;
         }
 
-        if (Vector3.Distance(transform.position, target.position) < 1f)
+        if (GameManager.Instance.CheckGrid(transform.position, target))
         {
             destroying = true;
             Invade();

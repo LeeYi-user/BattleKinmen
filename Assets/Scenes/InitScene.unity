@@ -342,6 +342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyUIPrefab: {fileID: 4509085099559105286, guid: b5d72350166a4c444a843cb63f299a5b, type: 3}
   playerUIPrefab: {fileID: 7301581856230406354, guid: 46404bb2c33123e40b7b8543fdcfe791, type: 3}
+  start: 0
 --- !u!1 &2026464760
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,7 +354,7 @@ GameObject:
   - component: {fileID: 2026464761}
   - component: {fileID: 2026464762}
   m_Layer: 0
-  m_Name: InitSceneManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -387,6 +388,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fps: 60
+  popup: {fileID: 2781551305655792834, guid: 2d61a311b2fc07b4d904e7bdcf046f58, type: 3}
+  popups: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ public class EnemySpawn : NetworkBehaviour
     public NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    public List<Transform> spawnArea;
     public Transform enemyTarget;
     public float enemyHealth;
     public float enemyDelay;
@@ -55,7 +56,8 @@ public class EnemySpawn : NetworkBehaviour
             timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
             enemyHealth = Random.Range(1f, 30f + waves.Value * 10);
 
-            GameObject enemy = Instantiate(enemyPrefab, transform.position + new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-100f, 100f)), Quaternion.Euler(0, -90, 0));
+            Vector3 enemyPosition = GameManager.Instance.RandomPosition(spawnArea);
+            GameObject enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.LookRotation(enemyTarget.position - enemyPosition, Vector3.up));
             enemy.GetComponent<NetworkObject>().Spawn(true);
         }
 

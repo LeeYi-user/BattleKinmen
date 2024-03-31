@@ -23,7 +23,8 @@ public class PlayerManager : NetworkBehaviour
     public TextMeshProUGUI deathMessage;
 
     [Header("Respawn")]
-    public Transform respawnPoint;
+    public List<Transform> spectatorArea;
+    public List<Transform> respawnArea;
     public float respawnCooldown;
 
     [Header("State")]
@@ -133,7 +134,7 @@ public class PlayerManager : NetworkBehaviour
 
         playerCounter.text = "0 / " + UnityLobby.Instance.joinedLobby.Players.Count;
 
-        PopupManager.Instance.Popup("按下 Backspace 退出");
+        GameManager.Instance.Popup("按下 Backspace 退出");
     }
 
     private void Update()

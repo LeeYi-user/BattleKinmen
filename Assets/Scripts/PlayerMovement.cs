@@ -31,7 +31,6 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform model;
 
-    private Transform respawnPoint;
     private bool grounded;
     private float horizontalInput;
     private float verticalInput;
@@ -49,7 +48,6 @@ public class PlayerMovement : NetworkBehaviour
         }
 
         moveSpeed.OnValueChanged += UpdateRunAnimSpeed;
-        respawnPoint = PlayerManager.Instance.respawnPoint;
         Despawn();
     }
 
@@ -217,7 +215,7 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
-        rb.MovePosition(new Vector3(100f, 50f, 125f));
+        rb.MovePosition(GameManager.Instance.RandomPosition(PlayerManager.Instance.spectatorArea));
     }
 
     public void Respawn()
@@ -225,6 +223,6 @@ public class PlayerMovement : NetworkBehaviour
         live = true;
         grounded = false;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
-        rb.MovePosition(respawnPoint.position + new Vector3(Random.Range(-4f, 4f), 0f, Random.Range(-4f, 4f)));
+        rb.MovePosition(GameManager.Instance.RandomPosition(PlayerManager.Instance.respawnArea));
     }
 }
