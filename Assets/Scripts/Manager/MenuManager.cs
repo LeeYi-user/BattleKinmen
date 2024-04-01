@@ -92,12 +92,6 @@ public class MenuManager : MonoBehaviour
 
     private void HandleLobbyListPollForUpdates()
     {
-        if (!lobbyMenu.activeSelf)
-        {
-            lobbyQueryTimer = 0f;
-            return;
-        }
-
         lobbyQueryTimer -= Time.deltaTime;
 
         if (lobbyQueryTimer < 0f)
@@ -110,7 +104,6 @@ public class MenuManager : MonoBehaviour
     public void MainMenuStartButtonClick()
     {
         mainMenuStartButtonText.text = "開始遊戲";
-        ClearLobbyList();
         mainMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }
@@ -175,6 +168,8 @@ public class MenuManager : MonoBehaviour
         lobbyMenu.SetActive(false);
         roomerMenu.SetActive(true);
         modeMenu.SetActive(true);
+        selectedLobbyId = "";
+        lobbyMenuSearchBar.text = "";
     }
 
     public void LobbyMenuCreateButtonClick()
@@ -207,6 +202,9 @@ public class MenuManager : MonoBehaviour
 
             i++;
         }
+
+        selectedLobbyId = "";
+        lobbyMenuSearchBar.text = "";
     }
 
     public void LobbyMenuBackButtonClick()
@@ -214,6 +212,8 @@ public class MenuManager : MonoBehaviour
         mainMenu.SetActive(true);
         lobbyMenu.SetActive(false);
         modeMenu.SetActive(false);
+        selectedLobbyId = "";
+        lobbyMenuSearchBar.text = "";
     }
 
     public void LobbyMenuRightArrowButtonClick()
@@ -349,7 +349,6 @@ public class MenuManager : MonoBehaviour
 
     public void CreateMenuCancelButtonClick()
     {
-        ClearLobbyList();
         createMenu.SetActive(false);
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
@@ -370,7 +369,6 @@ public class MenuManager : MonoBehaviour
 
     public void OwnerMenuQuitButtonClick()
     {
-        ClearLobbyList();
         LobbyManager.Instance.DeleteLobby();
         ownerMenu.SetActive(false);
         modeMenu.SetActive(false);
@@ -396,7 +394,6 @@ public class MenuManager : MonoBehaviour
 
     public void RoomerMenuQuitButtonClick()
     {
-        ClearLobbyList();
         LobbyManager.Instance.QuitLobby();
         roomerMenu.SetActive(false);
         modeMenu.SetActive(false);
@@ -419,17 +416,6 @@ public class MenuManager : MonoBehaviour
     {
         infoMenu.SetActive(false);
         roomerMenu.SetActive(true);
-    }
-
-    public void ClearLobbyList()
-    {
-        foreach (Transform transform in lobbyMenuContainer.transform)
-        {
-            Destroy(transform.gameObject);
-        }
-
-        selectedLobbyId = "";
-        lobbyMenuSearchBar.text = "";
     }
 
     public void ClearPlayerList()

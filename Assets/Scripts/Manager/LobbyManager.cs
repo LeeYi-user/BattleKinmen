@@ -111,7 +111,6 @@ public class LobbyManager : MonoBehaviour
                 return;
             }
 
-            MenuManager.Instance.ClearLobbyList();
             MenuManager.Instance.ownerMenu.SetActive(false);
             MenuManager.Instance.roomerMenu.SetActive(false);
             MenuManager.Instance.infoMenu.SetActive(false);
