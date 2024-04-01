@@ -24,11 +24,14 @@ public class MenuManager : MonoBehaviour
     public TextMeshProUGUI mainMenuQuitButtonText;
     public TMP_InputField lobbyMenuPlayerNameInput;
     public TextMeshProUGUI lobbyMenuClassOptionText;
+    public TMP_InputField lobbyMenuSearchBar;
     public TMP_InputField createMenuLobbyNameInput;
     public TextMeshProUGUI createMenuMaxPlayersText;
     public TextMeshProUGUI createMenuGameModeText;
     public GameObject createMenuFriendlyFireSetting;
     public TextMeshProUGUI createMenuFriendlyFireText;
+    public TMP_InputField ownerMenuSearchBar;
+    public TMP_InputField roomerMenuSearchBar;
     public TextMeshProUGUI infoMenuLobbyNameText;
     public TextMeshProUGUI infoMenuMaxPlayersText;
     public TextMeshProUGUI infoMenuGameModeText;
@@ -426,6 +429,7 @@ public class MenuManager : MonoBehaviour
         }
 
         selectedLobbyId = "";
+        lobbyMenuSearchBar.text = "";
     }
 
     public void ClearPlayerList()
@@ -441,5 +445,7 @@ public class MenuManager : MonoBehaviour
         }
 
         selectedPlayerId = "";
+        ownerMenuSearchBar.text = "";
+        roomerMenuSearchBar.text = "";
     }
 }

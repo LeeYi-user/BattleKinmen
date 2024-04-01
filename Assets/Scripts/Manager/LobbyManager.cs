@@ -6,6 +6,7 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -191,6 +192,7 @@ public class LobbyManager : MonoBehaviour
             {
                 Filters = new List<QueryFilter>
                 {
+                    new QueryFilter(QueryFilter.FieldOptions.Name, MenuManager.Instance.lobbyMenuSearchBar.text, QueryFilter.OpOptions.CONTAINS),
                     new QueryFilter(QueryFilter.FieldOptions.S1, "waiting", QueryFilter.OpOptions.EQ)
                 }
             };
@@ -327,18 +329,26 @@ public class LobbyManager : MonoBehaviour
     public void ListPlayers()
     {
         GameObject container;
+        TMP_InputField searchBar;
 
         if (hostLobby != null)
         {
             container = MenuManager.Instance.ownerMenuContainer;
+            searchBar = MenuManager.Instance.ownerMenuSearchBar;
         }
         else
         {
             container = MenuManager.Instance.roomerMenuContainer;
+            searchBar = MenuManager.Instance.roomerMenuSearchBar;
         }
 
         foreach (Unity.Services.Lobbies.Models.Player player in joinedLobby.Players)
         {
+            if (!player.Data["name"].Value.Contains(searchBar.text))
+            {
+                continue;
+            }
+
             bool flag = false;
 
             foreach (Transform child in container.transform)
@@ -377,7 +387,7 @@ public class LobbyManager : MonoBehaviour
                 }
             }
 
-            if (!flag)
+            if (!flag || !child.GetComponent<PlayerUI>().nameText.text.Contains(searchBar.text))
             {
                 if (child.GetComponent<PlayerUI>().id == MenuManager.Instance.selectedPlayerId)
                 {
