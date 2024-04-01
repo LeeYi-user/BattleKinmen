@@ -171,6 +171,11 @@ public class MenuManager : MonoBehaviour
         roomerMenu.SetActive(true);
         modeMenu.SetActive(true);
         selectedLobbyId = "";
+
+        foreach (Transform transform in lobbyMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
     }
 
     public void LobbyMenuCreateButtonClick()
@@ -204,6 +209,11 @@ public class MenuManager : MonoBehaviour
         }
 
         selectedLobbyId = "";
+
+        foreach (Transform transform in lobbyMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
     }
 
     public void LobbyMenuBackButtonClick()
@@ -212,6 +222,11 @@ public class MenuManager : MonoBehaviour
         lobbyMenu.SetActive(false);
         modeMenu.SetActive(false);
         selectedLobbyId = "";
+
+        foreach (Transform transform in lobbyMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
     }
 
     public void LobbyMenuRightArrowButtonClick()
@@ -371,6 +386,11 @@ public class MenuManager : MonoBehaviour
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
         selectedPlayerId = "";
+
+        foreach (Transform transform in ownerMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
     }
 
     public void OwnerMenuKickButtonClick()
@@ -397,6 +417,11 @@ public class MenuManager : MonoBehaviour
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
         selectedPlayerId = "";
+
+        foreach (Transform transform in roomerMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
     }
 
     public void RoomerMenuInfoButtonClick()

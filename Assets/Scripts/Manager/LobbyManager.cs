@@ -119,6 +119,17 @@ public class LobbyManager : MonoBehaviour
             hostLobby = null;
             joinedLobby = null;
             MenuManager.Instance.selectedPlayerId = "";
+
+            foreach (Transform transform in MenuManager.Instance.ownerMenuContainer.transform)
+            {
+                Destroy(transform.gameObject);
+            }
+
+            foreach (Transform transform in MenuManager.Instance.roomerMenuContainer.transform)
+            {
+                Destroy(transform.gameObject);
+            }
+
             Debug.Log(e);
         }
     }
