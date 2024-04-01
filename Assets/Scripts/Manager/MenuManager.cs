@@ -107,6 +107,7 @@ public class MenuManager : MonoBehaviour
     public void MainMenuStartButtonClick()
     {
         mainMenuStartButtonText.text = "開始遊戲";
+        ClearLobbyList();
         mainMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }
@@ -166,16 +167,11 @@ public class MenuManager : MonoBehaviour
             return;
         }
 
+        ClearPlayerList();
         LobbyManager.Instance.JoinLobby(selectedLobbyId);
         lobbyMenu.SetActive(false);
         roomerMenu.SetActive(true);
         modeMenu.SetActive(true);
-        selectedLobbyId = "";
-
-        foreach (Transform transform in lobbyMenuContainer.transform)
-        {
-            Destroy(transform.gameObject);
-        }
     }
 
     public void LobbyMenuCreateButtonClick()
@@ -190,6 +186,7 @@ public class MenuManager : MonoBehaviour
 
         lobbyMenu.SetActive(false);
         createMenu.SetActive(true);
+        createMenuFriendlyFireSetting.SetActive(true);
         modeMenu.SetActive(true);
 
         int i = 0;
@@ -207,13 +204,6 @@ public class MenuManager : MonoBehaviour
 
             i++;
         }
-
-        selectedLobbyId = "";
-
-        foreach (Transform transform in lobbyMenuContainer.transform)
-        {
-            Destroy(transform.gameObject);
-        }
     }
 
     public void LobbyMenuBackButtonClick()
@@ -221,12 +211,6 @@ public class MenuManager : MonoBehaviour
         mainMenu.SetActive(true);
         lobbyMenu.SetActive(false);
         modeMenu.SetActive(false);
-        selectedLobbyId = "";
-
-        foreach (Transform transform in lobbyMenuContainer.transform)
-        {
-            Destroy(transform.gameObject);
-        }
     }
 
     public void LobbyMenuRightArrowButtonClick()
@@ -362,6 +346,7 @@ public class MenuManager : MonoBehaviour
 
     public void CreateMenuCancelButtonClick()
     {
+        ClearLobbyList();
         createMenu.SetActive(false);
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
@@ -374,6 +359,7 @@ public class MenuManager : MonoBehaviour
             friendlyFire = true;
         }
 
+        ClearPlayerList();
         LobbyManager.Instance.CreateLobby(createMenuLobbyNameInput.text, maxPlayers, gameMode, friendlyFire);
         createMenu.SetActive(false);
         ownerMenu.SetActive(true);
@@ -381,16 +367,11 @@ public class MenuManager : MonoBehaviour
 
     public void OwnerMenuQuitButtonClick()
     {
+        ClearLobbyList();
         LobbyManager.Instance.DeleteLobby();
         ownerMenu.SetActive(false);
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
-        selectedPlayerId = "";
-
-        foreach (Transform transform in ownerMenuContainer.transform)
-        {
-            Destroy(transform.gameObject);
-        }
     }
 
     public void OwnerMenuKickButtonClick()
@@ -412,16 +393,11 @@ public class MenuManager : MonoBehaviour
 
     public void RoomerMenuQuitButtonClick()
     {
+        ClearLobbyList();
         LobbyManager.Instance.QuitLobby();
         roomerMenu.SetActive(false);
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
-        selectedPlayerId = "";
-
-        foreach (Transform transform in roomerMenuContainer.transform)
-        {
-            Destroy(transform.gameObject);
-        }
     }
 
     public void RoomerMenuInfoButtonClick()
@@ -440,5 +416,30 @@ public class MenuManager : MonoBehaviour
     {
         infoMenu.SetActive(false);
         roomerMenu.SetActive(true);
+    }
+
+    public void ClearLobbyList()
+    {
+        foreach (Transform transform in lobbyMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
+
+        selectedLobbyId = "";
+    }
+
+    public void ClearPlayerList()
+    {
+        foreach (Transform transform in ownerMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
+
+        foreach (Transform transform in roomerMenuContainer.transform)
+        {
+            Destroy(transform.gameObject);
+        }
+
+        selectedPlayerId = "";
     }
 }

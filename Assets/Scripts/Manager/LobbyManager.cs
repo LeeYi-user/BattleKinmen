@@ -110,6 +110,7 @@ public class LobbyManager : MonoBehaviour
                 return;
             }
 
+            MenuManager.Instance.ClearLobbyList();
             MenuManager.Instance.ownerMenu.SetActive(false);
             MenuManager.Instance.roomerMenu.SetActive(false);
             MenuManager.Instance.infoMenu.SetActive(false);
@@ -118,18 +119,6 @@ public class LobbyManager : MonoBehaviour
 
             hostLobby = null;
             joinedLobby = null;
-            MenuManager.Instance.selectedPlayerId = "";
-
-            foreach (Transform transform in MenuManager.Instance.ownerMenuContainer.transform)
-            {
-                Destroy(transform.gameObject);
-            }
-
-            foreach (Transform transform in MenuManager.Instance.roomerMenuContainer.transform)
-            {
-                Destroy(transform.gameObject);
-            }
-
             Debug.Log(e);
         }
     }
@@ -514,6 +503,11 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
+            if (playerId == joinedLobby.Players[0].Id)
+            {
+                return;
+            }
+
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);
         }
         catch (Exception e)
