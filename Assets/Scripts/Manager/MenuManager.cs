@@ -16,6 +16,7 @@ public class MenuManager : MonoBehaviour
     public GameObject ownerMenu;
     public GameObject roomerMenu;
     public GameObject infoMenu;
+    public GameObject modeMenu;
     public GameObject loadMenu;
 
     public TextMeshProUGUI mainMenuStartButtonText;
@@ -24,7 +25,9 @@ public class MenuManager : MonoBehaviour
     public TMP_InputField lobbyMenuPlayerNameInput;
     public TextMeshProUGUI lobbyMenuClassOptionText;
     public TMP_InputField createMenuLobbyNameInput;
-    public TMP_InputField createMenuMaxPlayersInput;
+    public TextMeshProUGUI createMenuMaxPlayersText;
+    public TextMeshProUGUI createMenuGameModeText;
+    public TextMeshProUGUI createMenuFriendlyFireText;
     public TextMeshProUGUI infoMenuLobbyNameText;
     public TextMeshProUGUI infoMenuMaxPlayersText;
     public TextMeshProUGUI infoMenuGameModeText;
@@ -41,6 +44,11 @@ public class MenuManager : MonoBehaviour
     public static string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
     public static string playerName = "玩家";
     public static int playerClass = 0;
+
+    public string[] modes = { "搶灘", "巷戰", "演習" };
+    public int maxPlayers = 6;
+    public int gameMode = 0;
+    public bool friendlyFire = false;
 
     public string selectedLobbyId;
     public string selectedPlayerId;
@@ -154,20 +162,45 @@ public class MenuManager : MonoBehaviour
         LobbyManager.Instance.JoinLobby(selectedLobbyId);
         lobbyMenu.SetActive(false);
         roomerMenu.SetActive(true);
+        modeMenu.SetActive(true);
     }
 
     public void LobbyMenuCreateButtonClick()
     {
+        maxPlayers = 6;
+        gameMode = 0;
+        friendlyFire = false;
         createMenuLobbyNameInput.text = "房間";
-        createMenuMaxPlayersInput.text = "6";
+        createMenuMaxPlayersText.text = maxPlayers.ToString();
+        createMenuGameModeText.text = modes[gameMode].ToString();
+        createMenuFriendlyFireText.text = friendlyFire ? "開" : "關";
+
         lobbyMenu.SetActive(false);
         createMenu.SetActive(true);
+        modeMenu.SetActive(true);
+
+        int i = 0;
+
+        foreach (Transform transform in modeMenu.transform)
+        {
+            if (i == gameMode)
+            {
+                transform.gameObject.SetActive(true);
+            }
+            else
+            {
+                transform.gameObject.SetActive(false);
+            }
+
+            i++;
+        }
     }
 
     public void LobbyMenuBackButtonClick()
     {
         mainMenu.SetActive(true);
         lobbyMenu.SetActive(false);
+        modeMenu.SetActive(false);
     }
 
     public void LobbyMenuRightArrowButtonClick()
@@ -194,15 +227,105 @@ public class MenuManager : MonoBehaviour
         lobbyMenuClassOptionText.text = classes[playerClass];
     }
 
+    public void CreateMenuMaxPlayersOptionRightArrowButtonClick()
+    {
+        if (maxPlayers < 10)
+        {
+            maxPlayers++;
+        }
+
+        createMenuMaxPlayersText.text = maxPlayers.ToString();
+    }
+    public void CreateMenuMaxPlayersOptionLeftArrowButtonClick()
+    {
+        if (maxPlayers > 1)
+        {
+            maxPlayers--;
+        }
+
+        createMenuMaxPlayersText.text = maxPlayers.ToString();
+    }
+
+    public void CreateMenuGameModeOptionRightArrowButtonClick()
+    {
+        gameMode++;
+
+        if (gameMode > 2)
+        {
+            gameMode = 0;
+        }
+
+        createMenuGameModeText.text = modes[gameMode].ToString();
+
+        int i = 0;
+
+        foreach (Transform transform in modeMenu.transform)
+        {
+            if (i == gameMode)
+            {
+                transform.gameObject.SetActive(true);
+            }
+            else
+            {
+                transform.gameObject.SetActive(false);
+            }
+
+            i++;
+        }
+    }
+
+    public void CreateMenuGameModeOptionLeftArrowButtonClick()
+    {
+        gameMode--;
+
+        if (gameMode < 0)
+        {
+            gameMode = 2;
+        }
+
+        createMenuGameModeText.text = modes[gameMode].ToString();
+
+        int i = 0;
+
+        foreach (Transform transform in modeMenu.transform)
+        {
+            if (i == gameMode)
+            {
+                transform.gameObject.SetActive(true);
+            }
+            else
+            {
+                transform.gameObject.SetActive(false);
+            }
+
+            i++;
+        }
+    }
+
+    public void CreateMenuFriendlyFireOptionArrowButtonClick()
+    {
+        if (friendlyFire)
+        {
+            friendlyFire = false;
+            createMenuFriendlyFireText.text = "關";
+        }
+        else
+        {
+            friendlyFire = true;
+            createMenuFriendlyFireText.text = "開";
+        }
+    }
+
     public void CreateMenuCancelButtonClick()
     {
         createMenu.SetActive(false);
+        modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }
 
     public void CreateMenuConfirmButtonClick()
     {
-        LobbyManager.Instance.CreateLobby(createMenuLobbyNameInput.text, int.Parse(createMenuMaxPlayersInput.text));
+        LobbyManager.Instance.CreateLobby(createMenuLobbyNameInput.text, maxPlayers, gameMode, friendlyFire);
         createMenu.SetActive(false);
         ownerMenu.SetActive(true);
     }
@@ -211,6 +334,7 @@ public class MenuManager : MonoBehaviour
     {
         LobbyManager.Instance.DeleteLobby();
         ownerMenu.SetActive(false);
+        modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }
 
@@ -230,6 +354,7 @@ public class MenuManager : MonoBehaviour
     {
         LobbyManager.Instance.QuitLobby();
         roomerMenu.SetActive(false);
+        modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
     }
 

@@ -113,6 +113,7 @@ public class LobbyManager : MonoBehaviour
             MenuManager.Instance.ownerMenu.SetActive(false);
             MenuManager.Instance.roomerMenu.SetActive(false);
             MenuManager.Instance.infoMenu.SetActive(false);
+            MenuManager.Instance.modeMenu.SetActive(false);
             MenuManager.Instance.lobbyMenu.SetActive(true);
 
             hostLobby = null;
@@ -142,7 +143,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void CreateLobby(string lobbyName, int maxPlayers)
+    public async void CreateLobby(string lobbyName, int maxPlayers, int gameMode, bool friendlyFire)
     {
         try
         {
@@ -155,10 +156,10 @@ public class LobbyManager : MonoBehaviour
                         "count", new DataObject(DataObject.VisibilityOptions.Public, "1")
                     },
                     {
-                        "mode", new DataObject(DataObject.VisibilityOptions.Public, "搶灘")
+                        "mode", new DataObject(DataObject.VisibilityOptions.Public, MenuManager.Instance.modes[gameMode])
                     },
                     {
-                        "friendly_fire", new DataObject(DataObject.VisibilityOptions.Public, "開")
+                        "friendly_fire", new DataObject(DataObject.VisibilityOptions.Public, friendlyFire ? "開" : "關")
                     },
                     {
                         "state", new DataObject(DataObject.VisibilityOptions.Public, "waiting", DataObject.IndexOptions.S1)
@@ -260,6 +261,22 @@ public class LobbyManager : MonoBehaviour
 
             joinedLobby = lobby;
             RelayManager.disconnecting = false;
+
+            int i = 0;
+
+            foreach (Transform transform in MenuManager.Instance.modeMenu.transform)
+            {
+                if (i == Array.IndexOf(MenuManager.Instance.modes, joinedLobby.Data["mode"].Value))
+                {
+                    transform.gameObject.SetActive(true);
+                }
+                else
+                {
+                    transform.gameObject.SetActive(false);
+                }
+
+                i++;
+            }
         }
         catch (Exception e)
         {
