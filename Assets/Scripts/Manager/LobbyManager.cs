@@ -118,6 +118,7 @@ public class LobbyManager : MonoBehaviour
 
             hostLobby = null;
             joinedLobby = null;
+            MenuManager.Instance.selectedPlayerId = "";
             Debug.Log(e);
         }
     }
@@ -238,6 +239,11 @@ public class LobbyManager : MonoBehaviour
 
                 if (!flag)
                 {
+                    if (child.GetComponent<LobbyUI>().id == MenuManager.Instance.selectedLobbyId)
+                    {
+                        MenuManager.Instance.selectedLobbyId = "";
+                    }
+
                     Destroy(child.gameObject);
                 }
             }
@@ -286,10 +292,17 @@ public class LobbyManager : MonoBehaviour
 
     public void LobbyInfo()
     {
-        MenuManager.Instance.infoMenuLobbyNameText.text = joinedLobby.Name;
-        MenuManager.Instance.infoMenuMaxPlayersText.text = joinedLobby.MaxPlayers.ToString();
-        MenuManager.Instance.infoMenuGameModeText.text = joinedLobby.Data["mode"].Value;
-        MenuManager.Instance.infoMenuFriendlyFireText.text = joinedLobby.Data["friendly_fire"].Value;
+        try
+        {
+            MenuManager.Instance.infoMenuLobbyNameText.text = joinedLobby.Name;
+            MenuManager.Instance.infoMenuMaxPlayersText.text = joinedLobby.MaxPlayers.ToString();
+            MenuManager.Instance.infoMenuGameModeText.text = joinedLobby.Data["mode"].Value;
+            MenuManager.Instance.infoMenuFriendlyFireText.text = joinedLobby.Data["friendly_fire"].Value;
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
     }
 
     private Unity.Services.Lobbies.Models.Player CreatePlayer(string status)
@@ -366,6 +379,11 @@ public class LobbyManager : MonoBehaviour
 
             if (!flag)
             {
+                if (child.GetComponent<PlayerUI>().id == MenuManager.Instance.selectedPlayerId)
+                {
+                    MenuManager.Instance.selectedPlayerId = "";
+                }
+
                 Destroy(child.gameObject);
             }
         }

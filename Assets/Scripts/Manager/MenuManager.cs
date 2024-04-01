@@ -161,10 +161,16 @@ public class MenuManager : MonoBehaviour
 
     public void LobbyMenuJoinButtonClick()
     {
+        if (selectedLobbyId == "")
+        {
+            return;
+        }
+
         LobbyManager.Instance.JoinLobby(selectedLobbyId);
         lobbyMenu.SetActive(false);
         roomerMenu.SetActive(true);
         modeMenu.SetActive(true);
+        selectedLobbyId = "";
     }
 
     public void LobbyMenuCreateButtonClick()
@@ -196,6 +202,8 @@ public class MenuManager : MonoBehaviour
 
             i++;
         }
+
+        selectedLobbyId = "";
     }
 
     public void LobbyMenuBackButtonClick()
@@ -203,6 +211,7 @@ public class MenuManager : MonoBehaviour
         mainMenu.SetActive(true);
         lobbyMenu.SetActive(false);
         modeMenu.SetActive(false);
+        selectedLobbyId = "";
     }
 
     public void LobbyMenuRightArrowButtonClick()
@@ -361,10 +370,16 @@ public class MenuManager : MonoBehaviour
         ownerMenu.SetActive(false);
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
+        selectedPlayerId = "";
     }
 
     public void OwnerMenuKickButtonClick()
     {
+        if (selectedPlayerId == "")
+        {
+            return;
+        }
+
         LobbyManager.Instance.KickPlayer(selectedPlayerId);
     }
 
@@ -381,6 +396,7 @@ public class MenuManager : MonoBehaviour
         roomerMenu.SetActive(false);
         modeMenu.SetActive(false);
         lobbyMenu.SetActive(true);
+        selectedPlayerId = "";
     }
 
     public void RoomerMenuInfoButtonClick()
