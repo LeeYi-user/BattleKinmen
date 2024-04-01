@@ -215,7 +215,7 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
-        rb.MovePosition(Grid.RandomPosition(PlayerManager.Instance.spectatorArea));
+        rb.MovePosition(Grid.RandomPosition(PlayerManager.Instance.spectatorArea[Random.Range(0, PlayerManager.Instance.spectatorArea.Count)]));
     }
 
     public void Respawn()
@@ -223,6 +223,6 @@ public class PlayerMovement : NetworkBehaviour
         live = true;
         grounded = false;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
-        rb.MovePosition(Grid.RandomPosition(PlayerManager.Instance.respawnArea));
+        rb.MovePosition(Grid.RandomPosition(PlayerManager.Instance.respawnArea[Random.Range(0, PlayerManager.Instance.respawnArea.Count)]));
     }
 }

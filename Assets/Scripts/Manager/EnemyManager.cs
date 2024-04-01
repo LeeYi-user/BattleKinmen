@@ -57,7 +57,7 @@ public class EnemyManager : NetworkBehaviour
             timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
             enemyHealth = Random.Range(1f, 30f + waves.Value * 10);
 
-            Vector3 enemyPosition = Grid.RandomPosition(spawnArea);
+            Vector3 enemyPosition = Grid.RandomPosition(spawnArea[Random.Range(0, spawnArea.Count)]);
             GameObject enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.LookRotation(enemyTarget.position - enemyPosition, Vector3.up));
             enemy.GetComponent<NetworkObject>().Spawn(true);
         }

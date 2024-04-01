@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class Grid
 {
-    public static Vector3 RandomPosition(List<Transform> area)
+    public static Vector3 RandomPosition(Transform grid)
     {
-        Transform grid = area[Random.Range(0, area.Count)];
-
         float x = grid.position.x + Random.Range(-grid.localScale.x, grid.localScale.x) / 2;
         float y = grid.position.y + Random.Range(-grid.localScale.y, grid.localScale.y) / 2;
         float z = grid.position.z + Random.Range(-grid.localScale.z, grid.localScale.z) / 2;
