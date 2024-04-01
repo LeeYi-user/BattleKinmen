@@ -27,6 +27,7 @@ public class MenuManager : MonoBehaviour
     public TMP_InputField createMenuLobbyNameInput;
     public TextMeshProUGUI createMenuMaxPlayersText;
     public TextMeshProUGUI createMenuGameModeText;
+    public GameObject createMenuFriendlyFireSetting;
     public TextMeshProUGUI createMenuFriendlyFireText;
     public TextMeshProUGUI infoMenuLobbyNameText;
     public TextMeshProUGUI infoMenuMaxPlayersText;
@@ -48,7 +49,7 @@ public class MenuManager : MonoBehaviour
     public string[] modes = { "搶灘", "巷戰", "演習" };
     public int maxPlayers = 6;
     public int gameMode = 0;
-    public bool friendlyFire = false;
+    public static bool friendlyFire = false;
 
     public string selectedLobbyId;
     public string selectedPlayerId;
@@ -61,6 +62,7 @@ public class MenuManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        friendlyFire = false;
         LobbyManager.Instance.start = 0;
     }
 
@@ -255,6 +257,15 @@ public class MenuManager : MonoBehaviour
             gameMode = 0;
         }
 
+        if (gameMode == 2)
+        {
+            createMenuFriendlyFireSetting.SetActive(false);
+        }
+        else
+        {
+            createMenuFriendlyFireSetting.SetActive(true);
+        }
+
         createMenuGameModeText.text = modes[gameMode].ToString();
 
         int i = 0;
@@ -281,6 +292,15 @@ public class MenuManager : MonoBehaviour
         if (gameMode < 0)
         {
             gameMode = 2;
+        }
+
+        if (gameMode == 2)
+        {
+            createMenuFriendlyFireSetting.SetActive(false);
+        }
+        else
+        {
+            createMenuFriendlyFireSetting.SetActive(true);
         }
 
         createMenuGameModeText.text = modes[gameMode].ToString();
@@ -325,6 +345,11 @@ public class MenuManager : MonoBehaviour
 
     public void CreateMenuConfirmButtonClick()
     {
+        if (gameMode == 2)
+        {
+            friendlyFire = true;
+        }
+
         LobbyManager.Instance.CreateLobby(createMenuLobbyNameInput.text, maxPlayers, gameMode, friendlyFire);
         createMenu.SetActive(false);
         ownerMenu.SetActive(true);

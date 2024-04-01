@@ -203,6 +203,11 @@ public class PlayerGun : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ShootPlayer_ServerRpc(ulong objectId, float damage)
     {
+        if (!MenuManager.friendlyFire)
+        {
+            return;
+        }
+
         NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>().TakeDamage(damage);
     }
 

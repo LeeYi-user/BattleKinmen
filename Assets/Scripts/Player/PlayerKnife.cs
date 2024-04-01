@@ -97,6 +97,11 @@ public class PlayerKnife : NetworkBehaviour
     [ServerRpc]
     public void AttackPlayer_ServerRpc(ulong objectId, float damage)
     {
+        if (!MenuManager.friendlyFire)
+        {
+            return;
+        }
+
         NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>().TakeDamage(damage);
     }
 
