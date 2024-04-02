@@ -111,7 +111,12 @@ public class Enemy : NetworkBehaviour
     private void Invade()
     {
         invading = true;
-        TeamModeManager.Instance.currentDefense--;
+
+        if (TeamModeManager.Instance)
+        {
+            TeamModeManager.Instance.currentDefense--;
+        }
+
         EnemyManager.Instance.enemies.Value--;
         Destroy(gameObject);
     }

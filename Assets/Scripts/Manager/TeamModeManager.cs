@@ -73,7 +73,13 @@ public class TeamModeManager : NetworkBehaviour
                 player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("YOU LOSE");
             }
         }
-        else if (EnemyManager.Instance.waves.Value == waveLimit)
+
+        if (!EnemyManager.Instance)
+        {
+            return;
+        }
+
+        if (EnemyManager.Instance.waves.Value == waveLimit)
         {
             PlayerManager.Instance.GameOver_ClientRpc();
 
@@ -112,7 +118,7 @@ public class TeamModeManager : NetworkBehaviour
 
             downCounter.text = minstr + ":" + secstr;
         }
-        else
+        else if (EnemyManager.Instance)
         {
             downCounter.text = EnemyManager.Instance.enemies.Value.ToString();
 

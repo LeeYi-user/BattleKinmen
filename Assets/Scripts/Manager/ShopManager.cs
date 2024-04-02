@@ -65,7 +65,7 @@ public class ShopManager : NetworkBehaviour
             }
         }
 
-        if (!TeamModeManager.Instance)
+        if (!TeamModeManager.Instance || !EnemyManager.Instance)
         {
             categories[2].SetActive(false);
             categories[3].SetActive(false);

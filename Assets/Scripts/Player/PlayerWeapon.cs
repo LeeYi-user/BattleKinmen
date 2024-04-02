@@ -81,7 +81,7 @@ public class PlayerWeapon : NetworkBehaviour
             }
         }
 
-        if (cooldown > 0 || !TeamModeManager.Instance)
+        if (cooldown > 0 || !TeamModeManager.Instance || !EnemyManager.Instance)
         {
             return;
         }
