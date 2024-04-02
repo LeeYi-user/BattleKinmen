@@ -17,6 +17,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private CapsuleCollider bodyCollider;
     [SerializeField] private SkinnedMeshRenderer[] bodySkins;
 
+    public PlayerName playerName;
     public PlayerCamera playerCamera;
     public PlayerWeapon playerWeapon;
     public PlayerMovement playerMovement;
@@ -104,6 +105,7 @@ public class Player : NetworkBehaviour
             PlayerManager.Instance.deathScreen.SetActive(true);
             PlayerManager.Instance.deathMessage.text = msg;
 
+            playerName.Despawn();
             playerCamera.Spawn();
             playerWeapon.Despawn();
             playerMovement.Despawn();
@@ -146,6 +148,7 @@ public class Player : NetworkBehaviour
             PlayerManager.Instance.gamingScreen.SetActive(true);
             PlayerManager.Instance.deathScreen.SetActive(false);
 
+            playerName.Respawn();
             playerCamera.Spawn();
             playerWeapon.Respawn();
             playerMovement.Respawn();
