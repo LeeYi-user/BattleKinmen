@@ -165,11 +165,6 @@ public class MenuManager : MonoBehaviour
 
         ClearPlayerList();
         LobbyManager.Instance.JoinLobby(selectedLobbyId);
-        lobbyMenu.SetActive(false);
-        roomerMenu.SetActive(true);
-        modeMenu.SetActive(true);
-        selectedLobbyId = "";
-        lobbyMenuSearchBar.text = "";
     }
 
     public void LobbyMenuCreateButtonClick()

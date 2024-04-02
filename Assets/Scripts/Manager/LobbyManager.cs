@@ -284,6 +284,12 @@ public class LobbyManager : MonoBehaviour
 
                 i++;
             }
+
+            MenuManager.Instance.lobbyMenu.SetActive(false);
+            MenuManager.Instance.roomerMenu.SetActive(true);
+            MenuManager.Instance.modeMenu.SetActive(true);
+            MenuManager.Instance.selectedLobbyId = "";
+            MenuManager.Instance.lobbyMenuSearchBar.text = "";
         }
         catch (Exception e)
         {
