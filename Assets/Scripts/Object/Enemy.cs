@@ -99,7 +99,7 @@ public class Enemy : NetworkBehaviour
     {
         base.OnDestroy();
 
-        if (!IsHost || invading || PlayerManager.gameOver || RelayManager.disconnecting)
+        if (!IsHost || invading || PlayerManager.gameOver || RelayManager.disconnecting || !ShopManager.Instance)
         {
             return;
         }

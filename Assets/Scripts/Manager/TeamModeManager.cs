@@ -15,12 +15,11 @@ public class TeamModeManager : NetworkBehaviour
 
     [Header("Child UI")]
     public TextMeshProUGUI storyText;
-    public TextMeshProUGUI enemyCounter;
-    public TextMeshProUGUI waveCounter;
-    public TextMeshProUGUI cashCounter;
+    public TextMeshProUGUI downCounter;
     public TextMeshProUGUI gameoverMessage;
 
     [Header("Defense")]
+    public int waveLimit;
     public int maxDefense;
     public int currentDefense;
 
@@ -74,6 +73,15 @@ public class TeamModeManager : NetworkBehaviour
                 player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("YOU LOSE");
             }
         }
+        else if (EnemyManager.Instance.waves.Value == waveLimit)
+        {
+            PlayerManager.Instance.GameOver_ClientRpc();
+
+            foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
+            {
+                player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("YOU WIN");
+            }
+        }
     }
 
     private void Counter2()
@@ -102,15 +110,28 @@ public class TeamModeManager : NetworkBehaviour
                 secstr = "0" + secstr;
             }
 
-            enemyCounter.text = minstr + ":" + secstr;
+            downCounter.text = minstr + ":" + secstr;
         }
         else
         {
-            enemyCounter.text = EnemyManager.Instance.enemies.Value.ToString();
-        }
+            downCounter.text = EnemyManager.Instance.enemies.Value.ToString();
 
-        waveCounter.text = "第 " + EnemyManager.Instance.waves.Value.ToString() + " 波";
-        cashCounter.text = "$ " + (ShopManager.Instance.teamCash.Value - ShopManager.Instance.cashSpent).ToString();
+            if (!IsHost)
+            {
+                return;
+            }
+
+            if (EnemyManager.Instance.enemies.Value > 0)
+            {
+                EnemyManager.Instance.disable = false;
+            }
+            else
+            {
+                EnemyManager.Instance.disable = true;
+                EnemyManager.Instance.waves.Value++;
+                breakTime.Value = 30.99f;
+            }
+        }
     }
 
     private void Counter1()

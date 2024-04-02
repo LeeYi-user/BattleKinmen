@@ -17,7 +17,8 @@ public class ShopManager : NetworkBehaviour
     public List<GameObject> categories;
     public List<GameObject> areas;
     public List<ShopItem> shopItems;
-    public TextMeshProUGUI cashCounter;
+    public TextMeshProUGUI cashCounter1;
+    public TextMeshProUGUI cashCounter2;
     public Button backButton;
 
     private void Awake()
@@ -63,6 +64,12 @@ public class ShopManager : NetworkBehaviour
                 areas.RemoveAt(k + 2 - (6 - areas.Count));
             }
         }
+
+        if (!TeamModeManager.Instance)
+        {
+            categories[2].SetActive(false);
+            categories[3].SetActive(false);
+        }
     }
 
     private void Update()
@@ -91,7 +98,8 @@ public class ShopManager : NetworkBehaviour
             }
         }
 
-        cashCounter.text = "$ " + (teamCash.Value - cashSpent).ToString();
+        cashCounter1.text = "$ " + (teamCash.Value - cashSpent).ToString();
+        cashCounter2.text = "$ " + (teamCash.Value - cashSpent).ToString();
 
         if (!IsHost)
         {

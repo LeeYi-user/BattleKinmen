@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using TMPro;
 
 public class EnemyManager : NetworkBehaviour
 {
     public static EnemyManager Instance;
 
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private TextMeshProUGUI waveCounter;
 
     public NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -20,6 +22,8 @@ public class EnemyManager : NetworkBehaviour
 
     private int leftToSpawn;
     private float timeLeft;
+
+    public bool disable = true;
 
     private void Awake()
     {
@@ -35,12 +39,19 @@ public class EnemyManager : NetworkBehaviour
 
     private void Update()
     {
+        if (PlayerManager.Instance.gameStart < 2 || PlayerManager.gameOver || RelayManager.disconnecting)
+        {
+            return;
+        }
+
+        waveCounter.text = "第 " + waves.Value.ToString() + " 波";
+
         if (!IsHost)
         {
             return;
         }
 
-        if (PlayerManager.Instance.gameStart < 2 || TeamModeManager.Instance.breakTime.Value > 0 || PlayerManager.gameOver || RelayManager.disconnecting)
+        if (disable)
         {
             enemyDamage = 30 + waves.Value * 5;
             enemies.Value = waves.Value * 10;
@@ -60,12 +71,6 @@ public class EnemyManager : NetworkBehaviour
             Vector3 enemyPosition = Grid.RandomPosition(spawnArea[Random.Range(0, spawnArea.Count)]);
             GameObject enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.LookRotation(enemyTarget.position - enemyPosition, Vector3.up));
             enemy.GetComponent<NetworkObject>().Spawn(true);
-        }
-
-        if (enemies.Value <= 0)
-        {
-            TeamModeManager.Instance.breakTime.Value = 30.99f;
-            waves.Value++;
         }
     }
 }
