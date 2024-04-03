@@ -8,11 +8,7 @@ public class EnemyManager : NetworkBehaviour
 {
     public static EnemyManager Instance;
 
-    [SerializeField] private Transform enemyTarget;
-    [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private TextMeshProUGUI waveCounter;
-
-    public List<Transform> spawnArea;
 
     private float enemyHealth;
     private float enemyDamage;
@@ -62,9 +58,9 @@ public class EnemyManager : NetworkBehaviour
             timeLeft = 15f / (GameManager.Instance.waves.Value + 9f) * GameManager.Instance.enemyDelay;
             enemyHealth = Random.Range(1f, 30f + GameManager.Instance.waves.Value * 10);
 
-            Vector3 enemyPosition = Grid.RandomPosition(spawnArea[Random.Range(0, spawnArea.Count)]);
-            GameObject enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.LookRotation(enemyTarget.position - enemyPosition, Vector3.up));
-            enemy.GetComponent<Enemy>().target = enemyTarget;
+            Vector3 enemyPosition = Grid.RandomPosition(GameManager.Instance.enemySpawnArea[Random.Range(0, GameManager.Instance.enemySpawnArea.Count)]);
+            GameObject enemy = Instantiate(GameManager.Instance.enemy, enemyPosition, Quaternion.LookRotation(GameManager.Instance.enemyTarget.position - enemyPosition, Vector3.up));
+            enemy.GetComponent<Enemy>().target = GameManager.Instance.enemyTarget;
             enemy.GetComponent<Enemy>().health = enemyHealth;
             enemy.GetComponent<Enemy>().damage = enemyDamage;
             enemy.GetComponent<NetworkObject>().Spawn(true);

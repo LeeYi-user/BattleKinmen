@@ -10,15 +10,12 @@ public class TeamModeManager : NetworkBehaviour
     public static TeamModeManager Instance;
 
     [Header("Parent UI")]
-    public GameObject storyScreen;
+    [SerializeField] private GameObject storyScreen;
 
     [Header("Child UI")]
-    public TextMeshProUGUI storyText;
-    public TextMeshProUGUI downCounter;
-    public TextMeshProUGUI gameoverMessage;
-
-    [Header("Variable")]
-    public int waveLimit = 0;
+    [SerializeField] private TextMeshProUGUI storyText;
+    [SerializeField] private TextMeshProUGUI downCounter;
+    [SerializeField] private TextMeshProUGUI gameoverMessage;
 
     private int phase;
     private bool pause;
@@ -62,7 +59,7 @@ public class TeamModeManager : NetworkBehaviour
                 player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("YOU LOSE");
             }
         }
-        else if (GameManager.Instance.waves.Value == waveLimit)
+        else if (GameManager.Instance.waves.Value == GameManager.Instance.waveLimit + 1)
         {
             GameManager.Instance.GameOver_ClientRpc();
 

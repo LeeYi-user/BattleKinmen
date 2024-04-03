@@ -9,17 +9,15 @@ public class ShopManager : NetworkBehaviour
 {
     public static ShopManager Instance;
 
-    public int cashSpent = 0;
+    [SerializeField] private GameObject shopMenu;
+    [SerializeField] private List<GameObject> categories;
+    [SerializeField] private List<GameObject> areas;
+    [SerializeField] private List<ShopItem> shopItems;
+    [SerializeField] private TextMeshProUGUI cashCounter1;
+    [SerializeField] private TextMeshProUGUI cashCounter2;
+    [SerializeField] private Button backButton;
 
-    public GameObject shopMenu;
-    public List<GameObject> categories;
-    public List<GameObject> areas;
-    public List<ShopItem> shopItems;
-    public TextMeshProUGUI cashCounter1;
-    public TextMeshProUGUI cashCounter2;
-    public Button backButton;
-
-    public bool teamDisable = false;
+    private int cashSpent;
 
     private void Awake()
     {
@@ -70,7 +68,7 @@ public class ShopManager : NetworkBehaviour
             categories[2].SetActive(false);
         }
 
-        if (teamDisable)
+        if (GameManager.Instance.teamDisable)
         {
             categories[3].SetActive(false);
         }

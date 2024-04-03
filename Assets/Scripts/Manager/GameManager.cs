@@ -31,16 +31,20 @@ public class GameManager : NetworkBehaviour
     public TextMeshProUGUI ammoBar;
     public TextMeshProUGUI deathMessage;
 
-    [Header("Player Respawn")]
-    public List<Transform> spectatorArea;
-    public List<Transform> respawnArea;
+    [Header("Player Spawn")]
+    public List<Transform> playerDespawnArea;
+    public List<Transform> playerRespawnArea;
     public float respawnCooldown = 10f;
 
     [Header("Team Mode Manager")]
+    public int waveLimit = -1;
     public int maxDefense = 3;
     public int currentDefense = 3;
 
     [Header("Enemy Manager")]
+    public GameObject enemy;
+    public Transform enemyTarget;
+    public List<Transform> enemySpawnArea;
     public float enemyDelay = 1f;
     public bool enemyDisable = true;
 
@@ -48,6 +52,7 @@ public class GameManager : NetworkBehaviour
     public float cashBonus = 1f;
     public bool cashDisable = false;
     public bool skillDisable = false;
+    public bool teamDisable = false;
 
     [Header("Game State")]
     public int gameStart = 0;
