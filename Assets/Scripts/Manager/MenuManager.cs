@@ -51,7 +51,7 @@ public class MenuManager : MonoBehaviour
 
     public string[] modes = { "搶灘", "巷戰", "演習" };
     public int maxPlayers = 6;
-    public int gameMode = 0;
+    public static int gameMode = 0;
     public static bool friendlyFire = false;
 
     public string selectedLobbyId;
@@ -65,6 +65,7 @@ public class MenuManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        gameMode = 0;
         friendlyFire = false;
         LobbyManager.Instance.start = 0;
     }

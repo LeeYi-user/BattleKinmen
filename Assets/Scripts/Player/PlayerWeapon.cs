@@ -99,7 +99,7 @@ public class PlayerWeapon : NetworkBehaviour
                     break;
                 case 1:
                     cooldown = landmineCooldown.Value;
-                    PlaceLandmine_ServerRpc(playerCamera.position, NetworkObjectId);
+                    PlaceLandmine_ServerRpc(playerCamera.position);
                     break;
                 case 2:
                     cooldown = healCooldown.Value;
@@ -117,6 +117,7 @@ public class PlayerWeapon : NetworkBehaviour
         GameObject grenadeGO = Instantiate(grenade, pos, Random.rotation);
         grenadeGO.GetComponent<Grenade>().forceAxis = zAxis;
         grenadeGO.GetComponent<Grenade>().rotateAxis = xAxis;
+        grenadeGO.GetComponent<Grenade>().ownerId = NetworkObjectId;
         grenadeGO.GetComponent<Grenade>().force = grenadeDistance.Value;
         grenadeGO.GetComponent<Grenade>().explosionRange = grenadeRange.Value;
         grenadeGO.GetComponent<Grenade>().explosionDamage = grenadeDamage.Value;
@@ -124,14 +125,14 @@ public class PlayerWeapon : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PlaceLandmine_ServerRpc(Vector3 pos, ulong objectId)
+    private void PlaceLandmine_ServerRpc(Vector3 pos)
     {
         RaycastHit hit;
 
         if (Physics.Raycast(pos, Vector3.down, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
         {
             GameObject landmineGO = Instantiate(landmine, hit.point, Quaternion.Euler(-90f, 0f, Random.Range(0f, 360f)));
-            landmineGO.GetComponent<Landmine>().ownerId = objectId;
+            landmineGO.GetComponent<Landmine>().ownerId = NetworkObjectId;
             landmineGO.GetComponent<Landmine>().explosionRange = landmineRange.Value;
             landmineGO.GetComponent<Landmine>().explosionDamage = landmineDamage.Value;
             landmineGO.GetComponent<NetworkObject>().Spawn(true);

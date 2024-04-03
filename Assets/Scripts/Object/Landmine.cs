@@ -24,7 +24,7 @@ public class Landmine : NetworkBehaviour
 
             foreach (Collider collider in colliders)
             {
-                collider.GetComponent<Enemy>().TakeDamage(explosionDamage);
+                collider.GetComponent<Enemy>().TakeDamage(explosionDamage, ownerId);
             }
 
             GameObject explosionGO = Instantiate(explosion, transform.position, Quaternion.identity);

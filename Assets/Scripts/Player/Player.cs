@@ -22,6 +22,9 @@ public class Player : NetworkBehaviour
     public PlayerWeapon playerWeapon;
     public PlayerMovement playerMovement;
 
+    public NetworkVariable<int> playerClass = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     private bool spawning = true;
 
     public override void OnNetworkSpawn()
@@ -35,6 +38,7 @@ public class Player : NetworkBehaviour
 
         currentHealth.OnValueChanged += ShowHealth;
         invTime.OnValueChanged += ChangeHealth;
+        playerClass.Value = MenuManager.playerClass;
     }
 
     private void ShowHealth(float previous, float current)
@@ -73,7 +77,7 @@ public class Player : NetworkBehaviour
 
         if (transform.position.y < minAltitude)
         {
-            TakeDamage(100f);
+            TakeDamage(100f, NetworkObjectId);
         }
 
         if (currentHealth.Value <= 0)
@@ -84,7 +88,7 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, ulong attackerId)
     {
         if (invTime.Value > 0f)
         {
@@ -92,6 +96,20 @@ public class Player : NetworkBehaviour
         }
 
         currentHealth.Value -= damage * (1f - bulletproof.Value);
+
+        if (NetworkManager.SpawnManager.SpawnedObjects[attackerId].GetComponent<Player>() && attackerId != NetworkObjectId && currentHealth.Value <= 0f)
+        {
+            Player attacker = NetworkManager.SpawnManager.SpawnedObjects[attackerId].GetComponent<Player>();
+
+            if (MenuManager.gameMode == 2)
+            {
+                attacker.playerScore.Value += 10;
+            }
+            else
+            {
+                attacker.playerScore.Value -= 10;
+            }
+        }
     }
 
     [ClientRpc]

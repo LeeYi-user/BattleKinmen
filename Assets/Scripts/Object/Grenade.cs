@@ -12,6 +12,7 @@ public class Grenade : NetworkBehaviour
     public Vector3 forceAxis;
     public Vector3 rotateAxis;
 
+    public ulong ownerId;
     public float force;
     public float explosionRange;
     public float explosionDamage;
@@ -51,7 +52,7 @@ public class Grenade : NetworkBehaviour
 
             foreach (Collider collider in colliders)
             {
-                collider.GetComponent<Enemy>().TakeDamage(explosionDamage);
+                collider.GetComponent<Enemy>().TakeDamage(explosionDamage, ownerId);
             }
 
             GameObject explosionGO = Instantiate(explosion, transform.position, Quaternion.identity);

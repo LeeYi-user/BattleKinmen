@@ -134,7 +134,7 @@ public class Enemy : NetworkBehaviour
             animator.SetTrigger("isFiring");
             PlayMuzzleFlash_ClientRpc();
             PlayAudioSource_ClientRpc();
-            player.GetComponent<Player>().TakeDamage(damage);
+            player.GetComponent<Player>().TakeDamage(damage, NetworkObjectId);
 
             yield return new WaitForSeconds(0.8f);
 
@@ -177,8 +177,13 @@ public class Enemy : NetworkBehaviour
         audioSource.PlayOneShot(audioClip);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, ulong attackerId)
     {
         health -= damage;
+
+        if (health <= 0)
+        {
+            NetworkManager.SpawnManager.SpawnedObjects[attackerId].GetComponent<Player>().playerScore.Value += 10;
+        }
     }
 }

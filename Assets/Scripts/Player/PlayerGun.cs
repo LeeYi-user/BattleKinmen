@@ -208,13 +208,13 @@ public class PlayerGun : NetworkBehaviour
             return;
         }
 
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>().TakeDamage(damage);
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>().TakeDamage(damage, NetworkObjectId);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void ShootEnemy_ServerRpc(ulong objectId, float damage)
     {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Enemy>().TakeDamage(damage, NetworkObjectId);
     }
 
     [ServerRpc(RequireOwnership = false)]

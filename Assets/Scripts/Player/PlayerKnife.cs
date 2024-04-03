@@ -102,13 +102,13 @@ public class PlayerKnife : NetworkBehaviour
             return;
         }
 
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>().TakeDamage(damage);
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Player>().TakeDamage(damage, NetworkObjectId);
     }
 
     [ServerRpc]
     public void AttackEnemy_ServerRpc(ulong objectId, float damage)
     {
-        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        NetworkManager.SpawnManager.SpawnedObjects[objectId].gameObject.GetComponent<Enemy>().TakeDamage(damage, NetworkObjectId);
     }
 
     [ServerRpc]
