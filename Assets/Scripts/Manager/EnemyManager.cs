@@ -8,22 +8,16 @@ public class EnemyManager : NetworkBehaviour
 {
     public static EnemyManager Instance;
 
+    [SerializeField] private Transform enemyTarget;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private TextMeshProUGUI waveCounter;
 
-    public NetworkVariable<int> waves = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<int> enemies = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
     public List<Transform> spawnArea;
-    public Transform enemyTarget;
-    public float enemyHealth;
-    public float enemyDelay;
-    public float enemyDamage;
 
+    private float enemyHealth;
+    private float enemyDamage;
     private int leftToSpawn;
     private float timeLeft;
-
-    public bool disable = true;
 
     private void Awake()
     {
@@ -39,23 +33,23 @@ public class EnemyManager : NetworkBehaviour
 
     private void Update()
     {
-        if (PlayerManager.Instance.gameStart < 2 || PlayerManager.gameOver || RelayManager.disconnecting)
+        if (GameManager.Instance.gameStart < 2 || GameManager.gameOver || RelayManager.disconnecting)
         {
             return;
         }
 
-        waveCounter.text = "第 " + waves.Value.ToString() + " 波";
+        waveCounter.text = "第 " + GameManager.Instance.waves.Value.ToString() + " 波";
 
         if (!IsHost)
         {
             return;
         }
 
-        if (disable)
+        if (GameManager.Instance.enemyDisable)
         {
-            enemyDamage = 30 + waves.Value * 5;
-            enemies.Value = waves.Value * 10;
-            leftToSpawn = enemies.Value;
+            enemyDamage = 30 + GameManager.Instance.waves.Value * 5;
+            GameManager.Instance.enemies.Value = GameManager.Instance.waves.Value * 10;
+            leftToSpawn = GameManager.Instance.enemies.Value;
             timeLeft = 0;
             return;
         }
@@ -65,11 +59,14 @@ public class EnemyManager : NetworkBehaviour
         if (leftToSpawn > 0 && timeLeft < 0)
         {
             leftToSpawn--;
-            timeLeft = 15f / (waves.Value + 9f) * enemyDelay;
-            enemyHealth = Random.Range(1f, 30f + waves.Value * 10);
+            timeLeft = 15f / (GameManager.Instance.waves.Value + 9f) * GameManager.Instance.enemyDelay;
+            enemyHealth = Random.Range(1f, 30f + GameManager.Instance.waves.Value * 10);
 
             Vector3 enemyPosition = Grid.RandomPosition(spawnArea[Random.Range(0, spawnArea.Count)]);
             GameObject enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.LookRotation(enemyTarget.position - enemyPosition, Vector3.up));
+            enemy.GetComponent<Enemy>().target = enemyTarget;
+            enemy.GetComponent<Enemy>().health = enemyHealth;
+            enemy.GetComponent<Enemy>().damage = enemyDamage;
             enemy.GetComponent<NetworkObject>().Spawn(true);
         }
     }

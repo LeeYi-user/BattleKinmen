@@ -6,12 +6,14 @@ using Unity.Netcode;
 
 public class Enemy : NetworkBehaviour
 {
+    public Transform target;
+    public float health;
+    public float damage;
+
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private GameObject cash;
     [SerializeField] private Transform head;
     [SerializeField] private Transform hips;
-
-    private float currentHealth;
 
     [SerializeField] private LayerMask whatIsPlayer;
     [SerializeField] private LayerMask whatIsGround;
@@ -23,7 +25,6 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Animator animator;
 
-    private Transform target;
     private bool running;
     private bool invading;
     private bool destroying;
@@ -37,9 +38,6 @@ public class Enemy : NetworkBehaviour
         {
             return;
         }
-
-        currentHealth = EnemyManager.Instance.enemyHealth;
-        target = EnemyManager.Instance.enemyTarget;
     }
 
     private void Update()
@@ -49,7 +47,7 @@ public class Enemy : NetworkBehaviour
             return;
         }
 
-        if (PlayerManager.gameOver)
+        if (GameManager.gameOver)
         {
             destroying = true;
             Destroy(gameObject);
@@ -63,7 +61,7 @@ public class Enemy : NetworkBehaviour
             animator.SetBool("isRunning", true);
         }
 
-        if (currentHealth <= 0)
+        if (health <= 0)
         {
             destroying = true;
             Die();
@@ -92,14 +90,14 @@ public class Enemy : NetworkBehaviour
         animator.SetTrigger("isDying");
         Destroy(gameObject, 2f);
 
-        EnemyManager.Instance.enemies.Value--;
+        GameManager.Instance.enemies.Value--;
     }
 
     public override void OnDestroy()
     {
         base.OnDestroy();
 
-        if (!IsHost || invading || PlayerManager.gameOver || RelayManager.disconnecting || !ShopManager.Instance)
+        if (!IsHost || invading || GameManager.gameOver || RelayManager.disconnecting || GameManager.Instance.cashDisable)
         {
             return;
         }
@@ -111,13 +109,8 @@ public class Enemy : NetworkBehaviour
     private void Invade()
     {
         invading = true;
-
-        if (TeamModeManager.Instance)
-        {
-            TeamModeManager.Instance.currentDefense--;
-        }
-
-        EnemyManager.Instance.enemies.Value--;
+        GameManager.Instance.currentDefense--;
+        GameManager.Instance.enemies.Value--;
         Destroy(gameObject);
     }
 
@@ -141,7 +134,7 @@ public class Enemy : NetworkBehaviour
             animator.SetTrigger("isFiring");
             PlayMuzzleFlash_ClientRpc();
             PlayAudioSource_ClientRpc();
-            player.GetComponent<Player>().TakeDamage(EnemyManager.Instance.enemyDamage);
+            player.GetComponent<Player>().TakeDamage(damage);
 
             yield return new WaitForSeconds(0.8f);
 
@@ -186,6 +179,6 @@ public class Enemy : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
+        health -= damage;
     }
 }

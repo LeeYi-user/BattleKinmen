@@ -39,11 +39,11 @@ public class Player : NetworkBehaviour
 
     private void ShowHealth(float previous, float current)
     {
-        PlayerManager.Instance.healthBar.text = "";
+        GameManager.Instance.healthBar.text = "";
 
         for (int i = 0; i < currentHealth.Value; i += 10)
         {
-            PlayerManager.Instance.healthBar.text += "|";
+            GameManager.Instance.healthBar.text += "|";
         }
     }
 
@@ -51,11 +51,11 @@ public class Player : NetworkBehaviour
     {
         if (invTime.Value > 0f)
         {
-            PlayerManager.Instance.healthBar.color = Color.yellow;
+            GameManager.Instance.healthBar.color = Color.yellow;
         }
         else
         {
-            PlayerManager.Instance.healthBar.color = Color.green;
+            GameManager.Instance.healthBar.color = Color.green;
         }
     }
 
@@ -80,7 +80,7 @@ public class Player : NetworkBehaviour
         {
             spawning = true;
             PlayerDespawn_ClientRpc("YOU DIED");
-            StartCoroutine(Respawn(PlayerManager.Instance.respawnCooldown));
+            StartCoroutine(Respawn(GameManager.Instance.respawnCooldown));
         }
     }
 
@@ -101,9 +101,9 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            PlayerManager.Instance.gamingScreen.SetActive(false);
-            PlayerManager.Instance.deathScreen.SetActive(true);
-            PlayerManager.Instance.deathMessage.text = msg;
+            GameManager.Instance.gamingScreen.SetActive(false);
+            GameManager.Instance.deathScreen.SetActive(true);
+            GameManager.Instance.deathMessage.text = msg;
 
             playerName.Despawn();
             playerCamera.Spawn();
@@ -123,7 +123,7 @@ public class Player : NetworkBehaviour
     {
         yield return new WaitForSeconds(seconds);
 
-        if (PlayerManager.gameOver)
+        if (GameManager.gameOver)
         {
             yield break;
         }
@@ -145,8 +145,8 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            PlayerManager.Instance.gamingScreen.SetActive(true);
-            PlayerManager.Instance.deathScreen.SetActive(false);
+            GameManager.Instance.gamingScreen.SetActive(true);
+            GameManager.Instance.deathScreen.SetActive(false);
 
             playerName.Respawn();
             playerCamera.Spawn();

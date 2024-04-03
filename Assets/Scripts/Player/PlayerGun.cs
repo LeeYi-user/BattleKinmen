@@ -49,11 +49,11 @@ public class PlayerGun : NetworkBehaviour
 
     private void ShowAmmo()
     {
-        PlayerManager.Instance.ammoBar.text = "";
+        GameManager.Instance.ammoBar.text = "";
 
         for (int i = 0; i < currentAmmo.Value; i += 1)
         {
-            PlayerManager.Instance.ammoBar.text += "|";
+            GameManager.Instance.ammoBar.text += "|";
         }
     }
 

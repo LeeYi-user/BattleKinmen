@@ -210,12 +210,12 @@ public class PlayerMovement : NetworkBehaviour
         live = false;
         rb.constraints = RigidbodyConstraints.FreezeAll;
 
-        if (PlayerManager.gameOver)
+        if (GameManager.gameOver)
         {
             return;
         }
 
-        rb.MovePosition(Grid.RandomPosition(PlayerManager.Instance.spectatorArea[Random.Range(0, PlayerManager.Instance.spectatorArea.Count)]));
+        rb.MovePosition(Grid.RandomPosition(GameManager.Instance.spectatorArea[Random.Range(0, GameManager.Instance.spectatorArea.Count)]));
     }
 
     public void Respawn()
@@ -223,6 +223,6 @@ public class PlayerMovement : NetworkBehaviour
         live = true;
         grounded = false;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
-        rb.MovePosition(Grid.RandomPosition(PlayerManager.Instance.respawnArea[Random.Range(0, PlayerManager.Instance.respawnArea.Count)]));
+        rb.MovePosition(Grid.RandomPosition(GameManager.Instance.respawnArea[Random.Range(0, GameManager.Instance.respawnArea.Count)]));
     }
 }

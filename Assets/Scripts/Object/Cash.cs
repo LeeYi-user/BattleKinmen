@@ -24,7 +24,7 @@ public class Cash : NetworkBehaviour
             return;
         }
 
-        if (PlayerManager.gameOver)
+        if (GameManager.gameOver)
         {
             Destroy(gameObject);
         }
@@ -41,7 +41,7 @@ public class Cash : NetworkBehaviour
                 return;
             }
 
-            ShopManager.Instance.teamCash.Value += (int)(100f * ShopManager.Instance.cashBonus);
+            GameManager.Instance.teamCash.Value += (int)(100f * GameManager.Instance.cashBonus);
             Destroy(gameObject);
         }
     }

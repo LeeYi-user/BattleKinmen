@@ -9,9 +9,7 @@ public class ShopManager : NetworkBehaviour
 {
     public static ShopManager Instance;
 
-    [HideInInspector] public NetworkVariable<int> teamCash = new NetworkVariable<int>(1000, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [HideInInspector] public int cashSpent = 0;
-    [HideInInspector] public float cashBonus = 1f;
+    public int cashSpent = 0;
 
     public GameObject shopMenu;
     public List<GameObject> categories;
@@ -20,6 +18,8 @@ public class ShopManager : NetworkBehaviour
     public TextMeshProUGUI cashCounter1;
     public TextMeshProUGUI cashCounter2;
     public Button backButton;
+
+    public bool teamDisable = false;
 
     private void Awake()
     {
@@ -65,16 +65,20 @@ public class ShopManager : NetworkBehaviour
             }
         }
 
-        if (!TeamModeManager.Instance || !EnemyManager.Instance)
+        if (GameManager.Instance.skillDisable)
         {
             categories[2].SetActive(false);
+        }
+
+        if (teamDisable)
+        {
             categories[3].SetActive(false);
         }
     }
 
     private void Update()
     {
-        if (!PlayerManager.Instance.gamingScreen.activeSelf || PlayerManager.Instance.gameStart < 2 || RelayManager.disconnecting)
+        if (!GameManager.Instance.gamingScreen.activeSelf || GameManager.Instance.gameStart < 2 || RelayManager.disconnecting)
         {
             if (shopMenu.activeSelf)
             {
@@ -98,8 +102,8 @@ public class ShopManager : NetworkBehaviour
             }
         }
 
-        cashCounter1.text = "$ " + (teamCash.Value - cashSpent).ToString();
-        cashCounter2.text = "$ " + (teamCash.Value - cashSpent).ToString();
+        cashCounter1.text = "$ " + (GameManager.Instance.teamCash.Value - cashSpent).ToString();
+        cashCounter2.text = "$ " + (GameManager.Instance.teamCash.Value - cashSpent).ToString();
 
         if (!IsHost)
         {
@@ -108,7 +112,7 @@ public class ShopManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            teamCash.Value += 50000;
+            GameManager.Instance.teamCash.Value += 50000;
         }
     }
 
@@ -149,7 +153,7 @@ public class ShopManager : NetworkBehaviour
 
     public void UpgradeButtonClick(ShopItem shopItem)
     {
-        if (shopItem.levelSlider.value == shopItem.levelSlider.maxValue || shopItem.price > teamCash.Value - cashSpent)
+        if (shopItem.levelSlider.value == shopItem.levelSlider.maxValue || shopItem.price > GameManager.Instance.teamCash.Value - cashSpent)
         {
             return;
         }
@@ -247,20 +251,20 @@ public class ShopManager : NetworkBehaviour
                 player.playerWeapon.healInv.Value += 0.5f;
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
-                PlayerManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);
+                GameManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);
                 break;
             case "enemyDelay": // 需要更改 enemyDelay
-                EnemyManager.Instance.enemyDelay += 0.1f;
+                GameManager.Instance.enemyDelay += 0.1f;
                 break;
             case "cashBonus": // 需要更改 cashBonus
-                cashBonus += 0.1f;
+                GameManager.Instance.cashBonus += 0.1f;
                 break;
             case "mapDefense": // 需要更改 maxDefense 和 currentDefense
-                TeamModeManager.Instance.currentDefense += 1;
+                GameManager.Instance.currentDefense += 1;
 
-                if (TeamModeManager.Instance.maxDefense < TeamModeManager.Instance.currentDefense)
+                if (GameManager.Instance.maxDefense < GameManager.Instance.currentDefense)
                 {
-                    TeamModeManager.Instance.maxDefense = TeamModeManager.Instance.currentDefense;
+                    GameManager.Instance.maxDefense = GameManager.Instance.currentDefense;
                 }
 
                 break;
