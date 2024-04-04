@@ -43,10 +43,9 @@ public class ScoreManager : NetworkBehaviour
                 scoreboard[entry.Key].classText.text = MenuManager.classes[player.playerClass.Value];
                 scoreboard[entry.Key].scoreText.text = player.playerScore.Value.ToString();
             }
-            else
+            else if (scoreboard[entry.Key])
             {
-                Destroy(scoreboard[entry.Key]);
-                scoreboard.Remove(entry.Key);
+                Destroy(scoreboard[entry.Key].gameObject);
             }
         }
     }
