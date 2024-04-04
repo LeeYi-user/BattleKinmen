@@ -6,15 +6,14 @@ public class ChiScrollRect : ScrollRect
 {
     private static string mouseScrollWheelAxis = "Mouse ScrollWheel";
     private bool swallowMouseWheelScrolls = true;
-    private bool isMouseOver = true;
 
     private void Update()
     {
         // Detect the mouse wheel and generate a scroll. This fixes the issue where Unity will prevent our ScrollRect
         // from receiving any mouse wheel messages if the mouse is over a raycast target (such as a button).
-        if (isMouseOver && IsMouseWheelRolling())
+        if (IsMouseWheelRolling())
         {
-            var delta = UnityEngine.Input.GetAxis(mouseScrollWheelAxis);
+            var delta = Input.GetAxis(mouseScrollWheelAxis);
 
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
             pointerData.scrollDelta = new Vector2(0f, delta);
@@ -35,9 +34,9 @@ public class ChiScrollRect : ScrollRect
         {
             // Amplify the mousewheel so that it matches the scroll sensitivity.
             if (data.scrollDelta.y < -Mathf.Epsilon)
-                data.scrollDelta = new Vector2(0f, -scrollSensitivity * 10f);
+                data.scrollDelta = new Vector2(0f, -scrollSensitivity);
             else if (data.scrollDelta.y > Mathf.Epsilon)
-                data.scrollDelta = new Vector2(0f, scrollSensitivity * 10f);
+                data.scrollDelta = new Vector2(0f, scrollSensitivity);
 
             base.OnScroll(data);
         }
@@ -45,6 +44,6 @@ public class ChiScrollRect : ScrollRect
 
     private static bool IsMouseWheelRolling()
     {
-        return UnityEngine.Input.GetAxis(mouseScrollWheelAxis) != 0;
+        return Input.GetAxis(mouseScrollWheelAxis) != 0;
     }
 }
