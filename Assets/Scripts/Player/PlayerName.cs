@@ -8,32 +8,39 @@ using TMPro;
 public class PlayerName : NetworkBehaviour
 {
     public new NetworkVariable<FixedString32Bytes> name = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<bool> nameDisplay = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public TextMeshProUGUI nameText;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        name.Value = MenuManager.playerName;
+    }
+
+    private void Update()
+    {
         if (IsOwner)
         {
             return;
         }
 
-        name.OnValueChanged += ChangeName;
-    }
-
-    private void ChangeName(FixedString32Bytes previous, FixedString32Bytes current)
-    {
         nameText.text = name.Value.ToString();
+        nameText.enabled = nameDisplay.Value;
     }
 
     public void Despawn()
     {
-        name.Value = "";
+        nameDisplay.Value = false;
     }
 
     public void Respawn()
     {
-        name.Value = MenuManager.playerName;
+        nameDisplay.Value = true;
     }
 }

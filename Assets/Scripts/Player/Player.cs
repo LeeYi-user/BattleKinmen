@@ -31,6 +31,8 @@ public class Player : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
+        GameManager.Instance.players[NetworkObjectId] = this;
+
         if (!IsOwner)
         {
             return;

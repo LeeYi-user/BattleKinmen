@@ -18,11 +18,6 @@ public class ScoreManager : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsHost)
-        {
-            return;
-        }
-
         if (Cursor.lockState == CursorLockMode.None || !GameManager.Instance.gamingScreen.activeSelf || GameManager.Instance.gameStart < 2 || RelayManager.disconnecting)
         {
             scoreboardScreen.SetActive(false);
@@ -41,9 +36,9 @@ public class ScoreManager : NetworkBehaviour
 
         foreach (KeyValuePair<ulong, ScoreUI> entry in scoreboard)
         {
-            if (NetworkManager.SpawnManager.SpawnedObjects.ContainsKey(entry.Key))
+            if (GameManager.Instance.players.ContainsKey(entry.Key))
             {
-                Player player = NetworkManager.SpawnManager.SpawnedObjects[entry.Key].GetComponent<Player>();
+                Player player = GameManager.Instance.players[entry.Key].GetComponent<Player>();
                 scoreboard[entry.Key].nameText.text = player.playerName.name.Value.ToString();
                 scoreboard[entry.Key].classText.text = MenuManager.classes[player.playerClass.Value];
                 scoreboard[entry.Key].scoreText.text = player.playerScore.Value.ToString();
@@ -60,14 +55,8 @@ public class ScoreManager : NetworkBehaviour
     {
         yield return new WaitUntil(() => GameManager.Instance.gameStart > 0);
 
-        if (!IsHost)
+        foreach (Player player in GameManager.Instance.players.Values)
         {
-            yield break;
-        }
-
-        foreach (NetworkClient client in NetworkManager.ConnectedClients.Values)
-        {
-            Player player = client.PlayerObject.GetComponent<Player>();
             GameObject scoreUI = Instantiate(scoreUIPrefab, scoreboardContainer.transform.position, Quaternion.identity);
             scoreUI.transform.SetParent(scoreboardContainer.transform, false);
             scoreUI.GetComponent<ScoreUI>().id = player.NetworkObjectId;

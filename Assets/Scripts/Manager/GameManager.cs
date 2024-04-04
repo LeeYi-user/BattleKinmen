@@ -54,6 +54,9 @@ public class GameManager : NetworkBehaviour
     public bool skillDisable = false;
     public bool teamDisable = false;
 
+    [Header("Scoreboard Manager")]
+    public Dictionary<ulong, Player> players = new Dictionary<ulong, Player>();
+
     [Header("Game State")]
     public int gameStart = 0;
     public static bool gameOver;
@@ -114,12 +117,25 @@ public class GameManager : NetworkBehaviour
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
+        if (RelayManager.disconnecting)
+        {
+            return;
+        }
+
+        RemovePlayer_ClientRpc(NetworkManager.ConnectedClients[clientId].PlayerObject.NetworkObjectId);
+
         if (gameStart > 0)
         {
             return;
         }
 
         UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count - 1);
+    }
+
+    [ClientRpc]
+    private void RemovePlayer_ClientRpc(ulong objectId)
+    {
+        players.Remove(objectId);
     }
 
     [ClientRpc]
