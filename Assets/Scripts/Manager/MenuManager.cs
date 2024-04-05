@@ -385,7 +385,21 @@ public class MenuManager : MonoBehaviour
     {
         LobbyManager.Instance.start = 3;
         LobbyManager.Instance.UpdateLobbyState("started");
-        StartCoroutine(LobbyManager.Instance.LoadSceneAsync("BeachScene"));
+
+        switch (gameMode)
+        {
+            case 0:
+                StartCoroutine(LobbyManager.Instance.LoadSceneAsync("BeachScene"));
+                break;
+            case 1:
+                StartCoroutine(LobbyManager.Instance.LoadSceneAsync("StreetScene1"));
+                break;
+            case 2:
+                StartCoroutine(LobbyManager.Instance.LoadSceneAsync("StreetScene2"));
+                break;
+            default:
+                break;
+        }
     }
 
     public void RoomerMenuQuitButtonClick()

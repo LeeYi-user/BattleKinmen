@@ -89,7 +89,21 @@ public class LobbyManager : MonoBehaviour
                     else if (!RelayManager.disconnecting)
                     {
                         start = 1;
-                        StartCoroutine(LoadSceneAsync("BeachScene"));
+
+                        switch (MenuManager.gameMode)
+                        {
+                            case 0:
+                                StartCoroutine(LoadSceneAsync("BeachScene"));
+                                break;
+                            case 1:
+                                StartCoroutine(LoadSceneAsync("StreetScene1"));
+                                break;
+                            case 2:
+                                StartCoroutine(LoadSceneAsync("StreetScene2"));
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
