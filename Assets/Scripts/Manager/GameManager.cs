@@ -177,7 +177,7 @@ public class GameManager : NetworkBehaviour
 
         playerCounter.text = "0 / " + LobbyManager.Instance.joinedLobby.Players.Count;
 
-        Popup("按下 Backspace 退出");
+        Popup("按下 Backspace 退出", Color.yellow);
     }
 
     private void Update()
@@ -223,13 +223,13 @@ public class GameManager : NetworkBehaviour
         return false;
     }
 
-    public void Popup(string msg)
+    public void Popup(string text, Color color)
     {
         bool exist = false;
 
-        foreach (string str in popups)
+        foreach (string msg in popups)
         {
-            if (str == msg)
+            if (msg == text)
             {
                 exist = true;
                 break;
@@ -238,12 +238,12 @@ public class GameManager : NetworkBehaviour
 
         if (!exist)
         {
-            popups.Add(msg);
+            popups.Add(text);
         }
 
-        GameObject popGO = Instantiate(popup, popup.transform.position - popups.IndexOf(msg) * new Vector3(0, 25, 0), Quaternion.identity);
-
+        GameObject popGO = Instantiate(popup, popup.transform.position - popups.IndexOf(text) * new Vector3(0, 25, 0), Quaternion.identity);
         popGO.transform.SetParent(canvas.transform, false);
-        popGO.GetComponent<TextMeshProUGUI>().text = msg;
+        popGO.GetComponent<TextMeshProUGUI>().color = color;
+        popGO.GetComponent<TextMeshProUGUI>().text = text;
     }
 }

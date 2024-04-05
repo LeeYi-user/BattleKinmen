@@ -10,8 +10,7 @@ public class Popup : MonoBehaviour
     private int phase;
     private bool pause;
     private float timeLeft;
-    private Color targetColor = new Color(1, 1, 1, 0);
-
+    private Color targetColor;
     private bool translating;
 
     private void Update()
@@ -40,20 +39,23 @@ public class Popup : MonoBehaviour
 
         if (timeLeft <= Time.deltaTime)
         {
-            text.color = targetColor;
-
             if (phase == 0)
             {
-                targetColor = new Color(1, 1, 1, 1);
+                Color color = text.color;
+                color.a = 1;
+                targetColor = color;
                 timeLeft = 0.25f;
             }
             else if (phase == 1)
             {
-                StartCoroutine(Pause(0.5f));
+                text.color = targetColor;
+                StartCoroutine(Pause(1f));
             }
             else if (phase == 2)
             {
-                targetColor = new Color(1, 1, 1, 0);
+                Color color = text.color;
+                color.a = 0;
+                targetColor = color;
                 timeLeft = 0.25f;
             }
             else if (phase == 3)
