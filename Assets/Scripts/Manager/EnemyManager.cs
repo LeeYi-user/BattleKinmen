@@ -41,7 +41,7 @@ public class EnemyManager : NetworkBehaviour
             return;
         }
 
-        if (GameManager.Instance.enemyDisable)
+        if (GameManager.Instance.enemyDisable.Value)
         {
             enemyDamage = 30 + GameManager.Instance.waves.Value * 5;
             GameManager.Instance.enemies.Value = GameManager.Instance.waves.Value * 10;

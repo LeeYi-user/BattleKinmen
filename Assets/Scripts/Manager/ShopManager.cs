@@ -250,12 +250,15 @@ public class ShopManager : NetworkBehaviour
                 break;
             case "respawnSpeed": // 需要更改 respawnCooldown
                 GameManager.Instance.respawnCooldown *= 1f / Mathf.Pow(2f, 1f / 3f);
+                GameManager.Instance.Popup_ClientRpc("玩家生成時間 -" + (10f - GameManager.Instance.respawnCooldown).ToString("0.00") + "s", Color.green);
                 break;
             case "enemyDelay": // 需要更改 enemyDelay
                 GameManager.Instance.enemyDelay += 0.1f;
+                GameManager.Instance.Popup_ClientRpc("敵人生成速度 -" + ((GameManager.Instance.enemyDelay - 1f) * 100f).ToString() + "%", Color.green);
                 break;
             case "cashBonus": // 需要更改 cashBonus
                 GameManager.Instance.cashBonus += 0.1f;
+                GameManager.Instance.Popup_ClientRpc("資金收益 +" + ((GameManager.Instance.cashBonus - 1f) * 100f).ToString() + "%", Color.green);
                 break;
             case "mapDefense": // 需要更改 maxDefense 和 currentDefense
                 GameManager.Instance.currentDefense += 1;
@@ -264,6 +267,8 @@ public class ShopManager : NetworkBehaviour
                 {
                     GameManager.Instance.maxDefense = GameManager.Instance.currentDefense;
                 }
+
+                GameManager.Instance.Popup_ClientRpc("防禦提升! (" + GameManager.Instance.currentDefense.ToString() + " / " + GameManager.Instance.maxDefense.ToString() + ")", Color.green);
 
                 break;
             default:

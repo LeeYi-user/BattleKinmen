@@ -34,6 +34,30 @@ public class TeamModeManager : NetworkBehaviour
         Instance = null;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if (!IsHost)
+        {
+            return;
+        }
+
+        GameManager.Instance.enemyDisable.OnValueChanged += EnemySpawn;
+    }
+
+    private void EnemySpawn()
+    {
+        if (!GameManager.Instance.enemyDisable.Value)
+        {
+            GameManager.Instance.Popup_ClientRpc("第 " + GameManager.Instance.waves.Value.ToString() + " 波開始", Color.yellow);
+        }
+        else
+        {
+            GameManager.Instance.Popup_ClientRpc("第 " + GameManager.Instance.waves.Value.ToString() + " 波結束", Color.green);
+        }
+    }
+
     private void Update()
     {
         GameOver();
@@ -109,11 +133,11 @@ public class TeamModeManager : NetworkBehaviour
 
             if (GameManager.Instance.enemies.Value > 0)
             {
-                GameManager.Instance.enemyDisable = false;
+                GameManager.Instance.enemyDisable.Value = false;
             }
             else
             {
-                GameManager.Instance.enemyDisable = true;
+                GameManager.Instance.enemyDisable.Value = true;
                 GameManager.Instance.waves.Value++;
                 GameManager.Instance.breakTime.Value = 30.99f;
             }

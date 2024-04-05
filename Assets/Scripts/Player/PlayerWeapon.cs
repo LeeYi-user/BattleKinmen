@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -35,6 +35,7 @@ public class PlayerWeapon : NetworkBehaviour
     public bool live;
 
     private float cooldown;
+    private bool popped = true;
 
     public List<GameObject> landmines;
 
@@ -86,6 +87,12 @@ public class PlayerWeapon : NetworkBehaviour
             return;
         }
 
+        if (!popped)
+        {
+            GameManager.Instance.Popup("技能冷卻完畢", Color.white);
+            popped = true;
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             Transform player = NetworkManager.LocalClient.PlayerObject.transform;
@@ -108,6 +115,8 @@ public class PlayerWeapon : NetworkBehaviour
                 default:
                     break;
             }
+
+            popped = false;
         }
     }
 

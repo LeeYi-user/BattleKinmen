@@ -49,7 +49,7 @@ public class Popup : MonoBehaviour
             else if (phase == 1)
             {
                 text.color = targetColor;
-                StartCoroutine(Pause(1f));
+                StartCoroutine(Pause(1.5f));
             }
             else if (phase == 2)
             {

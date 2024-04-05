@@ -46,7 +46,7 @@ public class GameManager : NetworkBehaviour
     public Transform enemyTarget;
     public List<Transform> enemySpawnArea;
     public float enemyDelay = 1f;
-    public bool enemyDisable = true;
+    public CustomVariable<bool> enemyDisable = new CustomVariable<bool>(true);
 
     [Header("Shop Manager")]
     public float cashBonus = 1f;
@@ -245,5 +245,16 @@ public class GameManager : NetworkBehaviour
         popGO.transform.SetParent(canvas.transform, false);
         popGO.GetComponent<TextMeshProUGUI>().color = color;
         popGO.GetComponent<TextMeshProUGUI>().text = text;
+    }
+
+    [ClientRpc]
+    public void Popup_ClientRpc(string text, Color color, bool dm = false, ulong id = 0)
+    {
+        if (dm && NetworkManager.LocalClient.PlayerObject.NetworkObjectId != id)
+        {
+            return;
+        }
+
+        Popup(text, color);
     }
 }

@@ -111,6 +111,7 @@ public class Enemy : NetworkBehaviour
         invading = true;
         GameManager.Instance.currentDefense--;
         GameManager.Instance.enemies.Value--;
+        GameManager.Instance.Popup_ClientRpc("敵人入侵! (" + GameManager.Instance.currentDefense.ToString() + " / " + GameManager.Instance.maxDefense.ToString() + ")", Color.red);
         Destroy(gameObject);
     }
 
@@ -184,6 +185,7 @@ public class Enemy : NetworkBehaviour
         if (health <= 0)
         {
             NetworkManager.SpawnManager.SpawnedObjects[attackerId].GetComponent<Player>().playerScore.Value += 10;
+            GameManager.Instance.Popup_ClientRpc("敵人倒地! (分數 +10)", Color.white, true, attackerId);
         }
     }
 }

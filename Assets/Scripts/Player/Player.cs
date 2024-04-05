@@ -99,17 +99,26 @@ public class Player : NetworkBehaviour
 
         currentHealth.Value -= damage * (1f - bulletproof.Value);
 
-        if (NetworkManager.SpawnManager.SpawnedObjects[attackerId].GetComponent<Player>() && attackerId != NetworkObjectId && currentHealth.Value <= 0f)
+        if (NetworkManager.SpawnManager.SpawnedObjects[attackerId].CompareTag("Player") && attackerId != NetworkObjectId)
         {
             Player attacker = NetworkManager.SpawnManager.SpawnedObjects[attackerId].GetComponent<Player>();
 
             if (MenuManager.gameMode == 2)
             {
                 attacker.playerScore.Value += 10;
+                GameManager.Instance.Popup_ClientRpc("目標倒地! (分數 +10)", Color.white, true, attackerId);
             }
             else
             {
-                attacker.playerScore.Value -= 10;
+                if (currentHealth.Value <= 0f)
+                {
+                    attacker.playerScore.Value -= 10;
+                    GameManager.Instance.Popup_ClientRpc("誤殺友軍! (分數 -10)", Color.red, true, attackerId);
+                }
+                else
+                {
+                    GameManager.Instance.Popup_ClientRpc("誤傷友軍!", Color.yellow, true, attackerId);
+                }
             }
         }
     }
