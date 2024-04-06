@@ -75,16 +75,17 @@ public class LobbyManager : MonoBehaviour
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
 
+                if (hostLobby != null)
+                {
+                    hostLobby = joinedLobby;
+                    UpdateLobbyCount();
+                }
+
                 if (start == 0)
                 {
                     if (lobby.Data["state"].Value == "waiting")
                     {
                         ListPlayers();
-
-                        if (hostLobby != null)
-                        {
-                            UpdateLobbyCount();
-                        }
                     }
                     else if (!RelayManager.disconnecting)
                     {
