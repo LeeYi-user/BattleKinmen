@@ -109,7 +109,6 @@ public class GameManager : NetworkBehaviour
     {
         if (gameStart > 0)
         {
-            NetworkManager.DisconnectClient(clientId);
             return;
         }
 
