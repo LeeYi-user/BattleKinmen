@@ -106,8 +106,11 @@ public class Player : NetworkBehaviour
 
             if (MenuManager.gameMode == 2)
             {
-                attacker.playerScore.Value += 10;
-                GameManager.Instance.Popup_ClientRpc("目標倒地! (分數 +10)", Color.white, true, attackerId);
+                if (currentHealth.Value <= 0f)
+                {
+                    attacker.playerScore.Value += 10;
+                    GameManager.Instance.Popup_ClientRpc("目標倒地! (分數 +10)", Color.white, true, attackerId);
+                }
             }
             else
             {
