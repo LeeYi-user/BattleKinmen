@@ -139,7 +139,13 @@ public class TeamModeManager : NetworkBehaviour
             {
                 GameManager.Instance.enemyDisable.Value = true;
                 GameManager.Instance.waves.Value++;
-                GameManager.Instance.breakTime.Value = 30.99f;
+                GameManager.Instance.breakTime.Value = GameManager.Instance.timeLimit;
+
+                if (MenuManager.gameMode == 2 && GameManager.Instance.waves.Value == 2)
+                {
+                    MenuManager.friendlyFire = true;
+                    GameManager.Instance.Popup_ClientRpc("戰鬥開始!", Color.red);
+                }
             }
         }
     }

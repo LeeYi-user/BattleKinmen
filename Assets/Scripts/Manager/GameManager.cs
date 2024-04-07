@@ -38,6 +38,7 @@ public class GameManager : NetworkBehaviour
 
     [Header("Team Mode Manager")]
     public int waveLimit = -1;
+    public float timeLimit = 30.99f;
     public int maxDefense = 3;
     public int currentDefense = 3;
 

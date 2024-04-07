@@ -354,7 +354,7 @@ public class MenuManager : MonoBehaviour
     {
         if (gameMode == 2)
         {
-            friendlyFire = true;
+            friendlyFire = false;
         }
 
         ClearPlayerList();
