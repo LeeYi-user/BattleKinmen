@@ -107,8 +107,9 @@ public class GameManager : NetworkBehaviour
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
     {
-        if (gameStart > 0)
+        if (gameStart > 1)
         {
+            NetworkManager.DisconnectClient(clientId);
             return;
         }
 

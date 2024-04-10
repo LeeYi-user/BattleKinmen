@@ -30,7 +30,6 @@ public class Player : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        DontDestroyOnLoad(gameObject);
 
         GameManager.Instance.players[NetworkObjectId] = this;
 

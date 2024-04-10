@@ -91,15 +91,15 @@ public class LobbyManager : MonoBehaviour
                     {
                         start = 1;
 
-                        switch (MenuManager.gameMode)
+                        switch (joinedLobby.Data["mode"].Value)
                         {
-                            case 0:
+                            case "搶灘":
                                 StartCoroutine(LoadSceneAsync("BeachScene"));
                                 break;
-                            case 1:
+                            case "巷戰":
                                 StartCoroutine(LoadSceneAsync("StreetScene1"));
                                 break;
-                            case 2:
+                            case "演習":
                                 StartCoroutine(LoadSceneAsync("StreetScene2"));
                                 break;
                             default:
