@@ -92,7 +92,7 @@ public class Player : NetworkBehaviour
 
     public void TakeDamage(float damage, ulong attackerId)
     {
-        if (invTime.Value > 0f)
+        if (invTime.Value > 0f || currentHealth.Value <= 0f)
         {
             return;
         }
