@@ -49,8 +49,8 @@ public class MenuManager : MonoBehaviour
     public static string playerName = "玩家";
     public static int playerClass = 0;
 
-    public string[] modes = { "搶灘", "巷戰", "演習" };
-    public int maxPlayers = 6;
+    public static string[] modes = { "搶灘", "巷戰", "演習" };
+    public static int maxPlayers = 6;
     public static int gameMode = 0;
     public static bool friendlyFire = false;
 
@@ -65,9 +65,10 @@ public class MenuManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        maxPlayers = 6;
         gameMode = 0;
         friendlyFire = false;
-        LobbyManager.Instance.start = 0;
+        LobbyManager.Instance.start = false;
     }
 
     private void OnDestroy()
@@ -85,21 +86,28 @@ public class MenuManager : MonoBehaviour
 
     private void Update()
     {
+        UpdateUISettings();
+        HandleLobbyListPollForUpdates();
+    }
+
+    private void UpdateUISettings()
+    {
         playerName = lobbyMenuPlayerNameInput.text;
         sens = sensSlider.value;
         volume = volumeSlider.value;
-        HandleLobbyListPollForUpdates();
     }
 
     private void HandleLobbyListPollForUpdates()
     {
-        lobbyQueryTimer -= Time.deltaTime;
-
-        if (lobbyQueryTimer < 0f)
+        if (lobbyQueryTimer > 0f)
         {
-            lobbyQueryTimer = 1.1f;
-            LobbyManager.Instance.ListLobbies();
+            lobbyQueryTimer -= Time.deltaTime;
+            return;
         }
+
+        lobbyQueryTimer = 1.1f;
+
+        LobbyManager.Instance.ListLobbies();
     }
 
     public void MainMenuStartButtonClick()
@@ -264,32 +272,7 @@ public class MenuManager : MonoBehaviour
             gameMode = 0;
         }
 
-        if (gameMode == 2)
-        {
-            createMenuFriendlyFireSetting.SetActive(false);
-        }
-        else
-        {
-            createMenuFriendlyFireSetting.SetActive(true);
-        }
-
-        createMenuGameModeText.text = modes[gameMode].ToString();
-
-        int i = 0;
-
-        foreach (Transform transform in modeMenu.transform)
-        {
-            if (i == gameMode)
-            {
-                transform.gameObject.SetActive(true);
-            }
-            else
-            {
-                transform.gameObject.SetActive(false);
-            }
-
-            i++;
-        }
+        UpdateGameMode();
     }
 
     public void CreateMenuGameModeOptionLeftArrowButtonClick()
@@ -301,32 +284,7 @@ public class MenuManager : MonoBehaviour
             gameMode = 2;
         }
 
-        if (gameMode == 2)
-        {
-            createMenuFriendlyFireSetting.SetActive(false);
-        }
-        else
-        {
-            createMenuFriendlyFireSetting.SetActive(true);
-        }
-
-        createMenuGameModeText.text = modes[gameMode].ToString();
-
-        int i = 0;
-
-        foreach (Transform transform in modeMenu.transform)
-        {
-            if (i == gameMode)
-            {
-                transform.gameObject.SetActive(true);
-            }
-            else
-            {
-                transform.gameObject.SetActive(false);
-            }
-
-            i++;
-        }
+        UpdateGameMode();
     }
 
     public void CreateMenuFriendlyFireOptionArrowButtonClick()
@@ -359,8 +317,6 @@ public class MenuManager : MonoBehaviour
 
         ClearPlayerList();
         LobbyManager.Instance.CreateLobby(createMenuLobbyNameInput.text, maxPlayers, gameMode, friendlyFire);
-        createMenu.SetActive(false);
-        ownerMenu.SetActive(true);
     }
 
     public void OwnerMenuQuitButtonClick()
@@ -383,23 +339,9 @@ public class MenuManager : MonoBehaviour
 
     public void OwnerMenuStartButtonClick()
     {
-        LobbyManager.Instance.start = 3;
+        LobbyManager.Instance.start = true;
         LobbyManager.Instance.UpdateLobbyState("started");
-
-        switch (gameMode)
-        {
-            case 0:
-                StartCoroutine(LobbyManager.Instance.LoadSceneAsync("BeachScene"));
-                break;
-            case 1:
-                StartCoroutine(LobbyManager.Instance.LoadSceneAsync("StreetScene1"));
-                break;
-            case 2:
-                StartCoroutine(LobbyManager.Instance.LoadSceneAsync("StreetScene2"));
-                break;
-            default:
-                break;
-        }
+        LobbyManager.Instance.LoadGameMode(modes[gameMode]);
     }
 
     public void RoomerMenuQuitButtonClick()
@@ -413,8 +355,6 @@ public class MenuManager : MonoBehaviour
     public void RoomerMenuInfoButtonClick()
     {
         LobbyManager.Instance.LobbyInfo();
-        roomerMenu.SetActive(false);
-        infoMenu.SetActive(true);
     }
 
     public void RoomerMenuReadyButtonClick()
@@ -443,5 +383,35 @@ public class MenuManager : MonoBehaviour
         selectedPlayerId = "";
         ownerMenuSearchBar.text = "";
         roomerMenuSearchBar.text = "";
+    }
+
+    private void UpdateGameMode()
+    {
+        if (gameMode == 2)
+        {
+            createMenuFriendlyFireSetting.SetActive(false);
+        }
+        else
+        {
+            createMenuFriendlyFireSetting.SetActive(true);
+        }
+
+        createMenuGameModeText.text = modes[gameMode].ToString();
+
+        int i = 0;
+
+        foreach (Transform transform in modeMenu.transform)
+        {
+            if (i == gameMode)
+            {
+                transform.gameObject.SetActive(true);
+            }
+            else
+            {
+                transform.gameObject.SetActive(false);
+            }
+
+            i++;
+        }
     }
 }

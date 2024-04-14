@@ -32,7 +32,7 @@ public class RelayManager : MonoBehaviour
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-            if (disconnecting || LobbyManager.Instance.start != 3)
+            if (disconnecting || !LobbyManager.Instance.start)
             {
                 return;
             }

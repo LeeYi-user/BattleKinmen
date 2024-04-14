@@ -21,7 +21,7 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private GameObject lobbyUIPrefab;
     [SerializeField] private GameObject playerUIPrefab;
 
-    public int start;
+    public bool start = false;
 
     private void Awake()
     {
@@ -44,16 +44,25 @@ public class LobbyManager : MonoBehaviour
     {
         if (hostLobby == null)
         {
-            heartbeatTimer = 15f;
+            heartbeatTimer = 0f;
             return;
         }
 
-        heartbeatTimer -= Time.deltaTime;
-
-        if (heartbeatTimer < 0f)
+        if (heartbeatTimer > 0f)
         {
-            heartbeatTimer = 15f;
+            heartbeatTimer -= Time.deltaTime;
+            return;
+        }
+
+        heartbeatTimer = 15f;
+
+        try
+        {
             await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
         }
     }
 
@@ -65,57 +74,38 @@ public class LobbyManager : MonoBehaviour
             return;
         }
 
-        try
+        if (lobbyUpdateTimer > 0f)
         {
             lobbyUpdateTimer -= Time.deltaTime;
+            return;
+        }
 
-            if (lobbyUpdateTimer < 0f)
+        lobbyUpdateTimer = 1.1f;
+
+        try
+        {
+            Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+            joinedLobby = lobby;
+
+            if (hostLobby != null)
             {
-                lobbyUpdateTimer = 1.1f;
-                Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-                joinedLobby = lobby;
-
-                if (hostLobby != null)
-                {
-                    hostLobby = joinedLobby;
-                    UpdateLobbyCount();
-                }
-
-                if (start == 0)
-                {
-                    if (lobby.Data["state"].Value == "waiting")
-                    {
-                        ListPlayers();
-                    }
-                    else if (!RelayManager.disconnecting)
-                    {
-                        start = 1;
-
-                        switch (joinedLobby.Data["mode"].Value)
-                        {
-                            case "搶灘":
-                                StartCoroutine(LoadSceneAsync("BeachScene"));
-                                break;
-                            case "巷戰":
-                                StartCoroutine(LoadSceneAsync("StreetScene1"));
-                                break;
-                            case "演習":
-                                StartCoroutine(LoadSceneAsync("StreetScene2"));
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
+                hostLobby = joinedLobby;
+                UpdateLobbyCount();
             }
 
-            if (start == 2)
+            if (start)
             {
-                if (joinedLobby.Data["code"].Value != "")
-                {
-                    start = 3;
-                    RelayManager.Instance.JoinRelay(joinedLobby.Data["code"].Value);
-                }
+                return;
+            }
+
+            if (lobby.Data["state"].Value == "waiting")
+            {
+                ListPlayers();
+            }
+            else if (!RelayManager.disconnecting)
+            {
+                start = true;
+                LoadGameMode(joinedLobby.Data["mode"].Value);
             }
         }
         catch (Exception e)
@@ -138,6 +128,24 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    public void LoadGameMode(string mode)
+    {
+        switch (mode)
+        {
+            case "搶灘":
+                StartCoroutine(LoadSceneAsync("BeachScene"));
+                break;
+            case "巷戰":
+                StartCoroutine(LoadSceneAsync("StreetScene1"));
+                break;
+            case "演習":
+                StartCoroutine(LoadSceneAsync("StreetScene2"));
+                break;
+            default:
+                break;
+        }
+    }
+
     public IEnumerator LoadSceneAsync(string sceneName)
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
@@ -151,11 +159,6 @@ public class LobbyManager : MonoBehaviour
             MenuManager.Instance.progressSlider.value = progress;
 
             yield return null;
-        }
-
-        if (start == 1)
-        {
-            start = 2;
         }
     }
 
@@ -172,7 +175,7 @@ public class LobbyManager : MonoBehaviour
                         "count", new DataObject(DataObject.VisibilityOptions.Public, "1")
                     },
                     {
-                        "mode", new DataObject(DataObject.VisibilityOptions.Public, MenuManager.Instance.modes[gameMode])
+                        "mode", new DataObject(DataObject.VisibilityOptions.Public, MenuManager.modes[gameMode])
                     },
                     {
                         "friendly_fire", new DataObject(DataObject.VisibilityOptions.Public, friendlyFire ? "開" : "關")
@@ -191,6 +194,8 @@ public class LobbyManager : MonoBehaviour
             hostLobby = lobby;
             joinedLobby = hostLobby;
             RelayManager.disconnecting = false;
+            MenuManager.Instance.createMenu.SetActive(false);
+            MenuManager.Instance.ownerMenu.SetActive(true);
         }
         catch (Exception e)
         {
@@ -288,7 +293,7 @@ public class LobbyManager : MonoBehaviour
 
             foreach (Transform transform in MenuManager.Instance.modeMenu.transform)
             {
-                if (i == Array.IndexOf(MenuManager.Instance.modes, joinedLobby.Data["mode"].Value))
+                if (i == Array.IndexOf(MenuManager.modes, joinedLobby.Data["mode"].Value))
                 {
                     transform.gameObject.SetActive(true);
                 }
@@ -320,6 +325,8 @@ public class LobbyManager : MonoBehaviour
             MenuManager.Instance.infoMenuMaxPlayersText.text = joinedLobby.MaxPlayers.ToString();
             MenuManager.Instance.infoMenuGameModeText.text = joinedLobby.Data["mode"].Value;
             MenuManager.Instance.infoMenuFriendlyFireText.text = joinedLobby.Data["friendly_fire"].Value;
+            MenuManager.Instance.roomerMenu.SetActive(false);
+            MenuManager.Instance.infoMenu.SetActive(true);
         }
         catch (Exception e)
         {

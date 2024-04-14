@@ -175,10 +175,20 @@ public class GameManager : NetworkBehaviour
         {
             RelayManager.Instance.CreateRelay(LobbyManager.Instance.hostLobby.MaxPlayers);
         }
+        else
+        {
+            StartCoroutine(JoinRelay());
+        }
 
         playerCounter.text = "0 / " + LobbyManager.Instance.joinedLobby.Players.Count;
 
         Popup("按下 Backspace 退出", Color.yellow);
+    }
+
+    private IEnumerator JoinRelay()
+    {
+        yield return new WaitUntil(() => LobbyManager.Instance.joinedLobby.Data["code"].Value != "");
+        RelayManager.Instance.JoinRelay(LobbyManager.Instance.joinedLobby.Data["code"].Value);
     }
 
     private void Update()
@@ -210,13 +220,13 @@ public class GameManager : NetworkBehaviour
         RelayManager.disconnecting = true;
         Cursor.lockState = CursorLockMode.None;
 
-        if (LobbyManager.Instance.hostLobby == null)
+        if (LobbyManager.Instance.hostLobby != null)
         {
-            LobbyManager.Instance.QuitLobby();
+            LobbyManager.Instance.DeleteLobby();
         }
         else
         {
-            LobbyManager.Instance.DeleteLobby();
+            LobbyManager.Instance.QuitLobby();
         }
 
         SceneManager.LoadScene("MenuScene");
