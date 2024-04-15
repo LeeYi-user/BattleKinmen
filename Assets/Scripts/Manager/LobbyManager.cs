@@ -22,6 +22,7 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private GameObject playerUIPrefab;
 
     public bool start = false;
+    public Dictionary<ulong, Player> players = new Dictionary<ulong, Player>();
 
     private void Awake()
     {

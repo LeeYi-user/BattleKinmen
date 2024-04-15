@@ -55,9 +55,6 @@ public class GameManager : NetworkBehaviour
     public bool skillDisable = false;
     public bool teamDisable = false;
 
-    [Header("Scoreboard Manager")]
-    public Dictionary<ulong, Player> players = new Dictionary<ulong, Player>();
-
     [Header("Game State")]
     public int gameStart = 0;
     public static bool gameOver;
@@ -73,6 +70,15 @@ public class GameManager : NetworkBehaviour
         base.OnDestroy();
 
         Instance = null;
+        NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
+
+        if (!IsHost)
+        {
+            return;
+        }
+
+        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
+        NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
     }
 
     public override void OnNetworkSpawn()
@@ -93,16 +99,6 @@ public class GameManager : NetworkBehaviour
     private void NetworkManager_OnClientStopped(bool obj)
     {
         Disconnect();
-
-        NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
-
-        if (!IsHost)
-        {
-            return;
-        }
-
-        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
-        NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
     }
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
@@ -136,7 +132,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void RemovePlayer_ClientRpc(ulong objectId)
     {
-        players.Remove(objectId);
+        LobbyManager.Instance.players.Remove(objectId);
     }
 
     [ClientRpc]

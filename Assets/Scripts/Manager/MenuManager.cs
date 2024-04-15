@@ -69,6 +69,7 @@ public class MenuManager : MonoBehaviour
         gameMode = 0;
         friendlyFire = false;
         LobbyManager.Instance.start = false;
+        LobbyManager.Instance.players.Clear();
     }
 
     private void OnDestroy()

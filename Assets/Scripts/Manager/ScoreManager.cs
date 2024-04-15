@@ -36,9 +36,9 @@ public class ScoreManager : NetworkBehaviour
 
         foreach (KeyValuePair<ulong, ScoreUI> entry in scoreboard)
         {
-            if (GameManager.Instance.players.ContainsKey(entry.Key))
+            if (LobbyManager.Instance.players.ContainsKey(entry.Key))
             {
-                Player player = GameManager.Instance.players[entry.Key].GetComponent<Player>();
+                Player player = LobbyManager.Instance.players[entry.Key].GetComponent<Player>();
                 scoreboard[entry.Key].nameText.text = player.playerName.name.Value.ToString();
                 scoreboard[entry.Key].classText.text = MenuManager.classes[player.playerClass.Value];
                 scoreboard[entry.Key].scoreText.text = player.playerScore.Value.ToString();
@@ -54,7 +54,7 @@ public class ScoreManager : NetworkBehaviour
     {
         yield return new WaitUntil(() => GameManager.Instance.gameStart > 0);
 
-        foreach (Player player in GameManager.Instance.players.Values)
+        foreach (Player player in LobbyManager.Instance.players.Values)
         {
             GameObject scoreUI = Instantiate(scoreUIPrefab, scoreboardContainer.transform.position, Quaternion.identity);
             scoreUI.transform.SetParent(scoreboardContainer.transform, false);
