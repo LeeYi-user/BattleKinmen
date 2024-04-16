@@ -163,6 +163,7 @@ public class GameManager : NetworkBehaviour
     public void GameOver_ClientRpc()
     {
         gameOver = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private void Start()
