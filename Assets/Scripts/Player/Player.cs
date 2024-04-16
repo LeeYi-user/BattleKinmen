@@ -14,8 +14,9 @@ public class Player : NetworkBehaviour
     public NetworkVariable<float> invTime = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [SerializeField] private float minAltitude; // -10
-    [SerializeField] private CapsuleCollider bodyCollider;
-    [SerializeField] private SkinnedMeshRenderer[] bodySkins;
+
+    public CapsuleCollider bodyCollider;
+    public SkinnedMeshRenderer[] bodySkins;
 
     public PlayerName playerName;
     public PlayerCamera playerCamera;
@@ -64,6 +65,31 @@ public class Player : NetworkBehaviour
         else
         {
             GameManager.Instance.healthBar.color = Color.green;
+        }
+    }
+
+    private void Start()
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        foreach (Player player in LobbyManager.Instance.players.Values)
+        {
+            if (player.NetworkObjectId == NetworkObjectId)
+            {
+                return;
+            }
+
+            player.bodyCollider.enabled = player.currentHealth.Value > 0;
+
+            foreach (SkinnedMeshRenderer bodySkin in player.bodySkins)
+            {
+                bodySkin.enabled = player.currentHealth.Value > 0;
+            }
+
+            player.playerWeapon.SelectWeapon_ServerRpc(player.playerWeapon.selectedWeapon.Value);
         }
     }
 

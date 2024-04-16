@@ -6,7 +6,7 @@ using Unity.Netcode;
 
 public class PlayerWeapon : NetworkBehaviour
 {
-    [HideInInspector] public CustomVariable<int> selectedWeapon = new CustomVariable<int>(-1);
+    [HideInInspector] public NetworkVariable<int> selectedWeapon = new NetworkVariable<int>(-1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     [SerializeField] private Transform thirdPersonWeapons;
     [SerializeField] private Transform thirdPersonRigs;
@@ -39,6 +39,13 @@ public class PlayerWeapon : NetworkBehaviour
 
     public List<GameObject> landmines;
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        selectedWeapon.OnValueChanged += SelectWeapon;
+    }
+
     private void Start()
     {
         audioSource.volume = MenuManager.volume;
@@ -47,8 +54,6 @@ public class PlayerWeapon : NetworkBehaviour
         {
             return;
         }
-
-        selectedWeapon.OnValueChanged += SelectWeapon;
 
         Despawn();
     }
@@ -167,7 +172,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    public void SelectWeapon()
+    public void SelectWeapon(int previous, int current)
     {
         animator.SetInteger("selectedWeapon", selectedWeapon.Value);
 
@@ -190,7 +195,7 @@ public class PlayerWeapon : NetworkBehaviour
         SelectWeapon_ServerRpc(selectedWeapon.Value);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void SelectWeapon_ServerRpc(int index)
     {
         SelectWeapon_ClientRpc(index);

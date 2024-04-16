@@ -212,8 +212,7 @@ public class LobbyManager : MonoBehaviour
             {
                 Filters = new List<QueryFilter>
                 {
-                    new QueryFilter(QueryFilter.FieldOptions.Name, MenuManager.Instance.lobbyMenuSearchBar.text, QueryFilter.OpOptions.CONTAINS),
-                    new QueryFilter(QueryFilter.FieldOptions.S1, "waiting", QueryFilter.OpOptions.EQ)
+                    new QueryFilter(QueryFilter.FieldOptions.Name, MenuManager.Instance.lobbyMenuSearchBar.text, QueryFilter.OpOptions.CONTAINS)
                 }
             };
 
