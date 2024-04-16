@@ -83,6 +83,7 @@ public class MenuManager : MonoBehaviour
         lobbyMenuClassOptionText.text = classes[playerClass];
         sensSlider.value = sens;
         volumeSlider.value = volume;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private void Update()

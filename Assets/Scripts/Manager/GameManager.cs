@@ -215,7 +215,6 @@ public class GameManager : NetworkBehaviour
         }
 
         RelayManager.disconnecting = true;
-        Cursor.lockState = CursorLockMode.None;
 
         if (LobbyManager.Instance.hostLobby != null)
         {
