@@ -43,6 +43,11 @@ public class PlayerWeapon : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
+        if (!IsOwner)
+        {
+            return;
+        }
+
         selectedWeapon.OnValueChanged += SelectWeapon;
     }
 
