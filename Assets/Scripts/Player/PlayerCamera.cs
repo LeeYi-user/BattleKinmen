@@ -31,7 +31,7 @@ public class PlayerCamera : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner || GameManager.Instance.gameStart < 2 || GameManager.gameOver)
         {
             return;
         }
