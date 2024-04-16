@@ -249,23 +249,14 @@ public class TeamModeManager : NetworkBehaviour
             }
             else if (phase == 3)
             {
+                NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().Respawn_ServerRpc();
                 StartCoroutine(Pause(1f));
             }
             else if (phase == 4)
             {
                 phase = -1;
                 GameManager.Instance.gameStart = 2;
-
-                if (IsHost)
-                {
-                    foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
-                    {
-                        StartCoroutine(player.PlayerObject.GetComponent<Player>().Respawn());
-                    }
-                }
-
                 storyScreen.SetActive(false);
-                GameManager.Instance.gamingScreen.SetActive(true);
             }
 
             phase++;

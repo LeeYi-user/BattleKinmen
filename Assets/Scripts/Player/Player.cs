@@ -152,6 +152,12 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    public void Respawn_ServerRpc()
+    {
+        StartCoroutine(Respawn());
+    }
+
     public IEnumerator Respawn(float seconds = 0)
     {
         yield return new WaitForSeconds(seconds);
