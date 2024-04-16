@@ -26,7 +26,6 @@ public class GameManager : NetworkBehaviour
     public GameObject gameoverScreen;
 
     [Header("Player UI")]
-    public TextMeshProUGUI playerCounter;
     public TextMeshProUGUI healthBar;
     public TextMeshProUGUI ammoBar;
     public TextMeshProUGUI deathMessage;
@@ -56,7 +55,7 @@ public class GameManager : NetworkBehaviour
     public bool teamDisable = false;
 
     [Header("Game State")]
-    public int gameStart = 0;
+    public bool gameStart = false;
     public static bool gameOver;
 
     private void Awake()
@@ -77,7 +76,6 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
-        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
         NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
     }
 
@@ -92,24 +90,12 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
-        NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
         NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
     }
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
         Disconnect();
-    }
-
-    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
-    {
-        if (gameStart > 0)
-        {
-            NetworkManager.DisconnectClient(clientId);
-            return;
-        }
-
-        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count);
     }
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
@@ -120,13 +106,6 @@ public class GameManager : NetworkBehaviour
         }
 
         RemovePlayer_ClientRpc(NetworkManager.ConnectedClients[clientId].PlayerObject.NetworkObjectId);
-
-        if (gameStart > 0)
-        {
-            return;
-        }
-
-        UpdateCounter_ClientRpc(NetworkManager.ConnectedClients.Count - 1);
     }
 
     [ClientRpc]
@@ -135,28 +114,9 @@ public class GameManager : NetworkBehaviour
         LobbyManager.Instance.players.Remove(objectId);
     }
 
-    [ClientRpc]
-    private void UpdateCounter_ClientRpc(int count)
+    public void GameStart()
     {
-        playerCounter.text = count.ToString() + " / " + LobbyManager.Instance.joinedLobby.Players.Count;
-
-        if (IsHost && gameStart == 0 && count == LobbyManager.Instance.joinedLobby.Players.Count)
-        {
-            StartCoroutine(GameStart(1f));
-        }
-    }
-
-    private IEnumerator GameStart(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-
-        GameStart_ClientRpc();
-    }
-
-    [ClientRpc]
-    private void GameStart_ClientRpc()
-    {
-        gameStart = 1;
+        gameStart = true;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -177,8 +137,6 @@ public class GameManager : NetworkBehaviour
         {
             StartCoroutine(JoinRelay());
         }
-
-        playerCounter.text = "0 / " + LobbyManager.Instance.joinedLobby.Players.Count;
 
         Popup("按下 Backspace 退出", Color.yellow);
     }
@@ -215,6 +173,7 @@ public class GameManager : NetworkBehaviour
             return true;
         }
 
+        RelayManager.connected = false;
         RelayManager.disconnecting = true;
 
         if (LobbyManager.Instance.hostLobby != null)

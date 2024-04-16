@@ -76,7 +76,7 @@ public class ShopManager : NetworkBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.gamingScreen.activeSelf || GameManager.Instance.gameStart < 2 || RelayManager.disconnecting)
+        if (!GameManager.Instance.gamingScreen.activeSelf || !GameManager.Instance.gameStart || RelayManager.disconnecting)
         {
             if (shopMenu.activeSelf)
             {

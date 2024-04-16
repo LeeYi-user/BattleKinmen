@@ -29,7 +29,7 @@ public class EnemyManager : NetworkBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.gameStart < 2 || GameManager.gameOver || RelayManager.disconnecting)
+        if (!GameManager.Instance.gameStart || GameManager.gameOver || RelayManager.disconnecting)
         {
             return;
         }

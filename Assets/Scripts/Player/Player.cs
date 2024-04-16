@@ -42,6 +42,7 @@ public class Player : NetworkBehaviour
         currentHealth.OnValueChanged += ShowHealth;
         invTime.OnValueChanged += ChangeHealth;
         playerClass.Value = MenuManager.playerClass;
+        RelayManager.connected = true;
     }
 
     private void ShowHealth(float previous, float current)
@@ -153,7 +154,7 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void Respawn_ServerRpc()
+    public void PlayerRespawn_ServerRpc()
     {
         StartCoroutine(Respawn());
     }

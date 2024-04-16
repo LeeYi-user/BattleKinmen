@@ -12,6 +12,7 @@ public class RelayManager : MonoBehaviour
 {
     public static RelayManager Instance;
 
+    public static bool connected;
     public static bool disconnecting;
 
     private void Awake()

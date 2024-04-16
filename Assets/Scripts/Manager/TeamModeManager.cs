@@ -101,7 +101,7 @@ public class TeamModeManager : NetworkBehaviour
 
     private void Counter2()
     {
-        if (GameManager.Instance.gameStart < 2 || GameManager.gameOver || RelayManager.disconnecting)
+        if (!GameManager.Instance.gameStart || GameManager.gameOver || RelayManager.disconnecting)
         {
             return;
         }
@@ -157,7 +157,7 @@ public class TeamModeManager : NetworkBehaviour
 
     private void Counter1()
     {
-        if (!IsHost || GameManager.Instance.gameStart < 2 || GameManager.gameOver || RelayManager.disconnecting)
+        if (!IsHost || !GameManager.Instance.gameStart || GameManager.gameOver || RelayManager.disconnecting)
         {
             return;
         }
@@ -239,7 +239,7 @@ public class TeamModeManager : NetworkBehaviour
 
     private void TextFade1()
     {
-        if (GameManager.Instance.gameStart != 1 || RelayManager.disconnecting)
+        if (!RelayManager.connected || GameManager.Instance.gameStart || RelayManager.disconnecting)
         {
             return;
         }
@@ -286,8 +286,8 @@ public class TeamModeManager : NetworkBehaviour
             else if (phase == 4)
             {
                 phase = -1;
-                GameManager.Instance.gameStart = 2;
-                NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().Respawn_ServerRpc();
+                GameManager.Instance.GameStart();
+                NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerRespawn_ServerRpc();
                 storyScreen.SetActive(false);
             }
 
