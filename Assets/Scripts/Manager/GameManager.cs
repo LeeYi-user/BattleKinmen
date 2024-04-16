@@ -76,6 +76,7 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
+        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
         NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
     }
 
@@ -90,6 +91,7 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
+        NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
         NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
     }
 
@@ -98,9 +100,17 @@ public class GameManager : NetworkBehaviour
         Disconnect();
     }
 
+    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
+    {
+        if (gameOver)
+        {
+            NetworkManager.DisconnectClient(clientId);
+        }
+    }
+
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if (RelayManager.disconnecting)
+        if (gameOver || RelayManager.disconnecting)
         {
             return;
         }
