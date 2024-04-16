@@ -74,6 +74,11 @@ public class TeamModeManager : NetworkBehaviour
             return;
         }
 
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            GameManager.Instance.currentDefense = 0;
+        }
+
         if (GameManager.Instance.currentDefense <= 0)
         {
             GameManager.Instance.GameOver_ClientRpc();
@@ -162,7 +167,19 @@ public class TeamModeManager : NetworkBehaviour
 
     private void TextFade2()
     {
-        if (pause || !GameManager.gameOver || RelayManager.disconnecting)
+        if (!GameManager.gameOver || RelayManager.disconnecting)
+        {
+            return;
+        }
+
+        if (phase > 1 && phase <= 4 && Input.GetKeyDown(KeyCode.Space))
+        {
+            timeLeft = 0f;
+            phase = 4;
+            pause = false;
+        }
+
+        if (pause)
         {
             return;
         }
@@ -181,6 +198,7 @@ public class TeamModeManager : NetworkBehaviour
             }
             else if (phase == 1)
             {
+                GameManager.Instance.Popup("按下空白鍵略過", Color.yellow);
                 GameManager.Instance.gameoverScreen.GetComponent<Image>().color = targetColor;
                 targetColor = new Color(1, 1, 1, 1);
                 timeLeft = 3f;
@@ -221,7 +239,20 @@ public class TeamModeManager : NetworkBehaviour
 
     private void TextFade1()
     {
-        if (pause || GameManager.Instance.gameStart != 1 || RelayManager.disconnecting)
+        if (GameManager.Instance.gameStart != 1 || RelayManager.disconnecting)
+        {
+            return;
+        }
+
+        if (phase > 0 && phase <= 4 && Input.GetKeyDown(KeyCode.Space))
+        {
+            targetColor = new Color(1, 1, 1, 0);
+            timeLeft = 0f;
+            phase = 4;
+            pause = false;
+        }
+
+        if (pause)
         {
             return;
         }
@@ -232,6 +263,7 @@ public class TeamModeManager : NetworkBehaviour
             
             if (phase == 0)
             {
+                GameManager.Instance.Popup("按下空白鍵略過", Color.yellow);
                 GameManager.Instance.loadingScreen.SetActive(false);
                 storyScreen.SetActive(true);
             }
@@ -249,13 +281,13 @@ public class TeamModeManager : NetworkBehaviour
             }
             else if (phase == 3)
             {
-                NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().Respawn_ServerRpc();
                 StartCoroutine(Pause(1f));
             }
             else if (phase == 4)
             {
                 phase = -1;
                 GameManager.Instance.gameStart = 2;
+                NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().Respawn_ServerRpc();
                 storyScreen.SetActive(false);
             }
 

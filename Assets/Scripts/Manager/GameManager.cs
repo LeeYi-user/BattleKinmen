@@ -157,6 +157,7 @@ public class GameManager : NetworkBehaviour
     private void GameStart_ClientRpc()
     {
         gameStart = 1;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     [ClientRpc]
