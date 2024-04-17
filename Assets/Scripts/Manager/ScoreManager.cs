@@ -9,8 +9,6 @@ public class ScoreManager : NetworkBehaviour
     [SerializeField] private GameObject scoreboardScreen;
     [SerializeField] private GameObject scoreboardContainer;
 
-    private Dictionary<ulong, ScoreUI> scoreboard = new Dictionary<ulong, ScoreUI>();
-
     private void Update()
     {
         if (Cursor.lockState == CursorLockMode.None || !GameManager.Instance.gamingScreen.activeSelf || !GameManager.Instance.gameStart || RelayManager.disconnecting)
