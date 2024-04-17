@@ -17,8 +17,9 @@ public class ScoreManager : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKey(KeyCode.Tab))
         {
+            ListPlayers();
             scoreboardScreen.SetActive(true);
         }
 
@@ -26,8 +27,6 @@ public class ScoreManager : NetworkBehaviour
         {
             scoreboardScreen.SetActive(false);
         }
-
-        ListPlayers();
     }
 
     private void ListPlayers()
