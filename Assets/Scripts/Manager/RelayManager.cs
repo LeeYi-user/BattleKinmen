@@ -31,7 +31,6 @@ public class RelayManager : MonoBehaviour
         try
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
-            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
             if (disconnecting || !LobbyManager.Instance.start)
             {
@@ -42,7 +41,7 @@ public class RelayManager : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
 
-            LobbyManager.Instance.UpdateLobbyCode(joinCode);
+            LobbyManager.Instance.UpdateLobbyCode(await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId));
         }
         catch (Exception e)
         {
