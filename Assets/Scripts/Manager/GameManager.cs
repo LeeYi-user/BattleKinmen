@@ -128,6 +128,25 @@ public class GameManager : NetworkBehaviour
     {
         gameStart = true;
         Cursor.lockState = CursorLockMode.Locked;
+
+        foreach (Player player in LobbyManager.Instance.players.Values)
+        {
+            if (player.NetworkObjectId == NetworkObjectId)
+            {
+                return;
+            }
+
+            player.bodyCollider.enabled = player.currentHealth.Value > 0;
+
+            foreach (SkinnedMeshRenderer bodySkin in player.bodySkins)
+            {
+                bodySkin.enabled = player.currentHealth.Value > 0;
+            }
+
+            player.playerWeapon.SelectWeapon_ServerRpc(player.playerWeapon.selectedWeapon.Value);
+        }
+
+        NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerRespawn_ServerRpc();
     }
 
     [ClientRpc]

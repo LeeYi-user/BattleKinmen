@@ -67,31 +67,6 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (!IsOwner)
-        {
-            return;
-        }
-
-        foreach (Player player in LobbyManager.Instance.players.Values)
-        {
-            if (player.NetworkObjectId == NetworkObjectId)
-            {
-                return;
-            }
-
-            player.bodyCollider.enabled = player.currentHealth.Value > 0;
-
-            foreach (SkinnedMeshRenderer bodySkin in player.bodySkins)
-            {
-                bodySkin.enabled = player.currentHealth.Value > 0;
-            }
-
-            player.playerWeapon.SelectWeapon_ServerRpc(player.playerWeapon.selectedWeapon.Value);
-        }
-    }
-
     private void Update()
     {
         if (!IsHost || spawning)

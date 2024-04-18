@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
@@ -463,6 +464,8 @@ public class LobbyManager : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e);
+            await Task.Delay(1000);
+            UpdateLobbyState(state);
         }
     }
 
@@ -483,6 +486,8 @@ public class LobbyManager : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e);
+            await Task.Delay(1000);
+            UpdateLobbyCode(joinCode);
         }
     }
 

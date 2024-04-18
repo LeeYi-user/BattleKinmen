@@ -287,7 +287,6 @@ public class TeamModeManager : NetworkBehaviour
             {
                 phase = -1;
                 GameManager.Instance.GameStart();
-                NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerRespawn_ServerRpc();
                 storyScreen.SetActive(false);
             }
 
