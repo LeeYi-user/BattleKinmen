@@ -210,7 +210,7 @@ public class PlayerMovement : NetworkBehaviour
         live = false;
         rb.constraints = RigidbodyConstraints.FreezeAll;
 
-        if (!GameManager.Instance.gameStart || GameManager.gameOver)
+        if (GameManager.gameOver)
         {
             return;
         }

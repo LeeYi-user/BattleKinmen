@@ -49,6 +49,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
 
         selectedWeapon.OnValueChanged += SelectWeapon;
+        SelectWeapon(0, 0);
     }
 
     private void Start()
