@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5463883294918445913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6533962754542098307}
+  - component: {fileID: 1729003698501055185}
+  - component: {fileID: 3496058965124421575}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6533962754542098307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5463883294918445913}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1729003698501055185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5463883294918445913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2270893315
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &3496058965124421575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5463883294918445913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2b7117966ffd1a4e869105bce919b9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  breakTime:
+    m_InternalValue: 30.99
+  waves:
+    m_InternalValue: 1
+  enemies:
+    m_InternalValue: 0
+  teamCash:
+    m_InternalValue: 1000
+  canvas: {fileID: 0}
+  popup: {fileID: 2781551305655792834, guid: 2d61a311b2fc07b4d904e7bdcf046f58, type: 3}
+  popups: []
+  loadingScreen: {fileID: 0}
+  gamingScreen: {fileID: 0}
+  deathScreen: {fileID: 0}
+  gameoverScreen: {fileID: 0}
+  playerCounter: {fileID: 0}
+  healthBar: {fileID: 0}
+  ammoBar: {fileID: 0}
+  deathMessage: {fileID: 0}
+  spectatorArea: []
+  respawnArea: []
+  respawnCooldown: 10
+  maxDefense: 3
+  currentDefense: 3
+  enemyDelay: 1
+  enemyDisable: 1
+  enemyTarget: {fileID: 0}
+  enemyHealth: 30
+  enemyDamage: 30
+  skillDisable: 0
+  teamDisable: 0
+  cashDisable: 0
+  cashBonus: 1
+  gameStart: 0
