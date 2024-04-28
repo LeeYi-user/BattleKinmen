@@ -7,8 +7,6 @@ using TMPro;
 
 public class TeamModeManager : NetworkBehaviour
 {
-    public static TeamModeManager Instance;
-
     [Header("Parent UI")]
     [SerializeField] private GameObject storyScreen;
 
@@ -21,18 +19,6 @@ public class TeamModeManager : NetworkBehaviour
     private bool pause;
     private float timeLeft;
     private Color targetColor = new Color(1, 1, 1, 0);
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-
-    public override void OnDestroy()
-    {
-        base.OnDestroy();
-
-        Instance = null;
-    }
 
     public override void OnNetworkSpawn()
     {
@@ -145,12 +131,6 @@ public class TeamModeManager : NetworkBehaviour
                 GameManager.Instance.enemyDisable.Value = true;
                 GameManager.Instance.waves.Value++;
                 GameManager.Instance.breakTime.Value = GameManager.Instance.timeLimit;
-
-                if (MenuManager.gameMode == 2 && GameManager.Instance.waves.Value == 2)
-                {
-                    MenuManager.friendlyFire = true;
-                    GameManager.Instance.Popup_ClientRpc("戰鬥開始!", Color.red);
-                }
             }
         }
     }
@@ -188,9 +168,6 @@ public class TeamModeManager : NetworkBehaviour
         {
             if (phase == 0)
             {
-                GameManager.Instance.gamingScreen.SetActive(false);
-                GameManager.Instance.gameoverScreen.SetActive(true);
-                GameManager.Instance.gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
                 gameoverMessage.color = new Color(1, 1, 1, 0);
                 targetColor = new Color(0, 0, 0, 1);
                 timeLeft = 2f;

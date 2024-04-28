@@ -157,6 +157,9 @@ public class GameManager : NetworkBehaviour
     public void GameOver_ClientRpc()
     {
         gameOver = true;
+        gamingScreen.SetActive(false);
+        gameoverScreen.SetActive(true);
+        gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
     }
 
     private void Start()
