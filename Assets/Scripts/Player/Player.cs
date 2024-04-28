@@ -128,6 +128,12 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    public void PlayerDespawn_ServerRpc()
+    {
+        currentHealth.Value = 0f;
+    }
+
     [ClientRpc]
     public void PlayerDespawn_ClientRpc(string msg)
     {
@@ -185,7 +191,7 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
-            GameManager.Instance.gamingScreen.SetActive(true);
+            GameManager.Instance.gamingScreen.SetActive(!GameManager.Instance.pauseScreen.activeSelf);
             GameManager.Instance.deathScreen.SetActive(false);
 
             playerName.Respawn();

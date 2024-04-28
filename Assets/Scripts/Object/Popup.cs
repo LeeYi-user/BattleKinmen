@@ -15,6 +15,11 @@ public class Popup : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.popups.Contains(null))
+        {
+            Destroy(gameObject);
+        }
+
         if (text.text == "")
         {
             return;

@@ -74,7 +74,7 @@ public class TeamModeManager : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.L))
         {
             GameManager.Instance.currentDefense = 0;
         }

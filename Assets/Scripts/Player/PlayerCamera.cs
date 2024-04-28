@@ -14,8 +14,6 @@ public class PlayerCamera : NetworkBehaviour
     public float xRotation;
     public float yRotation;
 
-    public bool disable;
-
     private void Start()
     {
         if (!IsOwner)
@@ -31,24 +29,7 @@ public class PlayerCamera : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || !GameManager.Instance.gameStart || GameManager.gameOver)
-        {
-            return;
-        }
-
-        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1)) && Cursor.lockState == CursorLockMode.None && !disable)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-            return;
-        }
-
-        if (Cursor.lockState == CursorLockMode.None)
+        if (!IsOwner || Cursor.lockState == CursorLockMode.None)
         {
             return;
         }

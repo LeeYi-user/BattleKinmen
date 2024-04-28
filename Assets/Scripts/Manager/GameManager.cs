@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using TMPro;
@@ -24,11 +25,14 @@ public class GameManager : NetworkBehaviour
     public GameObject gamingScreen;
     public GameObject deathScreen;
     public GameObject gameoverScreen;
+    public GameObject pauseScreen;
 
     [Header("Player UI")]
     public TextMeshProUGUI healthBar;
     public TextMeshProUGUI ammoBar;
     public TextMeshProUGUI deathMessage;
+    public TextMeshProUGUI pauseScreenResumeButtonText;
+    public TextMeshProUGUI pauseScreenQuitButtonText;
 
     [Header("Player Spawn")]
     public List<Transform> playerDespawnArea;
@@ -153,7 +157,6 @@ public class GameManager : NetworkBehaviour
     public void GameOver_ClientRpc()
     {
         gameOver = true;
-        Cursor.lockState = CursorLockMode.None;
     }
 
     private void Start()
@@ -166,8 +169,6 @@ public class GameManager : NetworkBehaviour
         {
             StartCoroutine(JoinRelay());
         }
-
-        Popup("按下 Backspace 退出", Color.yellow);
     }
 
     private IEnumerator JoinRelay()
@@ -178,9 +179,18 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Back();
+            Cursor.lockState = CursorLockMode.None;
+            gamingScreen.SetActive(false);
+            pauseScreen.SetActive(true);
+            popups.Clear();
+            popups.Add(null);
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerDespawn_ServerRpc();
             return;
         }
     }
@@ -221,6 +231,11 @@ public class GameManager : NetworkBehaviour
 
     public void Popup(string text, Color color)
     {
+        if (popups.Contains(null))
+        {
+            return;
+        }
+
         bool exist = false;
 
         foreach (string msg in popups)
@@ -252,5 +267,39 @@ public class GameManager : NetworkBehaviour
         }
 
         Popup(text, color);
+    }
+
+    public void PauseScreenResumeButtonClick()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        gamingScreen.SetActive(!deathScreen.activeSelf);
+        pauseScreen.SetActive(false);
+        PauseScreenResumeButtonExit();
+        popups.Remove(null);
+    }
+
+    public void PauseScreenResumeButtonEnter()
+    {
+        pauseScreenResumeButtonText.text = "<u>繼續</u>";
+    }
+
+    public void PauseScreenResumeButtonExit()
+    {
+        pauseScreenResumeButtonText.text = "繼續";
+    }
+
+    public void PauseScreenQuitButtonClick()
+    {
+        Back();
+    }
+
+    public void PauseScreenQuitButtonEnter()
+    {
+        pauseScreenQuitButtonText.text = "<u>離開</u>";
+    }
+
+    public void PauseScreenQuitButtonExit()
+    {
+        pauseScreenQuitButtonText.text = "離開";
     }
 }

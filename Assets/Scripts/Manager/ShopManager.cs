@@ -90,7 +90,6 @@ public class ShopManager : NetworkBehaviour
         {
             if (!shopMenu.activeSelf)
             {
-                NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.disable = true;
                 Cursor.lockState = CursorLockMode.None;
                 shopMenu.SetActive(true);
             }
@@ -278,8 +277,11 @@ public class ShopManager : NetworkBehaviour
 
     public void BackButtonClick()
     {
-        NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().playerCamera.disable = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        if (!GameManager.Instance.pauseScreen.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
         shopMenu.SetActive(false);
     }
 }
