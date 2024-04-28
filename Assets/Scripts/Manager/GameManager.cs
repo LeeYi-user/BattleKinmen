@@ -272,7 +272,7 @@ public class GameManager : NetworkBehaviour
     public void PauseScreenResumeButtonClick()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        gamingScreen.SetActive(!deathScreen.activeSelf);
+        gamingScreen.SetActive(gameStart && !deathScreen.activeSelf);
         pauseScreen.SetActive(false);
         PauseScreenResumeButtonExit();
         popups.Remove(null);
