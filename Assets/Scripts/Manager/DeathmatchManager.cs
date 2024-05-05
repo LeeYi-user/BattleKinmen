@@ -48,7 +48,28 @@ public class DeathmatchManager : NetworkBehaviour
 
         foreach (NetworkClient player in NetworkManager.ConnectedClients.Values)
         {
-            player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("GAME OVER");
+            bool flag = false;
+            int score = player.PlayerObject.GetComponent<Player>().playerScore.Value;
+
+            foreach (NetworkClient _player in NetworkManager.ConnectedClients.Values)
+            {
+                int _score = _player.PlayerObject.GetComponent<Player>().playerScore.Value;
+
+                if (_score > score)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (flag)
+            {
+                player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("YOU LOSE");
+            }
+            else
+            {
+                player.PlayerObject.GetComponent<Player>().PlayerDespawn_ClientRpc("YOU WIN");
+            }
         }
     }
 
