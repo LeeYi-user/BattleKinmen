@@ -20,6 +20,11 @@ public class DeathmatchManager : NetworkBehaviour
 
     private bool gameStart;
 
+    private void Start()
+    {
+        GameManager.Instance.timeLimit = MenuManager.timeLimit * 60f + 0.99f;
+    }
+
     private void Update()
     {
         KeyInput();

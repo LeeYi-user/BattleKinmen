@@ -30,12 +30,17 @@ public class MenuManager : MonoBehaviour
     public TextMeshProUGUI createMenuGameModeText;
     public GameObject createMenuFriendlyFireSetting;
     public TextMeshProUGUI createMenuFriendlyFireText;
+    public GameObject createMenuTimeLimitSetting;
+    public TextMeshProUGUI createMenuTimeLimitText;
     public TMP_InputField ownerMenuSearchBar;
     public TMP_InputField roomerMenuSearchBar;
     public TextMeshProUGUI infoMenuLobbyNameText;
     public TextMeshProUGUI infoMenuMaxPlayersText;
     public TextMeshProUGUI infoMenuGameModeText;
+    public GameObject infoMenuFriendlyFireInfo;
     public TextMeshProUGUI infoMenuFriendlyFireText;
+    public GameObject infoMenuTimeLimitInfo;
+    public TextMeshProUGUI infoMenuTimeLimitText;
 
     public GameObject lobbyMenuContainer;
     public GameObject ownerMenuContainer;
@@ -53,6 +58,7 @@ public class MenuManager : MonoBehaviour
     public static int maxPlayers = 6;
     public static int gameMode = 0;
     public static bool friendlyFire = false;
+    public static int timeLimit = 5;
 
     public string selectedLobbyId;
     public string selectedPlayerId;
@@ -68,6 +74,7 @@ public class MenuManager : MonoBehaviour
         maxPlayers = 6;
         gameMode = 0;
         friendlyFire = false;
+        timeLimit = 5;
         LobbyManager.Instance.start = false;
         LobbyManager.Instance.players.Clear();
     }
@@ -183,14 +190,17 @@ public class MenuManager : MonoBehaviour
         maxPlayers = 6;
         gameMode = 0;
         friendlyFire = false;
+        timeLimit = 5;
         createMenuLobbyNameInput.text = "房間";
         createMenuMaxPlayersText.text = maxPlayers.ToString();
         createMenuGameModeText.text = modes[gameMode].ToString();
         createMenuFriendlyFireText.text = friendlyFire ? "開" : "關";
+        createMenuTimeLimitText.text = timeLimit.ToString();
 
         lobbyMenu.SetActive(false);
         createMenu.SetActive(true);
         createMenuFriendlyFireSetting.SetActive(true);
+        createMenuTimeLimitSetting.SetActive(false);
         modeMenu.SetActive(true);
 
         int i = 0;
@@ -255,6 +265,7 @@ public class MenuManager : MonoBehaviour
 
         createMenuMaxPlayersText.text = maxPlayers.ToString();
     }
+
     public void CreateMenuMaxPlayersOptionLeftArrowButtonClick()
     {
         if (maxPlayers > 1)
@@ -301,6 +312,26 @@ public class MenuManager : MonoBehaviour
             friendlyFire = true;
             createMenuFriendlyFireText.text = "開";
         }
+    }
+
+    public void CreateMenuTimeLimitOptionRightArrowButtonClick()
+    {
+        if (timeLimit < 10)
+        {
+            timeLimit++;
+        }
+
+        createMenuTimeLimitText.text = timeLimit.ToString();
+    }
+
+    public void CreateMenuTimeLimitOptionLeftArrowButtonClick()
+    {
+        if (timeLimit > 1)
+        {
+            timeLimit--;
+        }
+
+        createMenuTimeLimitText.text = timeLimit.ToString();
     }
 
     public void CreateMenuCancelButtonClick()
@@ -392,10 +423,12 @@ public class MenuManager : MonoBehaviour
         if (gameMode == 2)
         {
             createMenuFriendlyFireSetting.SetActive(false);
+            createMenuTimeLimitSetting.SetActive(true);
         }
         else
         {
             createMenuFriendlyFireSetting.SetActive(true);
+            createMenuTimeLimitSetting.SetActive(false);
         }
 
         createMenuGameModeText.text = modes[gameMode].ToString();

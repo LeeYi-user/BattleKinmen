@@ -183,6 +183,9 @@ public class LobbyManager : MonoBehaviour
                         "friendly_fire", new DataObject(DataObject.VisibilityOptions.Public, friendlyFire ? "開" : "關")
                     },
                     {
+                        "time_limit", new DataObject(DataObject.VisibilityOptions.Public, MenuManager.timeLimit.ToString())
+                    },
+                    {
                         "state", new DataObject(DataObject.VisibilityOptions.Public, "waiting", DataObject.IndexOptions.S1)
                     },
                     {
@@ -326,6 +329,10 @@ public class LobbyManager : MonoBehaviour
             MenuManager.Instance.infoMenuMaxPlayersText.text = joinedLobby.MaxPlayers.ToString();
             MenuManager.Instance.infoMenuGameModeText.text = joinedLobby.Data["mode"].Value;
             MenuManager.Instance.infoMenuFriendlyFireText.text = joinedLobby.Data["friendly_fire"].Value;
+            MenuManager.Instance.infoMenuTimeLimitText.text = joinedLobby.Data["time_limit"].Value;
+            MenuManager.Instance.infoMenuFriendlyFireInfo.SetActive(joinedLobby.Data["mode"].Value != "演習");
+            MenuManager.Instance.infoMenuTimeLimitInfo.SetActive(joinedLobby.Data["mode"].Value == "演習");
+
             MenuManager.Instance.roomerMenu.SetActive(false);
             MenuManager.Instance.infoMenu.SetActive(true);
         }

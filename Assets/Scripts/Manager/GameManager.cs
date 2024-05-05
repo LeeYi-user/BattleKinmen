@@ -101,6 +101,11 @@ public class GameManager : NetworkBehaviour
 
     private void NetworkManager_OnClientStopped(bool obj)
     {
+        if (gameOver)
+        {
+            return;
+        }
+
         Disconnect();
     }
 
