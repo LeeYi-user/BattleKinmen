@@ -77,6 +77,7 @@ public class MenuManager : MonoBehaviour
         timeLimit = 5;
         LobbyManager.Instance.start = false;
         LobbyManager.Instance.players.Clear();
+        LobbyManager.Instance.playersItems.Clear();
     }
 
     private void OnDestroy()

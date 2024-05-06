@@ -24,6 +24,7 @@ public class LobbyManager : MonoBehaviour
 
     public bool start = false;
     public Dictionary<ulong, Player> players = new Dictionary<ulong, Player>();
+    public Dictionary<ulong, List<string>> playersItems = new Dictionary<ulong, List<string>>();
 
     private void Awake()
     {

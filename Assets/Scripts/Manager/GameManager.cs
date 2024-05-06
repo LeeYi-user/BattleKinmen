@@ -192,8 +192,8 @@ public class GameManager : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
             gamingScreen.SetActive(false);
             pauseScreen.SetActive(true);
-            popups.Clear();
-            popups.Add(null);
+            //popups.Clear();
+            //popups.Add(null);
         }
 
         if (Input.GetKeyDown(KeyCode.O))
@@ -239,10 +239,10 @@ public class GameManager : NetworkBehaviour
 
     public void Popup(string text, Color color)
     {
-        if (popups.Contains(null))
-        {
-            return;
-        }
+        //if (popups.Contains(null))
+        //{
+        //    return;
+        //}
 
         bool exist = false;
 
@@ -283,7 +283,7 @@ public class GameManager : NetworkBehaviour
         gamingScreen.SetActive(gameStart && !deathScreen.activeSelf);
         pauseScreen.SetActive(false);
         PauseScreenResumeButtonExit();
-        popups.Remove(null);
+        //popups.Remove(null);
     }
 
     public void PauseScreenResumeButtonEnter()
