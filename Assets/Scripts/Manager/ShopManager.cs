@@ -325,7 +325,7 @@ public class ShopManager : NetworkBehaviour
                     GameManager.Instance.cashBonus -= 0.1f;
                     break;
                 case "mapDefense": // 需要更改 maxDefense 和 currentDefense
-                    if (GameManager.Instance.currentDefense == 1)
+                    if (GameManager.Instance.currentDefense <= 1)
                     {
                         return;
                     }
