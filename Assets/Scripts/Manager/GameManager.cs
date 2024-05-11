@@ -140,9 +140,9 @@ public class GameManager : NetworkBehaviour
 
         foreach (Player player in LobbyManager.Instance.players.Values)
         {
-            if (player.NetworkObjectId == NetworkObjectId)
+            if (player.NetworkObjectId == NetworkManager.LocalClient.PlayerObject.NetworkObjectId)
             {
-                return;
+                continue;
             }
 
             player.bodyCollider.enabled = player.currentHealth.Value > 0;
