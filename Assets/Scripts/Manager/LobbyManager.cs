@@ -471,9 +471,16 @@ public class LobbyManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.Log(e);
-            await Task.Delay(1000);
-            UpdateLobbyState(state);
+            if (e.ToString().Contains("Rate limit"))
+            {
+                Debug.Log("UpdateLobbyState() failed, retry in 1 second");
+                await Task.Delay(1000);
+                UpdateLobbyState(state);
+            }
+            else
+            {
+                Debug.Log(e);
+            }
         }
     }
 
@@ -493,9 +500,16 @@ public class LobbyManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.Log(e);
-            await Task.Delay(1000);
-            UpdateLobbyCode(joinCode);
+            if (e.ToString().Contains("Rate limit"))
+            {
+                Debug.Log("UpdateLobbyCode() failed, retry in 1 second");
+                await Task.Delay(1000);
+                UpdateLobbyCode(joinCode);
+            }
+            else
+            {
+                Debug.Log(e);
+            }
         }
     }
 
