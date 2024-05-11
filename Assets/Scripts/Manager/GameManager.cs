@@ -104,7 +104,7 @@ public class GameManager : NetworkBehaviour
 
     private void ClientSide_OnClientDisconnectCallback(ulong clientId)
     {
-        if (IsHost || gameOver)
+        if (IsHost)
         {
             return;
         }
