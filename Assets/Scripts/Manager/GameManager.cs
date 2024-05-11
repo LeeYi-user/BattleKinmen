@@ -68,40 +68,43 @@ public class GameManager : NetworkBehaviour
         gameOver = false;
     }
 
-    public override void OnDestroy()
+    private void OnEnable()
     {
-        base.OnDestroy();
-
-        Instance = null;
-        NetworkManager.OnClientStopped -= NetworkManager_OnClientStopped;
-
-        if (!IsHost)
-        {
-            return;
-        }
-
-        NetworkManager.OnClientConnectedCallback -= NetworkManager_OnClientConnectedCallback;
-        NetworkManager.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+        NetworkManager.OnClientDisconnectCallback += ClientSide_OnClientDisconnectCallback;
     }
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
-        NetworkManager.OnClientStopped += NetworkManager_OnClientStopped;
+        if (!IsHost)
+        {
+            return;
+        }
+
+        NetworkManager.OnClientConnectedCallback += ServerSide_OnClientConnectedCallback;
+        NetworkManager.OnClientDisconnectCallback += ServerSide_OnClientDisconnectCallback;
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        Instance = null;
+        NetworkManager.OnClientDisconnectCallback -= ClientSide_OnClientDisconnectCallback;
 
         if (!IsHost)
         {
             return;
         }
 
-        NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
-        NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        NetworkManager.OnClientConnectedCallback -= ServerSide_OnClientConnectedCallback;
+        NetworkManager.OnClientDisconnectCallback -= ServerSide_OnClientDisconnectCallback;
     }
 
-    private void NetworkManager_OnClientStopped(bool obj)
+    private void ClientSide_OnClientDisconnectCallback(ulong clientId)
     {
-        if (gameOver)
+        if (IsHost || gameOver)
         {
             return;
         }
@@ -109,15 +112,15 @@ public class GameManager : NetworkBehaviour
         Disconnect();
     }
 
-    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
+    private void ServerSide_OnClientConnectedCallback(ulong clientId)
     {
-        if (gameOver)
+        if (gameOver || RelayManager.disconnecting)
         {
             NetworkManager.DisconnectClient(clientId);
         }
     }
 
-    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    private void ServerSide_OnClientDisconnectCallback(ulong clientId)
     {
         if (gameOver || RelayManager.disconnecting)
         {

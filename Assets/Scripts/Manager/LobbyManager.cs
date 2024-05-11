@@ -113,9 +113,15 @@ public class LobbyManager : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.Log(e);
+
             if (e.ToString().Contains("Rate limit") || !MenuManager.Instance || RelayManager.disconnecting)
             {
-                Debug.Log(e);
+                if (e.ToString().Contains("lobby not found") && !MenuManager.Instance)
+                {
+                    GameManager.Instance.Back();
+                }
+
                 return;
             }
 
@@ -127,7 +133,6 @@ public class LobbyManager : MonoBehaviour
 
             hostLobby = null;
             joinedLobby = null;
-            Debug.Log(e);
         }
     }
 
