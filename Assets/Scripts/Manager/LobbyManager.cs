@@ -115,9 +115,9 @@ public class LobbyManager : MonoBehaviour
         {
             Debug.Log(e);
 
-            if (e.ToString().Contains("Rate limit") || !MenuManager.Instance || RelayManager.disconnecting)
+            if (e.Message.Equals("Rate limit has been exceeded") || !MenuManager.Instance || RelayManager.disconnecting)
             {
-                if (e.ToString().Contains("lobby not found") && !MenuManager.Instance)
+                if (e.Message.Equals("lobby not found") && !MenuManager.Instance)
                 {
                     GameManager.Instance.Back();
                 }
@@ -476,7 +476,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
+            if (e.Message.Equals("Rate limit has been exceeded"))
             {
                 Debug.Log("UpdateLobbyState() failed, retry in 1 second");
                 await Task.Delay(1000);
@@ -505,7 +505,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            if (e.ToString().Contains("Rate limit"))
+            if (e.Message.Equals("Rate limit has been exceeded"))
             {
                 Debug.Log("UpdateLobbyCode() failed, retry in 1 second");
                 await Task.Delay(1000);
