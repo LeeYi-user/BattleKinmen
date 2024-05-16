@@ -26,6 +26,7 @@ public class GameManager : NetworkBehaviour
     public GameObject deathScreen;
     public GameObject gameoverScreen;
     public GameObject pauseScreen;
+    public GameObject settingsMenu;
 
     [Header("Player UI")]
     public TextMeshProUGUI healthBar;
@@ -33,7 +34,11 @@ public class GameManager : NetworkBehaviour
     public Image effect;
     public TextMeshProUGUI deathMessage;
     public TextMeshProUGUI pauseScreenResumeButtonText;
+    public TextMeshProUGUI puaseScreenSettingsButtonText;
     public TextMeshProUGUI pauseScreenQuitButtonText;
+    public Slider sensSlider;
+    public Slider volumeSlider1;
+    public Slider volumeSlider2;
 
     [Header("Player Spawn")]
     public List<Transform> playerDespawnArea;
@@ -72,7 +77,9 @@ public class GameManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        GetComponent<AudioSource>().volume = MenuManager.volume;
+        sensSlider.value = MenuManager.sens;
+        volumeSlider1.value = MenuManager.volume1;
+        volumeSlider2.value = MenuManager.volume2;
         NetworkManager.OnClientDisconnectCallback += ClientSide_OnClientDisconnectCallback;
     }
 
@@ -196,6 +203,7 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         ChangeEffect();
+        UpdateUISettings();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -211,6 +219,14 @@ public class GameManager : NetworkBehaviour
             NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerDespawn_ServerRpc();
             return;
         }
+    }
+
+    private void UpdateUISettings()
+    {
+        MenuManager.sens = sensSlider.value;
+        MenuManager.volume1 = volumeSlider1.value;
+        MenuManager.volume2 = volumeSlider2.value;
+        GetComponent<AudioSource>().volume = volumeSlider2.value;
     }
 
     private void ChangeEffect()
@@ -311,12 +327,27 @@ public class GameManager : NetworkBehaviour
 
     public void PauseScreenResumeButtonEnter()
     {
-        pauseScreenResumeButtonText.text = "<u>繼續</u>";
+        pauseScreenResumeButtonText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
     }
 
     public void PauseScreenResumeButtonExit()
     {
-        pauseScreenResumeButtonText.text = "繼續";
+        pauseScreenResumeButtonText.color = new Color(233f / 255f, 225f / 255f, 194f / 255f);
+    }
+
+    public void PauseScreenSettingsButtonClick()
+    {
+        settingsMenu.SetActive(true);
+    }
+
+    public void PauseScreenSettingsButtonEnter()
+    {
+        puaseScreenSettingsButtonText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
+    }
+
+    public void PauseScreenSettingsButtonExit()
+    {
+        puaseScreenSettingsButtonText.color = new Color(233f / 255f, 225f / 255f, 194f / 255f);
     }
 
     public void PauseScreenQuitButtonClick()
@@ -326,11 +357,16 @@ public class GameManager : NetworkBehaviour
 
     public void PauseScreenQuitButtonEnter()
     {
-        pauseScreenQuitButtonText.text = "<u>離開</u>";
+        pauseScreenQuitButtonText.color = new Color(125f / 255f, 57f / 255f, 58f / 255f);
     }
 
     public void PauseScreenQuitButtonExit()
     {
-        pauseScreenQuitButtonText.text = "離開";
+        pauseScreenQuitButtonText.color = new Color(233f / 255f, 225f / 255f, 194f / 255f);
+    }
+
+    public void SettingsMenuBackButtonClick()
+    {
+        settingsMenu.SetActive(false);
     }
 }

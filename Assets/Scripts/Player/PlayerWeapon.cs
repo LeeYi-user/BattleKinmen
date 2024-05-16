@@ -54,8 +54,6 @@ public class PlayerWeapon : NetworkBehaviour
 
     private void Start()
     {
-        audioSource.volume = MenuManager.volume;
-
         if (!IsOwner)
         {
             return;
@@ -66,6 +64,8 @@ public class PlayerWeapon : NetworkBehaviour
 
     private void Update()
     {
+        audioSource.volume = MenuManager.volume1;
+
         if (!IsOwner)
         {
             return;

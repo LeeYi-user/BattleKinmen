@@ -30,18 +30,10 @@ public class Enemy : NetworkBehaviour
     private bool destroying;
     private float nextTimeToAttack;
 
-    private void Start()
-    {
-        audioSource.volume = MenuManager.volume;
-
-        if (!IsHost)
-        {
-            return;
-        }
-    }
-
     private void Update()
     {
+        audioSource.volume = MenuManager.volume1;
+
         if (!IsHost || destroying)
         {
             return;

@@ -9,7 +9,7 @@ public class Sound : MonoBehaviour
 
     private void Start()
     {
-        audioSource.volume = MenuManager.volume;
+        audioSource.volume = MenuManager.volume1;
         audioSource.PlayOneShot(audioClip);
     }
 }

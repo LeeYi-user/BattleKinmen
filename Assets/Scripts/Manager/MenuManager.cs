@@ -47,7 +47,8 @@ public class MenuManager : MonoBehaviour
     public GameObject roomerMenuContainer;
 
     public Slider sensSlider;
-    public Slider volumeSlider;
+    public Slider volumeSlider1;
+    public Slider volumeSlider2;
     public Slider progressSlider;
 
     public static string[] classes = { "榴彈兵", "地雷兵", "醫療兵" };
@@ -64,7 +65,8 @@ public class MenuManager : MonoBehaviour
     public string selectedPlayerId;
 
     public static float sens = 0.25f;
-    public static float volume = 0.25f;
+    public static float volume1 = 0.25f;
+    public static float volume2 = 0.25f;
 
     private float lobbyQueryTimer;
 
@@ -90,7 +92,8 @@ public class MenuManager : MonoBehaviour
         lobbyMenuPlayerNameInput.text = playerName;
         lobbyMenuClassOptionText.text = classes[playerClass];
         sensSlider.value = sens;
-        volumeSlider.value = volume;
+        volumeSlider1.value = volume1;
+        volumeSlider2.value = volume2;
         Cursor.lockState = CursorLockMode.None;
     }
 
@@ -104,7 +107,8 @@ public class MenuManager : MonoBehaviour
     {
         playerName = lobbyMenuPlayerNameInput.text;
         sens = sensSlider.value;
-        volume = volumeSlider.value;
+        volume1 = volumeSlider1.value;
+        volume2 = volumeSlider2.value;
     }
 
     private void HandleLobbyListPollForUpdates()
