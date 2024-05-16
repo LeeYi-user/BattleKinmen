@@ -175,6 +175,7 @@ public class PlayerWeapon : NetworkBehaviour
             Player player = collider.transform.parent.GetComponent<Player>();
             player.currentHealth.Value = Mathf.Min(player.currentHealth.Value + healAmount.Value, player.maxHealth.Value);
             player.invTime.Value += healInv.Value;
+            player.PlayerEffect_ClientRpc("heal");
         }
     }
 

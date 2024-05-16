@@ -101,6 +101,8 @@ public class Player : NetworkBehaviour
 
         currentHealth.Value -= damage * (1f - bulletproof.Value);
 
+        PlayerEffect_ClientRpc("damage");
+
         if (NetworkManager.SpawnManager.SpawnedObjects[attackerId].CompareTag("Player") && attackerId != NetworkObjectId)
         {
             Player attacker = NetworkManager.SpawnManager.SpawnedObjects[attackerId].GetComponent<Player>();
@@ -125,6 +127,29 @@ public class Player : NetworkBehaviour
                     GameManager.Instance.Popup_ClientRpc("誤傷友軍!", Color.yellow, true, attackerId);
                 }
             }
+        }
+    }
+
+    [ClientRpc]
+    public void PlayerEffect_ClientRpc(string type)
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        switch (type)
+        {
+            case "damage":
+                GameManager.Instance.effect.color = new Color(1f, 0f, 0f, 100f / 255f);
+                GameManager.Instance.timeLeft = 0.5f;
+                break;
+            case "heal":
+                GameManager.Instance.effect.color = new Color(0f, 1f, 0f, 100f / 255f);
+                GameManager.Instance.timeLeft = 0.5f;
+                break;
+            default:
+                break;
         }
     }
 

@@ -30,6 +30,7 @@ public class GameManager : NetworkBehaviour
     [Header("Player UI")]
     public TextMeshProUGUI healthBar;
     public TextMeshProUGUI ammoBar;
+    public Image effect;
     public TextMeshProUGUI deathMessage;
     public TextMeshProUGUI pauseScreenResumeButtonText;
     public TextMeshProUGUI pauseScreenQuitButtonText;
@@ -61,6 +62,7 @@ public class GameManager : NetworkBehaviour
     [Header("Game State")]
     public bool gameStart = false;
     public static bool gameOver;
+    public float timeLeft = 0f;
 
     private void Awake()
     {
@@ -190,6 +192,8 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
+        ChangeEffect();
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -203,6 +207,19 @@ public class GameManager : NetworkBehaviour
         {
             NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerDespawn_ServerRpc();
             return;
+        }
+    }
+
+    private void ChangeEffect()
+    {
+        if (timeLeft <= Time.deltaTime)
+        {
+            effect.color = new Color(effect.color.r, effect.color.g, effect.color.b, 0f);
+        }
+        else
+        {
+            effect.color = Color.Lerp(effect.color, new Color(effect.color.r, effect.color.g, effect.color.b, 0f), Time.deltaTime / timeLeft);
+            timeLeft -= Time.deltaTime;
         }
     }
 
