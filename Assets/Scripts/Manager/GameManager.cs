@@ -72,6 +72,7 @@ public class GameManager : NetworkBehaviour
 
     private void OnEnable()
     {
+        GetComponent<AudioSource>().volume = MenuManager.volume;
         NetworkManager.OnClientDisconnectCallback += ClientSide_OnClientDisconnectCallback;
     }
 
@@ -161,6 +162,7 @@ public class GameManager : NetworkBehaviour
         }
 
         NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerRespawn_ServerRpc();
+        GetComponent<AudioSource>().Play();
     }
 
     [ClientRpc]
@@ -170,6 +172,7 @@ public class GameManager : NetworkBehaviour
         gamingScreen.SetActive(false);
         gameoverScreen.SetActive(true);
         gameoverScreen.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+        GetComponent<AudioSource>().Stop();
     }
 
     private void Start()
