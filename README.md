@@ -28,12 +28,12 @@ git fetch --unshallow
 
 1. 把檔案丟到 Unity 專案底下。  
 ![](./Images/01.png)
-2. 前往 [Unity Cloud](https://cloud.unity.com/home/login?redirectTo=Lw==) 進行登入。
-3. 登入完畢後，點擊左方側邊欄中的**產品**，並尋找 Asset Manager。  
+2. 前往 [Unity Cloud](https://cloud.unity.com/home/login?redirectTo=Lw==) 進行登錄。
+3. 登錄完畢後，點擊左方側邊欄中的**產品**，並尋找 Asset Manager。  
 ![](./Images/02.png)
 4. 點擊 Asset Manager 後，從右方尋找我們的專案 (BattleKinmen)。  
 ![](./Images/03.png)
-5. 點擊我們的專案後，點擊右上方的 `+ Add` 按鈕即可上傳檔案。  
+5. 點擊我們的專案後，點擊右上方的 `+ Add` 按鈕來上傳檔案。  
 ![](./Images/04.png)
 6. 在上傳時，選擇 `Add asset`。  
 ![](./Images/05.png)
