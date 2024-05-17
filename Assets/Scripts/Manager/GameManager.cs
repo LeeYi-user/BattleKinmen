@@ -365,6 +365,13 @@ public class GameManager : NetworkBehaviour
         pauseScreenQuitButtonText.color = new Color(233f / 255f, 225f / 255f, 194f / 255f);
     }
 
+    public void SettingsMenuResetButtonClick()
+    {
+        sensSlider.value = 0.25f;
+        volumeSlider1.value = 0.25f;
+        volumeSlider2.value = 0.25f;
+    }
+
     public void SettingsMenuBackButtonClick()
     {
         settingsMenu.SetActive(false);
