@@ -165,7 +165,7 @@ public class GameManager : NetworkBehaviour
                 bodySkin.enabled = player.currentHealth.Value > 0;
             }
 
-            player.playerWeapon.SelectWeapon_ServerRpc(player.playerWeapon.selectedWeapon.Value);
+            player.playerWeapon.SelectWeapon_ClientSync(player.playerWeapon.selectedWeapon.Value);
         }
 
         NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerRespawn_ServerRpc();

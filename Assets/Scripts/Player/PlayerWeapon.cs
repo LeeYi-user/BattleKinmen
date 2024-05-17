@@ -216,6 +216,11 @@ public class PlayerWeapon : NetworkBehaviour
             return;
         }
 
+        SelectWeapon_ClientSync(index);
+    }
+
+    public void SelectWeapon_ClientSync(int index)
+    {
         foreach (Transform weapon in transform)
         {
             weapon.gameObject.SetActive(false);
