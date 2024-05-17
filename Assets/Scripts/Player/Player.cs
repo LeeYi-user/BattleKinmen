@@ -200,11 +200,7 @@ public class Player : NetworkBehaviour
         }
 
         currentHealth.Value = maxHealth.Value;
-
-        if (seconds > 0)
-        {
-            invTime.Value = 3f;
-        }
+        invTime.Value = 3f;
 
         PlayerRespawn_ClientRpc();
     }
