@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -7,7 +7,7 @@ using TMPro;
 
 public class PlayerName : NetworkBehaviour
 {
-    public new NetworkVariable<FixedString32Bytes> name = new NetworkVariable<FixedString32Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public new NetworkVariable<FixedString32Bytes> name = new NetworkVariable<FixedString32Bytes>("連接中", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<bool> nameDisplay = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public TextMeshProUGUI nameText;
 

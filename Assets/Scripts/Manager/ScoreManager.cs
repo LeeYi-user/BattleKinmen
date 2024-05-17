@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -41,7 +41,7 @@ public class ScoreManager : NetworkBehaviour
                 {
                     flag = true;
                     child.GetComponent<ScoreUI>().nameText.text = player.playerName.name.Value.ToString();
-                    child.GetComponent<ScoreUI>().classText.text = MenuManager.classes[player.playerClass.Value];
+                    child.GetComponent<ScoreUI>().classText.text = player.playerClass.Value == -1 ? "未知" : MenuManager.classes[player.playerClass.Value];
                     child.GetComponent<ScoreUI>().scoreText.text = player.playerScore.Value.ToString();
                     break;
                 }
@@ -53,7 +53,7 @@ public class ScoreManager : NetworkBehaviour
                 scoreUI.transform.SetParent(scoreboardContainer.transform, false);
                 scoreUI.GetComponent<ScoreUI>().id = player.NetworkObjectId;
                 scoreUI.GetComponent<ScoreUI>().nameText.text = player.playerName.name.Value.ToString();
-                scoreUI.GetComponent<ScoreUI>().classText.text = MenuManager.classes[player.playerClass.Value];
+                scoreUI.GetComponent<ScoreUI>().classText.text = player.playerClass.Value == -1 ? "未知" : MenuManager.classes[player.playerClass.Value];
                 scoreUI.GetComponent<ScoreUI>().scoreText.text = player.playerScore.Value.ToString();
             }
         }

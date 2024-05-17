@@ -353,6 +353,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffb34e397d1baf54e9b57a99b8ed4bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedWeapon:
+    m_InternalValue: -1
   thirdPersonWeapons: {fileID: 120580650699658887}
   thirdPersonRigs: {fileID: 3823545247968790194}
   audioSource: {fileID: 381878828213061017}
@@ -4357,6 +4359,10 @@ MonoBehaviour:
   playerCamera: {fileID: 728660623054973475}
   playerWeapon: {fileID: 3372927119742437773}
   playerMovement: {fileID: 1465506075325161303}
+  playerClass:
+    m_InternalValue: -1
+  playerScore:
+    m_InternalValue: 0
 --- !u!1 &5751389107977492252
 GameObject:
   m_ObjectHideFlags: 0
@@ -4519,18 +4525,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name:
     m_InternalValue:
-      utf8LengthInBytes: 0
+      utf8LengthInBytes: 9
       bytes:
         offset0000:
-          byte0000: 0
-          byte0001: 0
-          byte0002: 0
-          byte0003: 0
-          byte0004: 0
-          byte0005: 0
-          byte0006: 0
-          byte0007: 0
-          byte0008: 0
+          byte0000: 233
+          byte0001: 128
+          byte0002: 163
+          byte0003: 230
+          byte0004: 142
+          byte0005: 165
+          byte0006: 228
+          byte0007: 184
+          byte0008: 173
           byte0009: 0
           byte0010: 0
           byte0011: 0
@@ -4552,6 +4558,8 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
+  nameDisplay:
+    m_InternalValue: 0
   nameText: {fileID: 4468951109547412547}
 --- !u!1 &5844393203142686998
 GameObject:
@@ -5318,7 +5326,6 @@ MonoBehaviour:
   audioListener: {fileID: 2415903999905059485}
   xRotation: 0
   yRotation: 0
-  disable: 0
 --- !u!1 &7499756455607124351
 GameObject:
   m_ObjectHideFlags: 0

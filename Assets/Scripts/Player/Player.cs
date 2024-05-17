@@ -23,7 +23,7 @@ public class Player : NetworkBehaviour
     public PlayerWeapon playerWeapon;
     public PlayerMovement playerMovement;
 
-    public NetworkVariable<int> playerClass = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> playerClass = new NetworkVariable<int>(-1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private bool spawning = true;
