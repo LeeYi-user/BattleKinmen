@@ -26,43 +26,32 @@ git fetch --unshallow
 
 由於 GitHub 預設只能上傳 `< 100MB` 的檔案 (使用 GitLFS 會限制流量)，因此我們決定使用 Unity Cloud 提供的 [Asset Manager](https://unity.com/products/asset-manager) 來進行大檔案的上傳。以下是相關步驟：
 
-1. 前往 [Unity Cloud](https://cloud.unity.com/home/login?redirectTo=Lw==) 進行登入。
-2. 登入完畢後，點擊左方側邊欄中的**項目**，並尋找我們的專案 (BattleKinmen)。  
-![](./Images/unity-cloud-project.png)
-3. 點擊我們的專案後，在底下的**服務**欄位中，尋找 Asset Manager。  
-![](./Images/unity-cloud-service.png)
-4. 點擊 Asset Manager 後，再次從右方尋找我們的專案 (BattleKinmen)。  
-![](./Images/asset-manager-project.png)
+1. 把檔案丟到 Unity 專案底下。  
+![](./Images/01.png)
+2. 前往 [Unity Cloud](https://cloud.unity.com/home/login?redirectTo=Lw==) 進行登入。
+3. 登入完畢後，點擊左方側邊欄中的**產品**，並尋找 Asset Manager。  
+![](./Images/02.png)
+4. 點擊 Asset Manager 後，從右方尋找我們的專案 (BattleKinmen)。  
+![](./Images/03.png)
 5. 點擊我們的專案後，點擊右上方的 `+ Add` 按鈕即可上傳檔案。  
-![](./Images/asset-manager-add-1.png)
-6. 在上傳時，選擇"Add asset"。  
-![](./Images/asset-manager-add-2.png)
-7. 然後再點擊"File upload"，尋找你要上傳的檔案。  
-![](./Images/asset-manager-add-3.png)  
-![](./Images/asset-manager-add-4.png)
-8. 上傳完畢後，即可回到上一頁查看。  
-![](./Images/asset-manager-back-1.png)  
-![](./Images/asset-manager-back-2.png)
+![](./Images/04.png)
+6. 在上傳時，選擇 `Add asset`。  
+![](./Images/05.png)
+7. 點擊 `File upload`，尋找剛才丟進專案的檔案及其附屬的 `.meta` 檔。  
+![](./Images/06.png)  
+![](./Images/07.png)
+8. 上傳完畢後，刪除專案內的檔案。  
+![](./Images/08.png)
 
 ## 模型下載
 
 由於 Asset Manager 內的模型並不在 GitHub 上，因此要使用以下的步驟來進行匯入：
 
-1. 打開 GitHub Desktop 進行 pull。
-2. 打開 Unity 專案，並等它載入完畢。
-3. 點擊 Unity 工作列的 Window，並選擇 Asset Manager。  
-![](./Images/unity-asset-manager-1.png)
-4. 點擊你想下載的模型，並按下右方的 Import / Reimport。  
-![](./Images/unity-asset-manager-2.png)  
-如果有出現以下視窗，就按 Yes  
-![](./Images/asset-manager-yes.png)  
-如果有出現以下視窗，就按 Continue  
-![](./Images/asset-manager-continue.png)
-5. 重複步驟 `4`，直到所有模型都下載完畢。
-6. 回到 GitHub Desktop，把有出現黃框的檔案全部 discard 掉。  
-![](./Images/github-desktop-1.png)  
-![](./Images/github-desktop-2.png)
-7. 如果有綠框的檔案，就進行 push。
+1. 點擊 Unity 工作列的 Window，並選擇 Asset Manager。  
+![](./Images/09.png)
+2. 點擊還沒下載的模型，並按下右方的 Import。  
+![](./Images/10.png)
+3. 重複步驟 `2`，直到所有模型都下載完畢。
 
 ## 注意事項
 
