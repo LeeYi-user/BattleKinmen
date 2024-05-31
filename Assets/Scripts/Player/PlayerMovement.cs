@@ -34,6 +34,7 @@ public class PlayerMovement : NetworkBehaviour
     private bool grounded;
     private float horizontalInput;
     private float verticalInput;
+    private bool isJumping;
     private bool readyToJump = true;
     private bool exitingSlope;
     private Vector3 moveDirection;
@@ -101,13 +102,24 @@ public class PlayerMovement : NetworkBehaviour
         {
             horizontalInput = 0f;
             verticalInput = 0f;
+            isJumping = false;
             return;
         }
 
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKeyDown(jumpKey) && readyToJump && grounded)
+        if (Input.GetKeyDown(jumpKey) && GameManager.Instance.gamingScreen.activeSelf)
+        {
+            isJumping = true;
+        }
+
+        if (Input.GetKeyUp(jumpKey))
+        {
+            isJumping = false;
+        }
+
+        if (isJumping && readyToJump && grounded)
         {
             readyToJump = false;
             Jump();
