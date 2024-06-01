@@ -220,6 +220,7 @@ public class PlayerMovement : NetworkBehaviour
     public void Despawn()
     {
         live = false;
+        isJumping = false;
         rb.constraints = RigidbodyConstraints.FreezeAll;
 
         if (GameManager.gameOver)
