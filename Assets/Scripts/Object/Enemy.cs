@@ -81,8 +81,15 @@ public class Enemy : NetworkBehaviour
 
         animator.SetTrigger("isDying");
         Destroy(gameObject, 2f);
+        Die_ClientRpc();
 
         GameManager.Instance.enemies.Value--;
+    }
+
+    [ClientRpc]
+    private void Die_ClientRpc()
+    {
+        GetComponent<Collider>().enabled = false;
     }
 
     public override void OnDestroy()
@@ -172,6 +179,11 @@ public class Enemy : NetworkBehaviour
 
     public void TakeDamage(float damage, ulong attackerId)
     {
+        if (health <= 0)
+        {
+            return;
+        }
+
         health -= damage;
 
         if (health <= 0)
