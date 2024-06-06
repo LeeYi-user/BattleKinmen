@@ -213,12 +213,6 @@ public class GameManager : NetworkBehaviour
             popups.Clear();
             popups.Add(null);
         }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<Player>().PlayerDespawn_ServerRpc();
-            return;
-        }
     }
 
     private void UpdateUISettings()

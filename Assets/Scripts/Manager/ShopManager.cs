@@ -120,16 +120,6 @@ public class ShopManager : NetworkBehaviour
 
         cashCounter1.text = "$ " + (GameManager.Instance.teamCash.Value - cashSpent).ToString();
         cashCounter2.text = "$ " + (GameManager.Instance.teamCash.Value - cashSpent).ToString();
-
-        if (!IsHost)
-        {
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            GameManager.Instance.teamCash.Value += 50000;
-        }
     }
 
     public void CategoryButtonClick(int index)

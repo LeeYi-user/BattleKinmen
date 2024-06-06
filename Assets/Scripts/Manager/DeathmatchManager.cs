@@ -40,11 +40,6 @@ public class DeathmatchManager : NetworkBehaviour
         {
             return;
         }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            GameManager.Instance.breakTime.Value = 0f;
-        }
     }
 
     private void GameOver()

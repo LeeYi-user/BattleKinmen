@@ -60,11 +60,6 @@ public class TeamModeManager : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            GameManager.Instance.currentDefense = 0;
-        }
-
         if (GameManager.Instance.currentDefense <= 0)
         {
             GameManager.Instance.GameOver_ClientRpc();
