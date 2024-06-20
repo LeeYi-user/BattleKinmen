@@ -53,9 +53,11 @@ git fetch --unshallow
 ![](./Images/10.png)
 3. 重複步驟 `2`，直到所有模型都下載完畢。
 
+備註：如果 Asset Manager 內沒有模型，就改往 [Google Drive](https://drive.google.com/file/d/1jxKpbF7kP-V_hCT-BS7jsEUngrJyPb4U/view?usp=sharing) 下載。
+
 ## 注意事項
 
 1. 在對程式檔案進行更改時，請記得跟其他人協調好，不要更動到同一個檔案。
-2. 在對程式檔案進行更改後，請記得加上註解，[並使用 Unicode 編碼方式進行儲存](https://learn.microsoft.com/zh-tw/visualstudio/ide/encodings-and-line-breaks?view=vs-2022)。
+2. 在對程式檔案進行更改後，請記得加上註解，[並使用 Unicode 編碼方式進行儲存](https://learn.microsoft.com/zh-tw/visualstudio/ide/encodings-and-line-breaks?view=vs-2022#advanced-save-options)。
 3. 在對程式檔案進行 push/pull 時，請使用 github desktop 工具，以免出錯。
 4. 在對程式檔案進行 push 後，請在 LINE 群通知其他同學。
